@@ -1,0 +1,186 @@
+{
+  "schema_version": "dervyx-phase0-fixtures/v1",
+  "captured_at": "2026-08-18T09:44:10Z",
+  "evidence_mode": "live_read_only",
+  "chain": {
+    "name": "Base Mainnet",
+    "chain_id": 8453,
+    "rpc_source": "https://mainnet.base.org",
+    "explorer": "https://basescan.org"
+  },
+  "adapter": {
+    "protocol": "Uniswap v4",
+    "pool_manager": "0x498581ff718922c3f8e6a244956af099b2652b2b",
+    "event": "Swap(bytes32,address,int128,int128,uint160,uint128,int24,uint24)",
+    "indexed_fields": ["id", "sender"],
+    "deployment_source": "https://developers.uniswap.org/docs/protocols/v4/deployments",
+    "interface_source": "https://github.com/Uniswap/v4-core/blob/main/src/interfaces/IPoolManager.sol"
+  },
+  "scope": {
+    "start_block": 50121395,
+    "end_block": 50123000,
+    "start_timestamp": "2026-08-18T05:48:57Z",
+    "end_timestamp": "2026-08-18T06:42:27Z",
+    "same_window_for_all_fixtures": true
+  },
+  "fixtures": [
+    {
+      "id": "baseunc-v4-launch-window",
+      "role": "anomaly_candidate",
+      "verdict_status": "candidate_only",
+      "token": {
+        "address": "0xB2000000000000000000000Ff4a547c891AB1b01",
+        "name": "BaseUnc",
+        "symbol": "BaseUnc",
+        "decimals": 18,
+        "metadata_note": "Name, symbol, and decimals were read from the token contract."
+      },
+      "pool": {
+        "pool_id": "0x1ee8db5e1df2386aa078cf866b83d90ca559757b4c98276694f5d7698c3570d8",
+        "initialized_at_block": 50121395,
+        "currency0": "0x0000000000000000000000000000000000000000",
+        "currency1": "0xB2000000000000000000000Ff4a547c891AB1b01",
+        "fee": 0,
+        "tick_spacing": 200,
+        "hooks": "0x985c14baa2a18316ffda0aefb3a632fadfca2acc"
+      },
+      "observed": {
+        "swap_events": 426,
+        "swap_transactions": 426,
+        "distinct_transaction_origins": 170,
+        "top_origin_swap_count": 14,
+        "funding_sample": {
+          "top_origins_examined": 30,
+          "origins_with_inbound_native_funding": 22,
+          "largest_observed_root_fanout": 9,
+          "largest_observed_roots": [
+            {
+              "root": "0xd8ba9d1a99fc21f0eca24e9b85737c28a194a4e2",
+              "recipient_count": 9,
+              "taxonomy_class": "UNKNOWN"
+            },
+            {
+              "root": "0xc8f6b8ba0dc0f175b568b99440b0867f69a29265",
+              "recipient_count": 5,
+              "taxonomy_class": "UNKNOWN"
+            },
+            {
+              "root": "0xd0a40c6526acdebd4f6d87931098ff37a9f8e4bf",
+              "recipient_count": 5,
+              "taxonomy_class": "UNKNOWN"
+            }
+          ]
+        }
+      },
+      "sample_evidence": {
+        "swap_transaction": "0x509c3d2da90940b8aae41752df1f7144810b28221886308dedd2e154071ca365",
+        "swap_block": 50121422,
+        "swap_explorer": "https://basescan.org/tx/0x509c3d2da90940b8aae41752df1f7144810b28221886308dedd2e154071ca365",
+        "receipt_status": 1,
+        "transfer": {
+          "token": "0xB2000000000000000000000Ff4a547c891AB1b01",
+          "from": "0x498581ff718922c3f8e6a244956af099b2652b2b",
+          "to": "0x01104df70f98eb61b8391f28dc7ba252698e4340",
+          "amount_raw": "44070977790033896186545",
+          "log_index": 501
+        },
+        "block_explorer": "https://basescan.org/block/50121422"
+      },
+      "interpretation": "Shared funding is observable in the sampled origins and is a candidate funding/volume anomaly. It is not proof of intent, ownership, fraud, or wash trading."
+    },
+    {
+      "id": "usdt-usdc-v4-control-window",
+      "role": "clean_control_candidate",
+      "verdict_status": "control_candidate_only",
+      "tokens": [
+        {
+          "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+          "name": "USD Coin",
+          "symbol": "USDC",
+          "decimals": 6
+        },
+        {
+          "address": "0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2",
+          "label": "USDT",
+          "metadata_note": "Pool initialization identifies this address as currency1; token metadata was not relied on for the control decision."
+        }
+      ],
+      "pool": {
+        "pool_id": "0xf13203ddbf2c9816a79b656a1a952521702715d92fea465b84ae2ed6e94a7f22",
+        "initialized_at_block": 29741205,
+        "currency0": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "currency1": "0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2",
+        "fee": 7,
+        "tick_spacing": 1,
+        "hooks": "0x0000000000000000000000000000000000000000"
+      },
+      "observed": {
+        "swap_events": 133,
+        "swap_transactions": 133,
+        "distinct_transaction_origins": 84,
+        "top_origin_swap_count": 7,
+        "funding_sample": {
+          "top_origins_examined": 30,
+          "origins_with_inbound_native_funding": 13,
+          "largest_observed_root_fanout": 4,
+          "largest_observed_roots": [
+            {
+              "root": "0xd152f549545093347a162dce210e7293f1452150",
+              "recipient_count": 4,
+              "taxonomy_class": "UNKNOWN"
+            },
+            {
+              "root": "0x09aea4b2242abc8bb4bb78d537a67a245a7bec64",
+              "recipient_count": 2,
+              "taxonomy_class": "UNKNOWN"
+            },
+            {
+              "root": "0x18d0bd913a67d69350265193d5849c74865e3d51",
+              "recipient_count": 2,
+              "taxonomy_class": "UNKNOWN"
+            }
+          ]
+        }
+      },
+      "sample_evidence": {
+        "swap_transaction": "0x4ce2224560752c59032acc413587482cef6ebfd62a530bf0d5a864cf94891f6f",
+        "swap_block": 50121403,
+        "swap_explorer": "https://basescan.org/tx/0x4ce2224560752c59032acc413587482cef6ebfd62a530bf0d5a864cf94891f6f",
+        "receipt_status": 1,
+        "transfers": [
+          {
+            "token": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "from": "0x498581ff718922c3f8e6a244956af099b2652b2b",
+            "to": "0x8f10b468b06c6fd214b65f87778827f7d113f996",
+            "amount_raw": "185385336",
+            "log_index": 37
+          },
+          {
+            "token": "0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2",
+            "from": "0x498581ff718922c3f8e6a244956af099b2652b2b",
+            "to": "0x8f10b468b06c6fd214b65f87778827f7d113f996",
+            "amount_raw": "49764844",
+            "log_index": 53
+          }
+        ],
+        "block_explorer": "https://basescan.org/block/50121403"
+      },
+      "interpretation": "The mature stablecoin pair is a same-protocol control candidate. It must still be run through the same deterministic engine and cannot be called CLEAN from this bounded sample alone."
+    }
+  ],
+  "taxonomy_policy": {
+    "version": "phase0-source-by-source-v1",
+    "known_root_sources": [
+      "https://developers.uniswap.org/docs/protocols/v4/deployments",
+      "https://base.blockscout.com/api/v2/addresses/{address}"
+    ],
+    "policy": "Only source-backed protocol labels may be classified as known infrastructure. Blockscout metadata is enrichment, not sole proof of ownership. Unresolved roots remain UNKNOWN and are never silently treated as independent or malicious.",
+    "redistribution_status": "No bulk third-party allowlist is copied or redistributed in Phase 0. Address-level evidence is retained by source URL and report scope."
+  },
+  "limitations": [
+    "The funding fan-out figures are bounded samples of top origins, not a complete two-hop graph result.",
+    "A shared funding root is an observed relationship and not proof of intent, ownership, fraud, or wash trading.",
+    "The control is a candidate control and requires the same engine, root exclusions, and incomplete-data rules as the anomaly candidate.",
+    "No Orion wallet connection, ignition payment, registration, or submission was performed."
+  ]
+}

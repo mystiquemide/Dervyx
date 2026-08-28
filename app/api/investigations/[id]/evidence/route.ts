@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { runEvidence, store } from "@/lib/investigations";
+import { liveRunGate, runEvidence, store } from "@/lib/investigations";
 import { jsonError } from "@/lib/http";
 
 export const runtime = "nodejs";
@@ -24,7 +24,17 @@ export async function POST(_request: Request, context: { params: Promise<{ id: s
       await runEvidence(id);
       return NextResponse.json(store.get(id) ?? start.record, { status: 200 });
     }
-    void runEvidence(id);
+    if (!liveRunGate.tryAcquire()) {
+      store.failEvidence(id, {
+        code: "LIVE_CAPACITY_REACHED",
+        message: "Two live Base reads are already running. Retry this request in a moment.",
+        retryable: true,
+      });
+      const response = jsonError(429, "LIVE_CAPACITY_REACHED", "Two live Base reads are already running. Retry this request in a moment.");
+      response.headers.set("retry-after", "10");
+      return response;
+    }
+    void runEvidence(id).finally(() => liveRunGate.release());
   }
   return NextResponse.json(start.record, { status: 202 });
 }

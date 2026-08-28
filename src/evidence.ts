@@ -8,6 +8,7 @@ import {
 } from "./chain.js";
 import { readCanonicalErc20Funding, readNativeFundingTransfers } from "./funding.js";
 import { buildFundingGraph, StaticRootTaxonomy } from "./graph.js";
+import { redactProviderUrl } from "./security.js";
 import type {
   EvidenceError,
   EvidenceSnapshot,
@@ -133,6 +134,7 @@ export function createDefaultEvidenceRunner(): EvidenceRunner {
 
         const origins = buildOriginQueries(result.events);
         const rpcClient = createBaseRpcClient(result.rpcUrl);
+        const safeRpcUrl = redactProviderUrl(result.rpcUrl, result.providerMode);
 
         // Canonical eth_getLogs is the reliable, source-linked ERC-20 funding source.
         const canonical = await readCanonicalErc20Funding({
@@ -180,7 +182,7 @@ export function createDefaultEvidenceRunner(): EvidenceRunner {
             fixtureId: fixture.fixtureId,
             poolId: result.poolId,
             providerMode: result.providerMode,
-            rpcUrl: result.rpcUrl,
+            rpcUrl: safeRpcUrl,
             range: result.range,
             rawEventCount: result.rawEventCount,
             eventCount: result.eventCount,
@@ -189,7 +191,7 @@ export function createDefaultEvidenceRunner(): EvidenceRunner {
               status: fundingErrors.length === 0 && sampledOrigins === origins.length ? "complete" : "partial",
               sourceMode: "blockscout_internal_and_canonical_erc20",
               apiBase: native.apiBase,
-              rpcUrl: canonical.rpcUrl,
+              rpcUrl: safeRpcUrl,
               originsTotal: origins.length,
               originsRequested: sampledOrigins,
               erc20OriginsRequested: canonical.originsRequested,

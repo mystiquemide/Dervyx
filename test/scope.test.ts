@@ -64,6 +64,21 @@ test("rejects the wrong chain, reversed ranges, and oversized ranges", () => {
   if (!oversized.ok) assert.ok(oversized.issues.some((entry) => entry.code === "RANGE_TOO_LARGE"));
 });
 
+test("example IDs are explicit cached-only scope variants", () => {
+  const control = normalizeScopeRequest(validRequest({ mode: "cached", exampleId: "control" }));
+  assert.equal(control.ok, true);
+  if (!control.ok) return;
+  assert.equal(control.value.exampleId, "control");
+
+  const live = normalizeScopeRequest(validRequest({ mode: "live", exampleId: "control" }));
+  assert.equal(live.ok, false);
+  if (!live.ok) assert.ok(live.issues.some((entry) => entry.code === "INVALID_EXAMPLE"));
+
+  const anomaly = normalizeScopeRequest(validRequest({ mode: "cached", exampleId: "anomaly" }));
+  assert.equal(anomaly.ok, true);
+  if (anomaly.ok) assert.notEqual(anomaly.scopeHash, control.scopeHash);
+});
+
 test("rejects unknown fields and does not silently widen the contract", () => {
   const result = normalizeScopeRequest(validRequest({ rpcUrl: "https://example.invalid" }));
   assert.equal(result.ok, false);
@@ -100,6 +115,38 @@ test("rejects a conflicting payload that reuses an idempotency key", () => {
   if (conflict.kind === "conflict") assert.equal(conflict.issue.code, "IDEMPOTENCY_CONFLICT");
 });
 
+test("request IDs are random and old records are bounded out of the store", () => {
+  const store = new ScopeStore();
+  const first = normalizeScopeRequest(validRequest({ idempotencyKey: "retention-first" }));
+  const second = normalizeScopeRequest(validRequest({ idempotencyKey: "retention-second" }));
+  assert.equal(first.ok, true);
+  assert.equal(second.ok, true);
+  if (!first.ok || !second.ok) return;
+
+  const firstRecord = store.create(first.value, first.scopeHash, new Date("2026-08-18T00:00:00.000Z"));
+  const secondRecord = store.create(second.value, second.scopeHash, new Date("2026-08-18T00:31:00.000Z"));
+  assert.equal(firstRecord.kind, "created");
+  assert.equal(secondRecord.kind, "created");
+  if (firstRecord.kind === "created" && secondRecord.kind === "created") {
+    assert.notEqual(firstRecord.record.requestId, secondRecord.record.requestId);
+    assert.equal(store.get(firstRecord.record.requestId), undefined);
+  }
+
+  const bounded = new ScopeStore();
+  const ids: string[] = [];
+  const boundedNow = new Date();
+  for (let index = 0; index < ScopeStore.MAX_RECORDS + 1; index += 1) {
+    const input = normalizeScopeRequest(validRequest({ idempotencyKey: `bounded-${index}` }));
+    assert.equal(input.ok, true);
+    if (!input.ok) continue;
+    const created = bounded.create(input.value, input.scopeHash, boundedNow);
+    if (created.kind === "created") ids.push(created.record.requestId);
+  }
+  assert.equal(ids.length, ScopeStore.MAX_RECORDS + 1);
+  assert.equal(bounded.get(ids[0]!), undefined);
+  assert.ok(bounded.get(ids[ids.length - 1]!));
+});
+
 test("HTTP boundary exposes health, SCOPED creation, duplicate replay, and lookup", async (t) => {
   const server = createScopeServer();
   server.listen(0, "127.0.0.1");
@@ -125,7 +172,7 @@ test("HTTP boundary exposes health, SCOPED creation, duplicate replay, and looku
   });
   assert.equal(create.status, 201);
   const record = (await create.json()) as { requestId: string; state: string; chainId: number };
-  assert.match(record.requestId, /^inv_[0-9a-f]{24}$/);
+  assert.match(record.requestId, /^inv_[0-9a-f]{32}$/);
   assert.equal(record.state, "SCOPED");
   assert.equal(record.chainId, BASE_CHAIN_ID);
 

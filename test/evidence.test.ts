@@ -6,9 +6,31 @@ import type { Address, Hex } from "viem";
 import { createScopeServer } from "../src/server.js";
 import type { EvidenceRunner } from "../src/evidence.js";
 import { BASE_CHAIN_ID, ScopeStore, type EvidenceSnapshot } from "../src/scope.js";
+import { buildFundingGraph, StaticRootTaxonomy, type FundingEdge } from "../src/graph.js";
 
 const token = "0xB2000000000000000000000Ff4a547c891AB1b01";
 const poolId = "0x1ee8db5e1df2386aa078cf866b83d90ca559757b4c98276694f5d7698c3570d8";
+const readyOrigin = "0x01104DF70F98EB61b8391f28DC7BA252698e4340" as Address;
+const readyFunder = "0x02204DF70F98EB61b8391f28DC7BA252698e4340" as Address;
+const readyFundingEdge: FundingEdge = {
+  chainId: BASE_CHAIN_ID,
+  from: readyFunder,
+  to: readyOrigin,
+  token: token as Address,
+  amount: "1000000",
+  blockNumber: 50121390,
+  blockHash: `0x${"55".repeat(32)}` as Hex,
+  transactionHash: `0x${"66".repeat(32)}` as Hex,
+  logIndex: 0,
+  sourceType: "erc20_transfer",
+  sourceUrl: `https://basescan.org/tx/0x${"66".repeat(32)}`,
+};
+const readyGraph = buildFundingGraph({
+  chainId: BASE_CHAIN_ID,
+  traders: [readyOrigin],
+  fundingEdges: [readyFundingEdge],
+  taxonomy: new StaticRootTaxonomy("test-taxonomy", []),
+});
 
 function requestBody(key: string): Record<string, unknown> {
   return {
@@ -44,8 +66,8 @@ const readyEvidence: EvidenceSnapshot = {
       blockHash: `0x${"33".repeat(32)}` as Hex,
       transactionHash: `0x${"44".repeat(32)}` as Hex,
       logIndex: 1,
-      sender: "0x01104DF70F98EB61b8391f28DC7BA252698e4340" as Address,
-      origin: "0x01104DF70F98EB61b8391f28DC7BA252698e4340" as Address,
+      sender: readyOrigin,
+      origin: readyOrigin,
       amount0: "-1",
       amount1: "2",
       sqrtPriceX96: "3",
@@ -60,6 +82,24 @@ const readyEvidence: EvidenceSnapshot = {
       },
     },
   ],
+  funding: {
+    status: "complete",
+    sourceMode: "canonical_erc20",
+    apiBase: "https://base.blockscout.com/api/v2",
+    rpcUrl: "https://mainnet.base.org",
+    originsTotal: 1,
+    originsRequested: 1,
+    erc20OriginsRequested: 1,
+    originsWithEdges: 1,
+    nativeEdgeCount: 0,
+    erc20EdgeCount: 1,
+    pagesRead: 0,
+    chunksRead: 1,
+    edges: readyGraph.edges,
+    graph: readyGraph,
+    errors: [],
+    sourceErrors: { native: 0, erc20: 0 },
+  },
 };
 
 async function startServer(runner: EvidenceRunner) {

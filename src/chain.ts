@@ -7,6 +7,7 @@ import {
   type Hex,
 } from "viem";
 import { base } from "viem/chains";
+import { redactProviderUrl } from "./security.js";
 
 import { BASE_CHAIN_ID } from "./scope.js";
 
@@ -257,7 +258,7 @@ function normalizeLog(
       fee: args.fee,
       source: {
         providerMode,
-        rpcUrl,
+        rpcUrl: redactProviderUrl(rpcUrl, providerMode),
         method: "eth_getLogs",
         originMethod: "eth_getTransactionByHash",
       },

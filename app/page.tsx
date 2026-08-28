@@ -20,6 +20,7 @@ const STRIP = [
 const CONTENTS = [
   ["Verdict", "ANOMALY, CLEAN, UNKNOWN_ROOTS, or INSUFFICIENT_DATA, as text."],
   ["Observed share", "Numerator and denominator of swap events, with the window."],
+  ["Attribution ledger", "What was counted, what was excluded, and what remains unlinked."],
   ["Coverage", "How many trading origins were attributed, and funding status."],
   ["Exclusions", "Known routers and exchanges, separated and named."],
   ["Report hash", "A SHA-256 over the canonical JSON that anyone can replay."],
@@ -38,6 +39,8 @@ function Label({ children }: { children: React.ReactNode }) {
 }
 
 const anomalyCluster = sampleAnomaly.report.coordinationClusters[0];
+const unknownLedger = sampleAnomaly.report.attributionLedger.find((entry) => entry.bucket === "unknown_coordination");
+const knownLedger = sampleAnomaly.report.attributionLedger.find((entry) => entry.bucket === "known_infrastructure");
 const verifySnippet = `${sampleAnomaly.canonicalJson.slice(0, 200)}\u2026`;
 
 export default function LandingPage() {
@@ -62,6 +65,12 @@ export default function LandingPage() {
                 className="rounded-md bg-teal px-5 py-3 text-sm font-semibold text-ink transition-colors duration-200 hover:bg-teal-deep"
               >
                 Run an investigation
+              </Link>
+              <Link
+                href="/compare"
+                className="rounded-md border border-teal/30 bg-teal/5 px-5 py-3 text-sm font-medium text-teal transition-colors duration-200 hover:bg-teal/10"
+              >
+                Run the paired proof
               </Link>
               <a
                 href="#workflow"
@@ -98,6 +107,44 @@ export default function LandingPage() {
               </div>
             </Reveal>
           ))}
+        </div>
+      </section>
+
+      {/* Paired proof */}
+      <section id="paired-proof" className="border-b border-edge/50 bg-surface">
+        <div className="mx-auto grid max-w-6xl gap-12 px-6 py-24 md:grid-cols-[1.1fr_1fr] md:items-center">
+          <Reveal>
+            <Label>Paired proof</Label>
+            <h2 className="mt-4 text-[clamp(1.9rem,3.4vw,2.8rem)] font-semibold leading-tight tracking-tight text-cream">
+              The verdict survives a control.
+            </h2>
+            <p className="mt-5 max-w-measure text-[15px] leading-relaxed text-muted">
+              Same token, block window, thresholds, and engine. Only the funding topology changes. Dervyx
+              shows the known router in the ledger, excludes it, and leaves the unknown-root residual visible.
+            </p>
+            <Link
+              href="/compare"
+              className="mt-7 inline-flex rounded-md border border-edge px-5 py-3 text-sm font-medium text-cream transition-colors duration-200 hover:border-muted"
+            >
+              See both certificates
+            </Link>
+          </Reveal>
+          <Reveal delay={100}>
+            <div className="rounded-lg border border-edge bg-ink p-6 font-mono text-sm">
+              <div className="flex items-center justify-between border-b border-edge/60 pb-4">
+                <span className="text-faint">unknown shared root</span>
+                <span className="text-anomaly">{unknownLedger?.swapEvents ?? 0}/{sampleAnomaly.report.metric.denominator} · {unknownLedger?.ratioPercent ?? "0.00%"} counted</span>
+              </div>
+              <div className="flex items-center justify-between border-b border-edge/60 py-4">
+                <span className="text-faint">known router root</span>
+                <span className="text-muted">{knownLedger?.swapEvents ?? 0}/{sampleAnomaly.report.metric.denominator} · {knownLedger?.ratioPercent ?? "0.00%"} excluded</span>
+              </div>
+              <div className="flex items-center justify-between pt-4">
+                <span className="text-faint">after policy</span>
+                <span className="text-teal">{sampleAnomaly.report.metric.numerator}/{sampleAnomaly.report.metric.denominator} · {sampleAnomaly.report.metric.ratioPercent}</span>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 

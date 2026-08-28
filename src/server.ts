@@ -132,9 +132,13 @@ async function runEvidence(store: ScopeStore, runner: EvidenceRunner, requestId:
         store.attachBranch(requestId, decision);
         store.attachReport(requestId, certificate);
       } catch {
-        // Certification/branch is non-fatal: the evidence itself is valid, so mark it ready
-        // without a report rather than failing the read.
-        store.completeEvidence(requestId, result.evidence);
+        // EVIDENCE_READY is a certificate contract, not merely a successful provider read.
+        // Fail closed if certification or branch attachment cannot complete.
+        store.failEvidence(requestId, {
+          code: "CERTIFICATION_FAILED",
+          message: "Evidence was read but could not be certified for this scope.",
+          retryable: false,
+        });
       }
     } else {
       store.failEvidence(requestId, result.error);

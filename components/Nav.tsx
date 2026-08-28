@@ -10,6 +10,7 @@ const LINKS: { href: string; label: string; external?: boolean }[] = [
   { href: "/#certificate", label: "Product" },
   { href: "/#workflow", label: "How it works" },
   { href: "/#verify", label: "Verify" },
+  { href: "/compare", label: "Paired proof" },
   { href: REPO, label: "GitHub", external: true },
 ];
 

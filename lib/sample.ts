@@ -70,6 +70,7 @@ function swap(origin: Address, blockNumber: number, tag: string): NormalizedSwap
 }
 
 function snapshot(input: {
+  fixtureId: string;
   traders: Address[];
   fundingEdges: FundingEdge[];
   events: NormalizedSwapEvent[];
@@ -84,7 +85,7 @@ function snapshot(input: {
     taxonomy: input.taxonomy,
   });
   return {
-    fixtureId: "landing-example",
+    fixtureId: input.fixtureId,
     poolId: hash("1"),
     providerMode: "public_fallback",
     rpcUrl: "https://mainnet.base.org",
@@ -130,6 +131,7 @@ const t4 = addr("4");
 // ANOMALY: three wallets share one unknown root two hops back; a fourth is funded by a
 // known router and is correctly excluded, so it never inflates the share.
 export const anomalyEvidence = snapshot({
+  fixtureId: "baseunc-anomaly-example",
   traders: [t1, t2, t3, t4],
   fundingEdges: [
     edge(unknownRoot, funder, 0, 100, "a0"),
@@ -153,6 +155,7 @@ const c1 = addr("5");
 const c2 = addr("6");
 // CLEAN: both wallets funded only by a known router root; separated, never counted.
 export const cleanEvidence = snapshot({
+  fixtureId: "baseunc-clean-control-example",
   traders: [c1, c2],
   fundingEdges: [edge(router, c1, 0, 120, "b1"), edge(router, c2, 1, 121, "b2")],
   events: [swap(c1, 120, "c1"), swap(c1, 122, "c2"), swap(c2, 121, "c3"), swap(c2, 123, "c4")],
@@ -166,6 +169,7 @@ const u2 = addr("8");
 const u3 = addr("9");
 // UNKNOWN_ROOTS: partial coverage, one wallet attributed, no cluster; never labeled CLEAN.
 export const unknownEvidence = snapshot({
+  fixtureId: "baseunc-unknown-example",
   traders: [u1, u2, u3],
   fundingEdges: [edge(unknownRoot, u1, 0, 130, "d1")],
   events: [swap(u1, 130, "d2"), swap(u1, 132, "d3"), swap(u2, 131, "d4"), swap(u3, 133, "d5")],

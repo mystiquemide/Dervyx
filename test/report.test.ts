@@ -18,6 +18,7 @@ import {
   verifyReport,
   type ReportInput,
 } from "../src/report.js";
+import { buildEvidenceReceipt } from "../src/receipt.js";
 import type { EvidenceSnapshot } from "../src/scope.js";
 import type { NormalizedSwapEvent } from "../src/chain.js";
 
@@ -118,6 +119,17 @@ test("anomaly fixture: shared unknown root above threshold yields ANOMALY", () =
   assert.equal(cluster?.linkedSwapEvents, 24);
   assert.ok((cluster?.sampleSourceUrls.length ?? 0) >= 1);
   assert.equal(cert.report.knownRootExclusions.length, 0);
+  assert.equal(cert.report.metric.attributedSwapEvents, 24);
+  assert.equal(cert.report.metric.attributedRatioPercent, "80.00%");
+  assert.deepEqual(
+    cert.report.attributionLedger.map((entry) => [entry.bucket, entry.swapEvents, entry.countsTowardAnomalyShare]),
+    [
+      ["unknown_coordination", 24, true],
+      ["known_infrastructure", 0, false],
+      ["attributed_unclustered", 0, false],
+      ["unattributed", 6, false],
+    ],
+  );
 });
 
 test("control fixture: known router root does not inflate; yields CLEAN", () => {
@@ -146,8 +158,12 @@ test("control fixture: known router root does not inflate; yields CLEAN", () => 
   assert.equal(cert.report.knownRootExclusions.length, 1);
   const exclusion = cert.report.knownRootExclusions[0];
   assert.equal(exclusion?.class, "router");
+  assert.equal(exclusion?.linkedSwapEvents, 20);
   assert.equal(exclusion?.linkedTraderCount, 2);
   assert.equal(exclusion?.address.toLowerCase(), routerRoot.toLowerCase());
+  assert.equal(cert.report.metric.attributedSwapEvents, 20);
+  assert.equal(cert.report.metric.attributedRatioPercent, "100.00%");
+  assert.equal(cert.report.attributionLedger[1]?.swapEvents, 20);
 });
 
 test("partial coverage with no coordination yields UNKNOWN_ROOTS, never CLEAN", () => {
@@ -228,6 +244,21 @@ test("replay reproduces identical canonical bytes and hash", () => {
   assert.equal(first.reportHash, second.reportHash);
   assert.equal(first.reportHash, hashCanonicalJson(first.canonicalJson));
   assert.equal(verifyReport(first.report, first.reportHash).ok, true);
+
+  const receipt = buildEvidenceReceipt(first);
+  assert.equal(receipt.schema, "dervyx-evidence-receipt-v1");
+  assert.equal(receipt.receiptId, first.reportHash);
+  assert.equal(receipt.counterfactual.anomalyShareAfterRootPolicy, first.report.metric.ratioPercent);
+  assert.equal(receipt.verification.reportHash, first.reportHash);
+  assert.equal(receipt.attributionLedger.length, 4);
+
+  const configured = buildReport({
+    ...input,
+    providerMode: "configured",
+    rpcUrl: "https://rpc.example.invalid/v1/secret-path?api_key=not-a-real-secret",
+  });
+  assert.equal(configured.report.sources.rpcUrl, "[REDACTED_CONFIGURED_RPC]");
+  assert.equal(configured.canonicalJson.includes("not-a-real-secret"), false);
 });
 
 test("tampered report fails hash verification", () => {

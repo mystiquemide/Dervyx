@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import { CertificatePanel } from "@/components/CertificatePanel";
 import type { ScopeRecord } from "@/lib/types";
 
+type ExampleId = "anomaly" | "control";
+
 type Status = { message: string; kind: "idle" | "working" | "success" | "error" };
 type Replay = { state: "idle" | "checking" | "ok" | "mismatch" | "error"; text: string };
 type RunMode = "live" | "cached";
@@ -55,6 +57,12 @@ export function InvestigateClient() {
     return () => window.clearInterval(id);
   }, [busy]);
 
+  useEffect(() => {
+    if (form.idempotencyKey !== DEFAULTS.idempotencyKey) return;
+    const randomId = window.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    setForm((prev) => ({ ...prev, idempotencyKey: `ui-${randomId}` }));
+  }, [form.idempotencyKey]);
+
   const update = (key: keyof typeof DEFAULTS) => (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm((prev) => ({ ...prev, [key]: event.target.value }));
 
@@ -87,7 +95,7 @@ export function InvestigateClient() {
         const verdict = settled.report ? ` Verdict: ${settled.report.report.verdict.label}.` : "";
         const lead =
           settled.mode === "cached"
-            ? "Example certificate ready"
+            ? `${settled.exampleId === "control" ? "Control" : "Anomaly example"} certificate ready`
             : `Evidence ready: ${settled.evidence?.eventCount ?? 0} source-linked events`;
         setStatus({ message: `${lead}.${verdict}`, kind: "success" });
       } else if (settled.state === "RETRYABLE") {
@@ -100,7 +108,7 @@ export function InvestigateClient() {
   );
 
   const submit = useCallback(
-    async (modeOverride?: RunMode) => {
+    async (modeOverride?: RunMode, exampleIdOverride?: ExampleId) => {
       const mode = modeOverride ?? form.mode;
       setBusy(true);
       setRunMode(mode);
@@ -117,8 +125,9 @@ export function InvestigateClient() {
             endBlock: Number(form.endBlock),
             chainId: 8453,
             mode,
+            ...(mode === "cached" ? { exampleId: exampleIdOverride ?? "anomaly" } : {}),
             configVersion: form.configVersion,
-            idempotencyKey: mode === "cached" ? `${form.idempotencyKey}-example` : form.idempotencyKey,
+            idempotencyKey: mode === "cached" ? `${form.idempotencyKey}-${exampleIdOverride ?? "anomaly"}` : form.idempotencyKey,
           }),
         });
         const payload = (await response.json()) as ScopeRecord & { error?: { message: string } };
@@ -230,9 +239,13 @@ export function InvestigateClient() {
           className="mt-6 w-full rounded-md bg-teal px-4 py-3 text-sm font-semibold text-ink transition-colors duration-200 hover:bg-teal-deep disabled:cursor-wait disabled:opacity-60">
           {busy ? "Working\u2026" : "Investigate token"}
         </button>
-        <button type="button" onClick={() => void submit("cached")} disabled={busy}
+        <button type="button" onClick={() => void submit("cached", "anomaly")} disabled={busy}
           className="mt-3 w-full rounded-md border border-edge px-4 py-2.5 text-sm text-cream transition-colors hover:border-muted disabled:opacity-60">
-          Load an instant example
+          Run anomaly example
+        </button>
+        <button type="button" onClick={() => void submit("cached", "control")} disabled={busy}
+          className="mt-3 w-full rounded-md border border-teal/30 bg-teal/5 px-4 py-2.5 text-sm text-teal transition-colors hover:bg-teal/10 disabled:opacity-60">
+          Run clean control
         </button>
         <p className={`mt-4 min-h-[40px] text-sm leading-relaxed ${statusColor}`} role="status" aria-live="polite">{status.message}</p>
       </form>
@@ -282,6 +295,7 @@ export function InvestigateClient() {
               <dl className="mt-4 text-sm">
                 <ScopeRow label="State" value={record.state} mono />
                 <ScopeRow label="Mode" value={record.mode === "cached" ? "example (instant, offline)" : "live RPC"} />
+                {record.exampleId ? <ScopeRow label="Example" value={record.exampleId === "control" ? "known-router control" : "shared-root anomaly"} /> : null}
                 <ScopeRow label="Request ID" value={record.requestId} mono />
                 <ScopeRow label="Scope hash" value={record.scopeHash} mono />
                 <ScopeRow label="Provider" value={evidence?.providerMode ?? record.providerMode} />
@@ -320,6 +334,12 @@ export function InvestigateClient() {
                       className="rounded-md border border-edge px-4 py-2 text-sm text-cream transition-colors hover:border-muted"
                     >
                       Download report JSON
+                    </a>
+                    <a
+                      href={`/api/investigations/${encodeURIComponent(record.requestId)}/receipt`}
+                      className="rounded-md border border-edge px-4 py-2 text-sm text-cream transition-colors hover:border-muted"
+                    >
+                      Download evidence receipt
                     </a>
                     <button
                       type="button"

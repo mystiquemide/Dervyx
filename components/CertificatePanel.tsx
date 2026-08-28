@@ -71,6 +71,26 @@ export function CertificatePanel({
           swap events{" "}
           <span className={verdict.text}>({m.ratioPercent})</span> via shared unknown roots
         </Row>
+        <Row label="Attribution ledger">
+          <div className="space-y-2.5">
+            {report.attributionLedger
+              .filter((entry) => entry.swapEvents > 0)
+              .map((entry) => (
+                <div key={entry.bucket} className="grid grid-cols-[1fr_auto] gap-3 text-xs">
+                  <div>
+                    <p className="text-cream">{entry.label}</p>
+                    <p className="mt-0.5 leading-relaxed text-faint">{entry.description}</p>
+                  </div>
+                  <span className={`whitespace-nowrap font-mono ${entry.countsTowardAnomalyShare ? "text-anomaly" : "text-muted"}`}>
+                    {entry.swapEvents}/{m.denominator} · {entry.ratioPercent}
+                  </span>
+                </div>
+              ))}
+            <p className="border-t border-edge/60 pt-2 text-xs leading-relaxed text-faint">
+              Counterfactual: {m.attributedSwapEvents}/{m.denominator} events had any accepted funding path before root policy; {m.numerator}/{m.denominator} remain in the anomaly share after exclusions and cluster rules.
+            </p>
+          </div>
+        </Row>
         <Row label="Coverage">
           <span className="font-mono">{pct(c.attributionCoverageBps)}</span> attributed ({c.tradersAttributed}/
           {c.originsTotal} origins), funding <span className="text-cream">{c.fundingStatus}</span>

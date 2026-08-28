@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { getAddress } from "viem";
 import { z } from "zod";
 
@@ -17,6 +17,7 @@ const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 const investigationModes = ["live", "cached", "recorded"] as const;
 
 export type InvestigationMode = (typeof investigationModes)[number];
+export type ExampleId = "anomaly" | "control";
 export type InvestigationState =
   | "SCOPED"
   | "INGESTING"
@@ -30,6 +31,7 @@ export interface ScopeInput {
   endBlock: number;
   chainId: number;
   mode: InvestigationMode;
+  exampleId?: ExampleId;
   configVersion: string;
   idempotencyKey: string;
 }
@@ -123,6 +125,7 @@ const inputSchema = z
     endBlock: decimalInteger,
     chainId: decimalInteger,
     mode: z.enum(investigationModes),
+    exampleId: z.enum(["anomaly", "control"]).optional(),
     configVersion: z
       .string()
       .trim()
@@ -159,6 +162,7 @@ function canonicalScope(input: ScopeInput): string {
     endBlock: input.endBlock,
     chainId: input.chainId,
     mode: input.mode,
+    ...(input.exampleId !== undefined ? { exampleId: input.exampleId } : {}),
     configVersion: input.configVersion,
   });
 }
@@ -176,7 +180,8 @@ export function normalizeScopeRequest(
     return { ok: false, issues: schemaIssues(parsed.error) };
   }
 
-  const value = parsed.data;
+  const { exampleId, ...requiredFields } = parsed.data;
+  const value: ScopeInput = exampleId === undefined ? requiredFields : { ...requiredFields, exampleId };
   let checksumToken: string;
   try {
     checksumToken = getAddress(value.token);
@@ -208,6 +213,9 @@ export function normalizeScopeRequest(
   }
 
   const issues: ValidationIssue[] = [];
+  if (value.exampleId !== undefined && value.mode !== "cached") {
+    issues.push(issue("INVALID_EXAMPLE", "exampleId", "Example IDs are only valid for cached example runs."));
+  }
   if (value.chainId !== BASE_CHAIN_ID) {
     issues.push(issue("WRONG_CHAIN", "chainId", "Only Base Mainnet (chain ID 8453) is supported."));
   }
@@ -244,6 +252,9 @@ export type EvidenceStartResult =
   | { kind: "not_found" };
 
 export class ScopeStore {
+  static readonly MAX_RECORDS = 64;
+  static readonly RETENTION_MS = 30 * 60 * 1000;
+
   private readonly byIdempotencyKey = new Map<
     string,
     { scopeHash: string; record: ScopeRecord }
@@ -251,7 +262,30 @@ export class ScopeStore {
 
   private readonly byRequestId = new Map<string, ScopeRecord>();
 
+  private remove(requestId: string): void {
+    const record = this.byRequestId.get(requestId);
+    if (!record) return;
+    this.byRequestId.delete(requestId);
+    this.byIdempotencyKey.delete(record.idempotencyKey);
+  }
+
+  private prune(now: Date): void {
+    const nowMs = now.getTime();
+    for (const [requestId, record] of this.byRequestId) {
+      const createdMs = Date.parse(record.createdAt);
+      if (!Number.isFinite(createdMs) || nowMs - createdMs > ScopeStore.RETENTION_MS) {
+        this.remove(requestId);
+      }
+    }
+    while (this.byRequestId.size >= ScopeStore.MAX_RECORDS) {
+      const oldest = [...this.byRequestId.values()].sort((left, right) => left.createdAt.localeCompare(right.createdAt))[0];
+      if (!oldest) break;
+      this.remove(oldest.requestId);
+    }
+  }
+
   create(input: ScopeInput, scopeHash: string, now = new Date()): ScopeCreateResult {
+    this.prune(now);
     const existing = this.byIdempotencyKey.get(input.idempotencyKey);
     if (existing) {
       if (existing.scopeHash === scopeHash) {
@@ -267,7 +301,7 @@ export class ScopeStore {
       };
     }
 
-    const requestId = `inv_${sha256(`${input.idempotencyKey}:${scopeHash}`).slice(0, 24)}`;
+    const requestId = `inv_${randomBytes(16).toString("hex")}`;
     const record: ScopeRecord = {
       ...input,
       requestId,
@@ -281,11 +315,13 @@ export class ScopeStore {
     return { kind: "created", record };
   }
 
-  get(requestId: string): ScopeRecord | undefined {
+  get(requestId: string, now = new Date()): ScopeRecord | undefined {
+    this.prune(now);
     return this.byRequestId.get(requestId);
   }
 
-  startEvidence(requestId: string): EvidenceStartResult {
+  startEvidence(requestId: string, now = new Date()): EvidenceStartResult {
+    this.prune(now);
     const record = this.byRequestId.get(requestId);
     if (!record) return { kind: "not_found" };
     if (record.state === "EVIDENCE_READY") return { kind: "complete", record };

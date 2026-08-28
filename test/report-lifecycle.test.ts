@@ -229,7 +229,7 @@ test("report endpoint returns REPORT_NOT_READY when evidence carries no funding"
   t.after(() => server.close());
 
   const record = await drive(baseUrl, "cert-nofunding-001");
-  assert.equal(record.state, "EVIDENCE_READY");
+  assert.equal(record.state, "INSUFFICIENT_DATA");
   assert.equal(record.report, undefined);
 
   const reportResponse = await fetch(`${baseUrl}/api/investigations/${record.requestId}/report`);

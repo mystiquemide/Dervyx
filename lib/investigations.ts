@@ -1,15 +1,22 @@
 import { normalizeScopeRequest, ScopeStore, type EvidenceSnapshot } from "../src/scope.js";
+import { LiveRunGate } from "../src/limits.js";
 import { createDefaultEvidenceRunner, type EvidenceRunner } from "../src/evidence.js";
 import { certifyEvidence, verifyReport, type DervyxReport } from "../src/report.js";
 import { branchAdapterFromEnv, chooseBranch, type BranchModelAdapter, type BranchSummary } from "../src/branch.js";
-import { anomalyEvidence as exampleEvidence } from "./sample";
+import { anomalyEvidence as exampleEvidence, cleanEvidence as controlEvidence } from "./sample";
 
 // Module-level singletons persist across route invocations within one running server
 // process (and survive dev HMR via globalThis). Same in-memory model as the engine server.
-type EngineGlobals = { __dvxStore?: ScopeStore; __dvxRunner?: EvidenceRunner };
+type EngineGlobals = {
+  __dvxStore?: ScopeStore;
+  __dvxRunner?: EvidenceRunner;
+  __dvxLiveRunGate?: LiveRunGate;
+};
 const globals = globalThis as unknown as EngineGlobals;
 export const store: ScopeStore = globals.__dvxStore ?? (globals.__dvxStore = new ScopeStore());
 const runner: EvidenceRunner = globals.__dvxRunner ?? (globals.__dvxRunner = createDefaultEvidenceRunner());
+
+export const liveRunGate: LiveRunGate = globals.__dvxLiveRunGate ?? (globals.__dvxLiveRunGate = new LiveRunGate());
 
 export { normalizeScopeRequest, verifyReport };
 export type { DervyxReport };
@@ -38,7 +45,7 @@ export async function runEvidence(requestId: string): Promise<void> {
     let adapter: BranchModelAdapter | undefined = branchAdapterFromEnv();
 
     if (record.mode === "cached") {
-      evidence = exampleEvidence;
+      evidence = record.exampleId === "control" ? controlEvidence : exampleEvidence;
       adapter = undefined;
     } else {
       const result = await runner.run(record);
@@ -81,7 +88,11 @@ export async function runEvidence(requestId: string): Promise<void> {
       store.attachBranch(requestId, decision);
       store.attachReport(requestId, certificate);
     } catch {
-      store.completeEvidence(requestId, evidence);
+      store.failEvidence(requestId, {
+        code: "CERTIFICATION_FAILED",
+        message: "Evidence was read but could not be certified for this scope.",
+        retryable: false,
+      });
     }
   } catch {
     store.failEvidence(requestId, {

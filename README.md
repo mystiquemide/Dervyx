@@ -2,7 +2,7 @@
 
 Dervyx is a read-only Base investigation agent for launchpad and exchange listing analysts. Give it one token and one fixed block window. It traces funding relationships behind observed swap activity, separates known infrastructure roots, and produces a certificate that another reviewer can verify by hash.
 
-[Open Dervyx](https://dervyx.159.69.241.122.sslip.io/) · [Run an investigation](https://dervyx.159.69.241.122.sslip.io/investigate) · [Check status](https://dervyx.159.69.241.122.sslip.io/status)
+[Open Dervyx](https://dervyx.159.69.241.122.sslip.io/) · [Run an investigation](https://dervyx.159.69.241.122.sslip.io/investigate) · [Run the paired proof](https://dervyx.159.69.241.122.sslip.io/compare) · [Agent contract](https://dervyx.159.69.241.122.sslip.io/api/agent) · [Check status](https://dervyx.159.69.241.122.sslip.io/status)
 
 ![Dervyx landing page](./public/screenshots/landing.png)
 
@@ -16,24 +16,42 @@ A token can show large volume while many trading wallets share a recent funding 
 2. **Read** canonical Uniswap v4 swap events and ERC-20 funding transfers.
 3. **Trace** funding relationships up to two hops.
 4. **Separate** known exchange, bridge, router, and market-maker roots from unknown roots.
-5. **Certify** the observed share, coverage, exclusions, evidence links, and canonical JSON hash.
-6. **Replay** the report in the browser or from the command line.
+5. **Ledger** every observed swap as unknown coordination, known infrastructure, attributed but unclustered, or unattributed.
+6. **Certify** the observed share, coverage, exclusions, evidence links, and canonical JSON hash.
+7. **Replay** the report in the browser or from the command line.
 
 The optional model component may choose an allowlisted investigation branch from a sanitized summary. The deterministic engine owns every number, root classification, and verdict.
 
 ## Product flow
 
-![Dervyx investigation page](./public/screenshots/investigate.png)
+![Dervyx paired proof page](./public/screenshots/investigate.png)
 
 The live tool supports:
 
 - Live Base RPC reads with provider mode shown explicitly
-- An instant offline example using the same deterministic engine
+- A paired anomaly/control proof using the same deterministic engine and thresholds
 - Source-linked evidence and BaseScan transaction links
 - Downloadable JSON certificates
+- Downloadable counterfactual evidence receipts
 - Browser replay and hash verification
+- A machine-readable read-only agent contract at `/api/agent`
 - Retry and narrower-range guidance for incomplete evidence
+- Explicitly bounded verified fixture scopes that fail closed when unsupported
 - Explicit `ANOMALY`, `CLEAN`, `UNKNOWN_ROOTS`, and `INSUFFICIENT_DATA` states
+
+## The counterfactual funding ledger
+
+Dervyx does not hide legitimate connected activity behind a single score. Every certificate shows
+what happened before and after the root policy:
+
+- **Shared unknown roots** remain in the anomaly share.
+- **Known infrastructure** stays visible but is excluded when the taxonomy has a sourced match.
+- **Attributed, not clustered** activity has a funding path but does not meet the coordination rule.
+- **Unattributed origins** remain outside the numerator when no accepted path was found.
+
+The [paired proof](https://dervyx.159.69.241.122.sslip.io/compare) runs an anomaly fixture and a
+known-router control with the same thresholds. The only meaningful change is the funding topology.
+That makes the verdict inspectable as a policy decision, not a mysterious risk score. See the [proof walkthrough](./docs/DEMO.md) for the exact run and verification sequence.
 
 ## Evidence contract
 
@@ -83,19 +101,22 @@ The current release has been verified with:
 
 - `npm run typecheck`
 - `npm run typecheck:web`
-- `npm test`, 55 tests passing
+- `npm test`, 61 tests passing
 - `npm run build`
-- `npm audit --omit=dev --audit-level=high`
+- `npm audit --audit-level=high`
 - Live `/api/health`, `/status`, and `/investigate` checks
-- Browser completion of the instant example flow
+- Browser completion of the paired anomaly/control proof
 - Browser replay verification of the generated certificate
+- `npm run verify:report -- report.json` for fresh-clone report replay
 
 ## Honest limitations
 
 - Base mainnet is the first supported chain.
 - The default provider is a public RPC fallback and is labeled as such.
 - The primary workflow is read-only. Dervyx does not connect a wallet, sign, send transactions, or move funds.
-- The example mode is synthetic but clearly labeled and runs through the same engine. It is not live-chain evidence.
+- The paired example mode is synthetic but clearly labeled and runs through the same engine. It is not live-chain evidence.
+- The current adapter supports a bounded set of verified Base token/pool fixtures. Unsupported token scopes fail closed rather than guessing a pool.
+- Configured RPC URLs are redacted from evidence, reports, receipts, and normalized source metadata.
 - Funding coverage can be partial. Partial evidence never becomes a clean result.
 - A running process keeps request state in memory. Restarting the server clears active investigation records.
 - The product reports observable relationships. Human reviewers decide what those relationships mean.
@@ -108,14 +129,22 @@ Dervyx is prepared for the [Orion Builder Hackathon](https://orionagents.org/hac
 
 ```text
 app/                 Next.js pages and API route handlers
+app/compare/         Paired anomaly/control proof route
 components/          Product UI and certificate components
 lib/                 Next.js orchestration and labeled examples
-src/                 Deterministic scope, evidence, graph, report, and engine code
+src/                 Deterministic scope, evidence, graph, report, receipt, and engine code
 test/                Engine and HTTP tests
 fixtures/            Phase 0 input manifest
 scripts/              Replay and report-audit utilities
 public/screenshots/  Verified product screenshots
 ```
+
+## Agent contract
+
+`GET /api/agent` returns the current machine-readable contract: Base chain identity, supported
+states and verdicts, read-only guarantees, input/output tools, and known limitations. It is a
+small HTTP/JSON interoperability surface for other agents and does not claim a private Orion SDK
+integration.
 
 ## License
 

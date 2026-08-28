@@ -3,9 +3,9 @@
 ## Project
 
 - Plan file: PROJECT_PLAN.md
-- Status: P8-CP-001 complete; Dervyx is running as a durable Next.js 16.3.3 service on 127.0.0.1:4760 behind Caddy at https://dervyx.159.69.241.122.sslip.io. The public release has a README, safe environment template, deployment notes, verified screenshots, canonical social metadata, 55 passing engine tests, passing web and engine typechecks, a passing production build, zero npm audit findings, and a verified 75.96-second real UI demo.
+- Status: P8-CP-002 complete; Dervyx is running as a durable Next.js 16.3.3 service on 127.0.0.1:4760 behind Caddy at https://dervyx.159.69.241.122.sslip.io. The public release now has a counterfactual funding ledger, a paired anomaly/control proof, portable evidence receipts, a machine-readable agent contract, bounded public lifecycle controls, RPC URL redaction, 61 passing engine tests, passing web and engine typechecks, a passing production build, zero npm audit findings, and a verified 66.50-second paired UI demo.
 - Current phase: Phase 8 - Orion submission preparation
-- Current checkpoint: P8-CP-001 (complete); the owner-controlled Orion wallet/signature/ignition submission remains pending
+- Current checkpoint: P8-CP-002 (complete); code/docs publishing is approved, while Orion wallet/signature/ignition submission remains intentionally untouched
 - Last updated: 2026-08-28
 - Last agent: Executor
 - Planning confidence: 75/100 (Medium)
@@ -94,7 +94,7 @@ This state file records execution history, current status, decisions, deviations
 
 ### In Progress
 
-- Orion submission preparation is complete through the non-financial boundary. The owner has not authorized the wallet signature or approximately $10 ETH ignition fee in this session.
+- The adversarial gap pass is complete through the non-financial boundary. Code and docs are ready to publish; the owner has not authorized or requested any Orion submission, wallet signature, or approximately $10 ETH ignition fee.
 - Native-ETH funding still comes only from Blockscout internal transfers as best-effort enrichment; on the P3-CP-004 live run it was largely unavailable (BaseUnc 23 source errors, control 21 source errors), while the canonical ERC-20 source returned zero errors for both fixtures.
 
 ### Blocked
@@ -107,7 +107,7 @@ This state file records execution history, current status, decisions, deviations
 
 ### Not Started
 
-- Public hosting of the verified demo video, if a separate video URL is desired.
+- Public hosting of the verified paired demo video, if a separate video URL is desired.
 - Orion entry submission and post-submission read-back.
 - Phase 2 provider capability and quota verification.
 - Broader-than-top-30 origin coverage and native-ETH funding beyond best-effort Blockscout.
@@ -906,7 +906,7 @@ This state file records execution history, current status, decisions, deviations
   - Added founder narration, a clean kiosk-mode capture, thumbnail, and production notes. The demo is clearly labeled where it uses the instant offline example; a separate production API smoke verified the live Base path.
   - Prepared the Orion submission draft with the differentiated funding-root and replayable-certificate positioning. Dervyx is not present in the current public Orion entries feed.
   - Confirmed Vercel is not the deployment path: no Dervyx Vercel project exists and `dervyx.vercel.app` returns `DEPLOYMENT_NOT_FOUND`.
-- Files or assets changed: local demo artifacts under `/root/.hermes/output/dervyx-demo/`; `PROJECT_STATE.md` records the release state. No demo binary was added to the public repository.
+- Files or assets changed: local demo artifacts kept outside the public repository; `PROJECT_STATE.md` records the release state. No demo binary was added to the public repository.
 - Commands or checks run: kiosk Chrome plus Xvfb/FFmpeg capture; FFprobe; representative frame visual review; Orion submission-form inspection; Vercel project and alias checks; current release SHA/CI/public-route verification.
 - Test results: Dervyx release commit `e18824407348e5fc91473ebb9c44f398c5de574f` is on GitHub; its CI run completed successfully; production remains active and healthy.
 - Acceptance criteria verified: real UI demo under three minutes; landing and investigation screenshots contain no browser chrome or popup; demo certificate and replay confirmation are readable; Orion draft fields are prepared; no wallet or payment action was performed.
@@ -915,6 +915,36 @@ This state file records execution history, current status, decisions, deviations
 - Known issues: A public video-host URL is not created; the Orion form still needs an owner-approved Discord or Telegram URL, submitter email, registered wallet, wallet signature, and approximately $10 ETH ignition transaction.
 - Blockers: Owner-controlled Orion wallet/signature/ignition step remains intentionally pending.
 - Next exact action: Provide the missing community link and public demo URL if desired, then review the prepared form and explicitly authorize the wallet/signature/paid submission separately.
+
+### P8-CP-002: Research-led gap repair and paired-proof release
+
+- Status: Complete through code, docs, and local/public read-only verification
+- Date: 2026-08-28
+- Agent: Executor
+- Phase: Phase 8 - Orion submission preparation
+- Objective: Apply the hackathon gap-review framework after fresh research, remove the generic token-dashboard feel, close trust-boundary gaps, and create a demo path that makes the Dervyx distinction undeniable.
+- Research basis:
+  - Orion's authoritative page says partner judges score usefulness, execution, and originality from 0 to 10, informed by AI vetting and community upvotes. A demo link is optional but strongly recommended.
+  - The live entries feed contains 17 entries. The strongest adjacent submissions include Orion Sentinel (MCP security monitoring), VETTE (agent claim and wallet auditing), Delivered (paid-output proof), Termproof (milestone proof), Living Alpha Council (multi-agent evidence research), BaseScout (generic Base token research), and PayTack (multi-tool token and wallet forensics).
+  - Chainalysis and Forta research confirm that manipulated volume, shared funding sources, and Base token risk are real problems. The research also shows that generic risk scores and red anomaly graphs are already crowded.
+- Work completed:
+  - Added `attributionLedger` and all-attributed counterfactual share to every deterministic report. The ledger assigns observed events to shared unknown roots, known infrastructure, attributed but unclustered activity, or unattributed residuals, without double-counting.
+  - Added `/compare`, the paired anomaly/control route. It runs the same scope, thresholds, and engine twice, changing only the funding topology.
+  - Added portable `/receipt` downloads and `/api/agent` machine-readable contract metadata for other agents.
+  - Added random 128-bit request IDs, 30-minute read/write TTL pruning, a 64-record store bound, and a two-run live capacity gate with retryable `429` behavior.
+  - Redacted configured RPC URLs at the chain, evidence, report, and receipt boundaries so provider credentials cannot enter public JSON or source metadata.
+  - Changed report certification failures to fail closed instead of exposing `EVIDENCE_READY` without a report.
+  - Added cached anomaly/control IDs and a public README proof path that names the counterfactual funding ledger instead of presenting Dervyx as a generic SaaS risk dashboard.
+  - Re-recorded the local demo around the paired proof. The final local MP4 is 66.50 seconds, 1920x1080, narrated, kiosk-mode, and excludes browser chrome and popups. It is intentionally not committed.
+- Files or assets changed: `src/report.ts`, `src/receipt.ts`, `src/limits.ts`, `src/security.ts`, `src/scope.ts`, `src/chain.ts`, `src/evidence.ts`, `src/server.ts`, `lib/investigations.ts`, `lib/sample.ts`, `lib/types.ts`, `app/api/agent/route.ts`, `app/api/investigations/[id]/receipt/route.ts`, `app/api/investigations/[id]/evidence/route.ts`, `app/compare/page.tsx`, `components/PairedProofClient.tsx`, `components/CertificatePanel.tsx`, `components/InvestigateClient.tsx`, `components/Nav.tsx`, `app/page.tsx`, tests, README, and this state file. Demo binaries remain outside the public repository.
+- Commands or checks run: `npm run typecheck`; `npm run typecheck:web`; `npm test`; `npm run build`; `npm audit --audit-level=high`; local paired API smoke; local manifest, receipt, and configured-URL redaction checks; public `/compare`, `/api/agent`, and root checks; kiosk demo capture, FFProbe, and frame review.
+- Test results: 61/61 tests passed; web and engine typechecks passed; Next 16.3.3 build passed with framework TypeScript validation; npm audit reported 0 vulnerabilities; local anomaly case reported `10/16` unknown-root events and `6/16` known-router exclusions; local control case reported `0/4` anomaly events and `4/4` known-router exclusions; both receipts replay-verified; configured provider URL redaction tests passed.
+- Acceptance criteria verified: same-engine paired proof is visible; known infrastructure is shown and excluded rather than erased; report buckets sum to the denominator; certificate failure cannot masquerade as ready; public request IDs are non-deterministic and bounded; receipt and agent contracts are exposed; demo is under 180 seconds and contains no browser shell; no demo binary is staged.
+- Security checks: no credentials, wallet values, or payment actions added; configured RPC URLs are redacted before evidence/report/receipt exposure; live gate protects the public RPC path; request IDs no longer derive from predictable user keys; TTL and capacity bounds are tested; all new paths remain read-only.
+- Decisions: Do not add a Vercel deployment merely for parity with competitors. The existing VPS/Caddy path is stable, while the live RPC job is a poor serverless fit. Use Vercel only if a future bounded cached/receipt deployment is deliberately separated from live ingestion.
+- Known issues: The current Base adapter remains a bounded verified fixture scope; native-ETH funding remains best-effort; process-local records reset on service restart; the demo has no public video URL; Orion submission remains deliberately untouched.
+- Blockers: None for code/docs publishing. External Orion submission is not part of this checkpoint by explicit user instruction.
+- Next exact action: Run the independent release review on the changed tree, then commit and push code, tests, docs, and screenshots only. Do not commit or push demo video files.
 
 ## Known Issues
 

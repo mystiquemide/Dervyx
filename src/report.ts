@@ -3,6 +3,7 @@ import { getAddress, type Address } from "viem";
 
 import type { EvidenceSnapshot, InvestigationMode } from "./scope.js";
 import type { FundingEdge, FundingGraphSnapshot, RootClass } from "./graph.js";
+import { redactProviderUrl } from "./security.js";
 
 export const REPORT_SCHEMA_VERSION = "dervyx-report-v1";
 export const DEFAULT_REPORT_CONFIG_VERSION = "phase4-report-v1";
@@ -107,6 +108,10 @@ export interface ReportMetric {
   units: string;
   numerator: number;
   denominator: number;
+  /** Swap events with any accepted funding path, before root-policy exclusion. */
+  attributedSwapEvents: number;
+  attributedRatioBps: number;
+  attributedRatioPercent: string;
   ratioBps: number;
   ratioPercent: string;
   window: { startBlock: number; endBlock: number };
@@ -142,6 +147,7 @@ export interface KnownRootExclusion {
   address: Address;
   class: Exclude<RootClass, "unknown">;
   label?: string;
+  linkedSwapEvents: number;
   linkedTraderCount: number;
   source?: string;
 }
@@ -158,11 +164,29 @@ export interface ReportEvidenceEdge {
   transactionHash: string;
 }
 
+export type AttributionBucket =
+  | "unknown_coordination"
+  | "known_infrastructure"
+  | "attributed_unclustered"
+  | "unattributed";
+
+export interface AttributionLedgerEntry {
+  bucket: AttributionBucket;
+  label: string;
+  description: string;
+  swapEvents: number;
+  ratioBps: number;
+  ratioPercent: string;
+  traderCount: number;
+  countsTowardAnomalyShare: boolean;
+}
+
 export interface DervyxReport {
   schema: string;
   identity: ReportIdentity;
   verdict: { label: ReportVerdictLabel; rationaleCode: string; statement: string };
   metric: ReportMetric;
+  attributionLedger: AttributionLedgerEntry[];
   coverage: ReportCoverage;
   coordinationClusters: CoordinationCluster[];
   knownRootExclusions: KnownRootExclusion[];
@@ -347,11 +371,99 @@ export function buildReport(input: ReportInput): ReportCertificate {
     .map((bucket) => ({
       address: bucket.address,
       class: bucket.class,
+      linkedSwapEvents: [...bucket.traders].reduce((sum, key) => sum + swapsFor(key), 0),
       linkedTraderCount: bucket.traders.size,
       ...(bucket.label !== undefined ? { label: bucket.label } : {}),
       ...(bucket.source !== undefined ? { source: bucket.source } : {}),
     }))
     .sort((left, right) => addressSort(left.address, right.address));
+
+  // The ledger is the report's counterfactual: it accounts for every observed swap event
+  // exactly once, then makes the root policy visible. Unknown coordination has precedence
+  // over a known-root path when a trader has both, so the displayed buckets always sum to
+  // the denominator without double-counting a trader's observed activity.
+  const knownRootTraders = new Set<string>();
+  for (const bucket of knownRoots.values()) {
+    for (const trader of bucket.traders) knownRootTraders.add(trader);
+  }
+  const knownInfrastructureTraders = new Set(
+    [...knownRootTraders].filter((trader) => !coordinatedTraders.has(trader)),
+  );
+  const attributedUnclusteredTraders = new Set(
+    [...attributedTraders].filter(
+      (trader) => !coordinatedTraders.has(trader) && !knownInfrastructureTraders.has(trader),
+    ),
+  );
+  const unattributedTraders = new Set(
+    [...swapByOrigin.keys()].filter((trader) => !attributedTraders.has(trader)),
+  );
+  const swapEventsForTraders = (traders: Set<string>): number =>
+    [...traders].reduce((sum, trader) => sum + swapsFor(trader), 0);
+  const ledgerEntry = (
+    bucket: AttributionBucket,
+    label: string,
+    description: string,
+    traders: Set<string>,
+    countsTowardAnomalyShare: boolean,
+    swapEventsOverride?: number,
+  ): AttributionLedgerEntry => {
+    const swapEvents = swapEventsOverride ?? swapEventsForTraders(traders);
+    const ratioBpsForBucket = denominator > 0 ? Math.round((swapEvents * 10_000) / denominator) : 0;
+    return {
+      bucket,
+      label,
+      description,
+      swapEvents,
+      ratioBps: ratioBpsForBucket,
+      ratioPercent: bpsToPercent(ratioBpsForBucket),
+      traderCount: traders.size,
+      countsTowardAnomalyShare,
+    };
+  };
+  const assignedSwapEvents =
+    swapEventsForTraders(coordinatedTraders) +
+    swapEventsForTraders(knownInfrastructureTraders) +
+    swapEventsForTraders(attributedUnclusteredTraders);
+  if (assignedSwapEvents > denominator) {
+    throw new ReportError(
+      "INCONSISTENT_COUNTS",
+      "Attributed swap events exceed the total swap-event denominator.",
+    );
+  }
+  const unattributedSwapEvents = Math.max(0, denominator - assignedSwapEvents);
+  const attributionLedger = [
+    ledgerEntry(
+      "unknown_coordination",
+      "Shared unknown roots",
+      "Counted in the anomaly share because the sampled traders converge on an unknown root.",
+      coordinatedTraders,
+      true,
+    ),
+    ledgerEntry(
+      "known_infrastructure",
+      "Known infrastructure",
+      "Visible in the evidence, but excluded from the anomaly share by the sourced taxonomy.",
+      knownInfrastructureTraders,
+      false,
+    ),
+    ledgerEntry(
+      "attributed_unclustered",
+      "Attributed, not clustered",
+      "Has an accepted funding path but does not meet the coordination threshold.",
+      attributedUnclusteredTraders,
+      false,
+    ),
+    ledgerEntry(
+      "unattributed",
+      "Unattributed origins",
+      "No accepted funding path was available in the sampled evidence.",
+      unattributedTraders,
+      false,
+      unattributedSwapEvents,
+    ),
+  ];
+  const attributedSwapEvents = swapEventsForTraders(attributedTraders);
+  const attributedRatioBps = denominator > 0 ? Math.round((attributedSwapEvents * 10_000) / denominator) : 0;
 
   let numerator = 0;
   for (const key of coordinatedTraders) numerator += swapsFor(key);
@@ -440,6 +552,9 @@ export function buildReport(input: ReportInput): ReportCertificate {
       units: "swap_events",
       numerator,
       denominator,
+      attributedSwapEvents,
+      attributedRatioBps,
+      attributedRatioPercent: bpsToPercent(attributedRatioBps),
       ratioBps,
       ratioPercent: bpsToPercent(ratioBps),
       window: { startBlock: input.startBlock, endBlock: input.endBlock },
@@ -450,6 +565,7 @@ export function buildReport(input: ReportInput): ReportCertificate {
         minCoverageForVerdictBps: config.minCoverageForVerdictBps,
       },
     },
+    attributionLedger,
     coverage: {
       attributionCoverageBps,
       fundingStatus: input.fundingStatus,
@@ -470,7 +586,7 @@ export function buildReport(input: ReportInput): ReportCertificate {
     sources: {
       apiBase: input.apiBase,
       fundingSourceMode: input.fundingSourceMode,
-      rpcUrl: input.rpcUrl,
+      rpcUrl: redactProviderUrl(input.rpcUrl, input.providerMode),
       swapProviderMode: input.providerMode,
     },
   };

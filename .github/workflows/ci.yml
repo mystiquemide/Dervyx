@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.23.0
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck engine
+        run: npm run typecheck
+
+      - name: Typecheck web
+        run: npm run typecheck:web
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build production app
+        run: npm run build
+
+      - name: Audit dependencies
+        run: npm audit --audit-level=high

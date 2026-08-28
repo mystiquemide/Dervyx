@@ -221,14 +221,14 @@ export const investigationPageHtml = `<!doctype html>
           const branch = record.branch;
           if (branch) {
             fields.certBranch.textContent = branch.branch + ' (maxHops ' + branch.plan.maxHopsConsidered + ', focus ' + branch.plan.focus + ')';
-            fields.certBranchMode.textContent = branch.mode + (branch.fallbackReason ? ' (' + branch.fallbackReason + ')' : '') + (branch.rationale ? ' — ' + branch.rationale : '');
+            fields.certBranchMode.textContent = branch.mode + (branch.fallbackReason ? ' (' + branch.fallbackReason + ')' : '') + (branch.rationale ? ' : ' + branch.rationale : '');
             fields.certSummaryHash.textContent = branch.summaryHash;
           } else {
-            fields.certBranch.textContent = '—';
-            fields.certBranchMode.textContent = '—';
-            fields.certSummaryHash.textContent = '—';
+            fields.certBranch.textContent = '-';
+            fields.certBranchMode.textContent = '-';
+            fields.certSummaryHash.textContent = '-';
           }
-          fields.certVerdict.textContent = r.verdict.label + ' — ' + r.verdict.rationaleCode;
+          fields.certVerdict.textContent = r.verdict.label + ' : ' + r.verdict.rationaleCode;
           fields.certShare.textContent = r.metric.numerator + '/' + r.metric.denominator + ' swap events (' + r.metric.ratioPercent + ') linked to shared unknown roots';
           fields.certCoverage.textContent = (r.coverage.attributionCoverageBps / 100).toFixed(2) + '% (' + r.coverage.tradersAttributed + '/' + r.coverage.originsTotal + ' origins attributed)';
           fields.certClusters.textContent = String(r.coordinationClusters.length);

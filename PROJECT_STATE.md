@@ -3,10 +3,10 @@
 ## Project
 
 - Plan file: PROJECT_PLAN.md
-- Status: Phase 6 complete and live-verified; the agent branch is wired into the lifecycle (model choice applies a bounded maxHopsConsidered in the certificate, trace on record + page), numbers/verdict stay engine-owned, and a genuine Groq qwen3.6-27b end-to-end run returned mode=model (chose early_stop, differing from the deterministic fallback)
-- Current phase: Phase 7 - The complete workflow is credible and judge-ready
-- Current checkpoint: P7-CP-001 (not started)
-- Last updated: 2026-08-18
+- Status: P7-CP-003 complete; Dervyx is running as a durable Next.js 16.3.3 service on 127.0.0.1:4760 behind Caddy at https://dervyx.159.69.241.122.sslip.io. The public release has a README, safe environment template, deployment notes, verified screenshots, canonical social metadata, 55 passing engine tests, passing web and engine typechecks, a passing production build, and zero npm audit findings.
+- Current phase: Phase 8 - Orion submission preparation
+- Current checkpoint: P7-CP-003 (complete); final timed UI demo and Orion wallet/signature/ignition submission remain pending
+- Last updated: 2026-08-28
 - Last agent: Executor
 - Planning confidence: 75/100 (Medium)
 
@@ -47,16 +47,16 @@ This state file records execution history, current status, decisions, deviations
 
 ## Current Objective
 
-- Phase: Phase 7 - The complete workflow is credible and judge-ready
-- Checkpoint: P7-CP-001 (not started)
-- Goal: Deliver the one-page investigation experience end to end - evidence-first UI, clear live/cached/recorded mode, certificate with branch trace, download + replay reachable from the same surface, health status, and a timed demo path - so a clean browser completes both an anomaly and a clean control. Optional attestation is omitted unless verified and useful. Preserve determinism, unknown-by-default taxonomy, candidate-only anomaly language, public-fallback labeling, the read-only boundary, and never claim proof of wash trading.
-- Expected files or assets: UI/usability/accessibility/responsive refinement over the existing primary page and endpoints, a report/replay path already present, and demo assets. Durable public report storage is gated by DEC-004 (ISSUE-004). Preserve all prior phases.
+- Phase: Phase 8 - Orion submission preparation
+- Checkpoint: P8-CP-001 (pending owner-controlled wallet/signature/fee action)
+- Goal: Prepare the Orion Builder Hackathon entry without claiming unsupported native Orion runtime behavior. The public Dervyx app, repository, screenshots, live proof, and release metadata are ready; the remaining external action is the owner-controlled Orion submission.
+- Expected files or assets: final timed live UI demo, submission copy, website/repository/social/community links, and a read-back of the Orion entry after submission. No wallet secret or ignition authorization may enter the repository.
 - Acceptance criteria (plan Phase 7):
   - A clean browser completes an anomaly and a clean control.
   - All visible actions work; live/cached/recorded mode is clear.
   - Download/replay is reachable from the same surface.
   - Optional attestation is omitted if not verified/useful.
-- Required verification: Manual usability/accessibility/responsive pass, timed demo, and frame review.
+- Required verification: final multi-width browser pass, timed demo, portal read-back, and exact submission links.
 
 ## Current Status
 
@@ -89,14 +89,17 @@ This state file records execution history, current status, decisions, deviations
 - P6-CP-001 genuine agent branch decision engine: allowlisted branches, a sanitized model-visible summary + hash, an env-configured OpenAI-compatible adapter, and `chooseBranch` with structured-output validation, timeout, injection handling, and deterministic fallback - ten unit tests, no number or verdict touched. DEC-006 resolved (DEC-EXEC-012).
 - P6-CP-002 branch wired into the lifecycle: `runEvidence` builds a sanitized summary from a baseline certificate, calls `chooseBranch`, and applies the branch's bounded `maxHopsConsidered` in the final certificate (branch is recorded in report identity); the branch decision is attached to the record and shown on the page. State flips to EVIDENCE_READY only once the branch + report are attached. Verified end to end against a genuine Groq qwen3.6-27b call (mode=model, chose early_stop) with numbers/verdict engine-owned.
 - Phase 6 exit gate passed: agent behavior is observable (branch, source/mode, summary hash, rationale on record + page) and useful in the real actor flow (branch changes the deterministic hop depth), verified with a live model run.
+- P7-CP-001 judge-ready front end: a dark-first Next.js 15 + Tailwind 3 site with a marketing landing at / (hero with a real engine-computed example certificate, feature strip, certificate, interactive funding graph, verdict tabs, workflow with a real Unsplash image, a reserved dark Verify/proof section, agent branch, sources, final CTA) and the working tool at /investigate. API route handlers reuse the deterministic engine; a full live run returned a replay-verified ANOMALY certificate. Landing/pricing and testimonial sections were intentionally omitted (no billing, no fabricated proof).
+- P7-CP-003 production recovery and release packaging completed: diagnosed the 502 as a missing listener on the Caddy upstream port, installed an enabled systemd service, upgraded Next to 16.3.3 with the webpack build path, removed the obsolete typecheck workaround, fixed canonical social metadata, added public README/environment/deployment docs and verified screenshots, and completed live browser and API proof checks.
 
 ### In Progress
 
+- Final timed live UI demo and Orion submission preparation remain open. The owner has not authorized the Orion wallet signature or approximately $10 ETH ignition fee in this session.
 - Native-ETH funding still comes only from Blockscout internal transfers as best-effort enrichment; on the P3-CP-004 live run it was largely unavailable (BaseUnc 23 source errors, control 21 source errors), while the canonical ERC-20 source returned zero errors for both fixtures.
 
 ### Blocked
 
-- Orion's `.ai` domain remains a placeholder; the `.org` surface exposes submission/listing behavior but its official relationship to the supplied brief and any native runtime contract is unverified.
+- The Orion wallet signature and paid ignition step are owner-controlled and intentionally not performed. The official hackathon page is verified, but no unsupported native Orion runtime integration is claimed.
 - The Phase 0 fixture pair is frozen as an anomaly candidate and control candidate; final ANOMALY/CLEAN verdicts require the deterministic engine.
 - The Phase 0 taxonomy is source-by-source with unknown-by-default policy; no bulk third-party allowlist is redistributed.
 - Production provider and quota contract is not selected; public Base RPC remains an explicitly labeled read-only fallback and is not a production-capability claim.
@@ -104,6 +107,8 @@ This state file records execution history, current status, decisions, deviations
 
 ### Not Started
 
+- Final timed live UI demo and frame review.
+- Orion entry submission and post-submission read-back.
 - Phase 2 provider capability and quota verification.
 - Broader-than-top-30 origin coverage and native-ETH funding beyond best-effort Blockscout.
 - Broader funding coverage and sourced root-taxonomy population.
@@ -111,7 +116,7 @@ This state file records execution history, current status, decisions, deviations
 - Web investigation flow.
 - Negative/failure path.
 - Optional attestation.
-- Deployment, README, demo, and submission.
+- Durable public report storage, timed demo, and Orion submission.
 
 ## Checkpoint Log
 
@@ -702,6 +707,62 @@ This state file records execution history, current status, decisions, deviations
 - Amendments: None.
 - Next exact action: Begin Phase 7 - deliver the judge-ready one-page workflow (usability/accessibility/responsive pass, clear mode labels, download/replay from the same surface, health status, timed demo).
 
+### P7-CP-001: Judge-ready Next.js front end (landing + tool)
+
+- Status: Complete
+- Date: 2026-08-18
+- Agent: Executor
+- Phase: Phase 7 - The complete workflow is credible and judge-ready
+- Objective: Deliver a credible, dark-first product surface: a marketing landing plus the working tool, on the chosen Next.js + Tailwind stack, reusing the deterministic engine so nothing is mocked.
+- Requirements covered: FR-015, FR-016, NFR-005, NFR-006 (front-end scope; formal responsive/accessibility review and timed demo remain).
+- User decisions applied: dark-first theme; landing at `/` with the tool on a separate route `/investigate`; access/pricing section removed (no billing); proof/testimonials omitted (no fabricated proof); one real Unsplash image; Next.js + Tailwind; build all screens in one pass and verify functional before review.
+- Work completed:
+  - Next.js 15 App Router + Tailwind 3 added at the repo root. Split the TypeScript config: `tsconfig.engine.json` keeps the engine build and 55 tests on NodeNext; a new `tsconfig.json` serves Next. `next.config.mjs` sets an explicit `@` alias, a `.js`->`.ts` `extensionAlias` so API routes can import the engine, and pins the workspace root.
+  - Six API route handlers (`/api/health`, `POST /api/investigations`, `GET /{id}`, `POST /{id}/evidence`, `GET /{id}/report`, `POST /{id}/report/verify`) reuse the deterministic engine through `lib/investigations.ts` (a process-singleton `ScopeStore` + `runEvidence` mirroring the engine server, including the EVIDENCE_READY-after-attach ordering).
+  - `lib/sample.ts` computes three real certificates (ANOMALY, CLEAN, UNKNOWN_ROOTS) over clearly labeled example inputs via the engine; the landing renders their real numbers and hashes server-side.
+  - Landing `/`: hero + example certificate, six-item feature strip, certificate contents, interactive funding graph, editorial statement, verdict tabs (three real certificates), workflow with a locally hosted Unsplash image, a reserved dark Verify/proof section with real canonical JSON + SHA-256, the agent-branch trace, sources, and a final CTA. Dark palette (#101416 + teal #91d8d0), hairline borders, no cards-as-decoration, restrained CSS reveals with a reduced-motion off switch, favicon from the Dervyx mark.
+  - Tool `/investigate`: the full real flow (scope form -> create -> evidence -> poll -> certificate + branch trace -> download -> replay/verify -> retry and narrower-range recovery), all against the API.
+- Files or assets changed: `app/**`, `components/**`, `lib/**`, `types/css.d.ts`, `public/workflow.jpg`, `next.config.mjs`, `postcss.config.mjs`, `tailwind.config.ts`, `tsconfig.json`, `tsconfig.engine.json`, `package.json`, `package-lock.json`, `.gitignore`, and a one-line guard in `src/funding.ts`. `PROJECT_STATE.md`.
+- Commands or checks run: `npm run typecheck` (engine); `npm run typecheck:web`; `npm test` (55 pass); `npm run build` (next build succeeds); production `next start` smoke; a full live end-to-end investigation through the running server; em-dash scan; `npm audit --omit=dev --audit-level=high`.
+- Test results: Engine typecheck and web typecheck clean under TypeScript 5.7.2. Fifty-five engine tests pass. `next build` compiles all routes. Live e2e: created -> INGESTING (~165s public RPC) -> EVIDENCE_READY, verdict ANOMALY (162/426 = 38.03%, coverage 17.06%, funding partial), certificate downloaded and replay-verified (ok true, matches stored). SSR landing renders real report and transaction hashes. No em dashes in app/components/lib.
+- Acceptance criteria verified: a clean request completes a real investigation to a downloadable, replay-verifiable certificate; live/cached/recorded mode is labeled (cached/recorded read "not connected"); download and replay are reachable from the same surface; the not-proof disclaimer is present; no wallet/transaction UI exists.
+- Security checks: read-only throughout; no secrets in the repo; the model key stays in env; API routes leak no internal errors; CSS reveals respect reduced motion.
+- Decisions: DEC-EXEC-013.
+- Deviations: DEV-002 (installed TypeScript 5.7.2 in place of the pinned native 7.0.2 for Next compatibility; `typescript.ignoreBuildErrors` set because types are verified independently by the typecheck scripts).
+- Amendments: None.
+- Risks introduced: The in-memory store is per server process (same as the engine server); a restart clears requests. Live reads depend on public Base RPC latency and coverage, so the same token can differ run to run (this run reached ANOMALY where an earlier lower-coverage run was UNKNOWN_ROOTS); each result is still deterministic for its evidence snapshot and replay-verifiable.
+- Known issues: ISSUE-012 (three high-severity advisories in `sharp`/libvips, a transitive optional Next image dependency not on the used path since the landing uses plain img; the only offered fix is a breaking Next 16 upgrade, deferred).
+- Blockers: None. BLK-004 gates production/provider claims only.
+- Next exact action: Manual responsive pass at 320/375/390/430/768/1024/1440 and an accessibility/keyboard/contrast review of both routes, then a timed sub-180-second demo walkthrough, to close the Phase 7 exit gate.
+
+### P7-CP-002: UX hardening from the live audit (A-grade pass)
+
+- Status: Complete
+- Date: 2026-08-18
+- Agent: Executor
+- Phase: Phase 7 - The complete workflow is credible and judge-ready
+- Objective: Resolve every website-ux-audit finding and raise the live site to production quality without touching determinism, the read-only boundary, or the honest verdict/mode language.
+- Work completed:
+  - Blank-without-JS fixed by progressive enhancement: landing content is visible by default and only starts hidden under `@media (scripting: enabled)`, never under reduced motion, so the page is fully readable with JavaScript disabled and to crawlers.
+  - Security headers added via `next.config.mjs` `headers()`: a same-origin Content-Security-Policy (frame-ancestors/object-src none, img/font 'self' data:, style/script 'self' 'unsafe-inline', 'unsafe-eval' only in dev, connect-src 'self', upgrade-insecure-requests), Strict-Transport-Security (2y, preload), X-Frame-Options DENY, X-Content-Type-Options nosniff, Referrer-Policy strict-origin-when-cross-origin, Permissions-Policy (camera/microphone/geolocation/browsing-topics off), and Cross-Origin-Opener-Policy same-origin.
+  - Contrast raised: `faint` moved from #5f6a6b (3.32:1, fails WCAG AA) to #83908f (about 5.6:1 on ink, >=4.9:1 on surface/raise); added a visible teal focus-visible ring for links, buttons, and summaries.
+  - Accessible mobile navigation: Nav is now a client component with a hamburger disclosure (aria-expanded/controls, Escape to close, body scroll lock, links plus CTA); desktop nav unchanged.
+  - Real instant Example path: mode `cached` now produces a real, replay-verifiable certificate instantly and offline (a labeled example dataset run through the same deterministic engine and a deterministic branch); the evidence route resolves cached inline with no polling; the dead "recorded (not connected)" option was removed and "cached" relabeled "Example (instant, offline)"; added a "Load an instant example" button so a result no longer requires the 2-3 minute live wait.
+  - Live-run feedback: the tool shows an elapsed mm:ss timer, a reduced-motion-safe indeterminate sweep, an honest checklist of the operations in flight, and a "up to about three minutes" note, removing the bare-status dead time.
+  - Social cards: `app/opengraph-image.tsx` and `app/twitter-image.tsx` generate a real 1200x630 brand PNG via `next/og`; added OpenGraph/Twitter metadata and `metadataBase` (env `NEXT_PUBLIC_SITE_URL`).
+  - Status surface: replaced the raw `/api/health` footer link with a styled `/status` page (operational board plus read-only guarantees) that still links to the JSON for machines.
+- Files or assets changed: `app/globals.css`, `next.config.mjs`, `tailwind.config.ts`, `components/Nav.tsx`, `components/Footer.tsx`, `components/InvestigateClient.tsx`, `lib/investigations.ts`, `lib/sample.ts` (export example evidence), `app/api/investigations/[id]/evidence/route.ts`, `app/layout.tsx`, `app/status/page.tsx`, `app/opengraph-image.tsx`, `app/twitter-image.tsx`, `lib/og.tsx`. `PROJECT_STATE.md`.
+- Commands or checks run: `npm test`; `npm run typecheck:web`; `npm run build`; production `next start` on 4760; live header curl; `/status` and `/opengraph-image` HTTP checks; no-JS hero grep; end-to-end cached-example flow via the API; public-tunnel re-verification.
+- Test results: 55/55 engine tests pass; web typecheck clean; `next build` compiled 9 routes (including `/opengraph-image`, `/twitter-image`, `/status`); no em dashes in app/components/lib. Live: all seven security headers present; `/status` 200; `/opengraph-image` image/png 54,276 bytes; hero copy present in no-JS HTML; cached example scope 201 -> instant EVIDENCE_READY, verdict ANOMALY 62.50%, branch pair_history (deterministic fallback), report replay/verify ok=true (hash 639bcf7620...); the public tunnel serves the new build with CSP and X-Frame-Options passing through.
+- Acceptance criteria verified: landing readable without JS; all security headers present; text contrast passes AA; mobile nav present and accessible; no dead mode options; an instant result path exists; social cards render.
+- Security checks: still read-only; no secrets in the repo; CSP and framing locked to same-origin; the model key stays in env.
+- Decisions: DEC-EXEC-014.
+- Deviations: None new; DEV-002 stands.
+- Risks introduced: The CSP uses `'unsafe-inline'` for script/style because Next injects inline bootstrap without a nonce (ISSUE-013); this is standard and acceptable, and can be tightened later with nonce middleware.
+- Known issues: ISSUE-013 (CSP `'unsafe-inline'`); ISSUE-012 (sharp advisory) unchanged. The Next.js app plus this UX pass remains uncommitted (last commit f6ae149 covered phases 0-6 only).
+- Blockers: None. BLK-004 gates production/provider claims only.
+- Next exact action: On the user's go-ahead, commit the Next.js app plus this UX pass, then run the manual multi-width responsive/keyboard walk and a timed sub-180-second demo to formally close the Phase 7 exit gate.
+
 ## Decisions Made During Execution
 
 | ID | Date | Decision | Reason | Plan impact |
@@ -722,6 +783,8 @@ This state file records execution history, current status, decisions, deviations
 | DEC-EXEC-010 | 2026-08-18 | Define the anomaly metric as observed cluster-linked swap-event share (numerator = swaps from wallets sharing an unknown two-hop funding root, denominator = total swaps), gate verdicts on that share plus attribution coverage, and identify reports by sorted-key canonical JSON + SHA-256 | Swap-event count is fully deterministic and unit-consistent with no price/decimals assumption; coordination must derive from shared UNKNOWN roots so known infrastructure is excluded (BR-002); integer/bps-only canonical JSON keeps the hash stable across runs (NFR-004) | Sets Phase 4 report fields and thresholds; thresholds are versioned into report identity so future tuning creates a new identity (BR-008); no plan amendment |
 | DEC-EXEC-011 | 2026-08-18 | Certify evidence in the server orchestration layer (not the store), expose it via a read-only report download route, add `connect-src 'self'` to the page CSP, and close Phase 4 on golden positive proof plus a wired lifecycle and honest live audit without tuning thresholds to force a live ANOMALY | Keeps the store pure and the domain/transport boundary clean; the browser flow needs same-origin connect; the plan's Phase 4 verification is golden reports, and forcing a live verdict would violate the incomplete-coverage-no-verdict invariant | Completes Phase 4 with no plan amendment; live ANOMALY demonstration deferred to deeper coverage/sourced taxonomy (Phase 5/7, ISSUE-011) |
 | DEC-EXEC-012 | 2026-08-18 | Resolve DEC-006 by making the Phase 6 model integration a genuine but provider-agnostic OpenAI-compatible chat-completions adapter configured via env (`DERVYX_MODEL_*`), stateless with the key kept local, and restrict the model to choosing an allowlisted branch only | The user chose a genuine model; an env-configured OpenAI-compatible endpoint works with any provider (OpenAI, OpenRouter, Mesh, local) without vendor lock or embedded secrets, and confining the model to branch selection keeps numbers and the verdict deterministic (NFR-003) and injection-safe | Unblocks Phase 6; no plan amendment; live model verification deferred until env credentials are set |
+| DEC-EXEC-013 | 2026-08-18 | Build the Phase 7 front end as a dark-first Next.js 15 + Tailwind 3 app at the repo root that reuses the deterministic engine through API route handlers, with a marketing landing at / and the tool at /investigate, dropping access/pricing and testimonial sections | User-selected stack and layout; reusing the engine (not rewriting) preserves determinism and the 55 tests; there is no billing and no real testimonials, so those sections would be fabricated | Delivers Phase 7 product surface; the engine server (`src/server.ts`) is retained for tests; no plan amendment |
+| DEC-EXEC-014 | 2026-08-18 | Harden the Phase 7 site from the UX audit: progressive-enhancement reveals (visible without JS), full security headers with a same-origin CSP, WCAG-AA faint-text contrast and focus-visible rings, an accessible mobile nav, a real instant offline Example (cached) path replacing the dead recorded option, elapsed/progress feedback for live runs, generated OG/Twitter cards, and a styled /status page | The audit found real defects (blank without JS, no headers, failing contrast, no mobile nav, dead options, bare-status dead time, no social cards) that are all fixable without touching determinism, the read-only boundary, or the honest verdict/mode language | Raises the product surface to A-grade; no plan amendment; the engine is unchanged and the 55 tests still pass |
 
 ## Plan Deviations
 
@@ -729,6 +792,8 @@ This state file records execution history, current status, decisions, deviations
 |---|---|---|---|---|---|
 | None | 2026-08-18 | No execution deviation recorded | No change | Planning completed before implementation | Not applicable |
 | DEV-001 | 2026-08-18 | Page CSP inherited `default-src 'none'` for connections | Added `connect-src 'self'` to the served-page CSP | The browser investigation flow must reach the same-origin API; the prior policy would block `fetch` in a browser | Minor local security-control adjustment; no scope/architecture/acceptance change; recorded in P4-CP-002 |
+| DEV-002 | 2026-08-18 | Repo pinned the TypeScript 7.0.2 native (Go) compiler | Temporarily installed TypeScript 5.7.2 and disabled Next's redundant typecheck for the Next 15 frontend | Next.js 15 could not call the TS7 native compiler's JS API for its build-time type check or route-type generation | Superseded by DEV-003 after the Next 16.3.3 upgrade; historical record retained |
+| DEV-003 | 2026-08-28 | Keep the Next 15/TypeScript workaround in the frontend | Upgrade Next to 16.3.3, use `next build --webpack`, remove the obsolete `eslint` and `ignoreBuildErrors` settings, and let Next validate types | The patched dependency tree resolves the audit findings and the current build passes framework validation while preserving the custom webpack resolver | Applied and verified locally and through the reloaded production service |
 
 ## Verification Evidence
 
@@ -788,6 +853,45 @@ This state file records execution history, current status, decisions, deviations
 | P6-CP-001 | Live model smoke (Groq `qwen/qwen3.6-27b` and Gemini 2.5 Flash; operator keys, not stored) | Pass | Genuine mode=model branch decision with sanitized rationale from both providers after reasoning-safe JSON extraction; the brittle `response_format` path was removed |
 | P6-CP-002 | `npm run typecheck` and branch-lifecycle tests | Pass | Fifty-five tests passed (two new): maxHops work-path/identity effect (early_stop drops the two-hop cluster and changes the hash) and lifecycle branch-trace attachment |
 | P6-CP-002 | Genuine end-to-end lifecycle + Groq `qwen/qwen3.6-27b` smoke (operator key, not stored) | Pass | mode=model, model chose `early_stop` (differing from the deterministic fallback), applied as maxHops 1 in report identity; verdict ANOMALY engine-owned; EVIDENCE_READY only surfaced with the report attached |
+| P7-CP-001 | `npm run typecheck`, `npm run typecheck:web`, `npm test` (TypeScript 5.7.2) | Pass | Engine and web typecheck clean; 55 engine tests pass |
+| P7-CP-001 | `npm run build` (next build) | Pass | All routes compiled: / and /investigate (static shells), six /api/* dynamic handlers, /icon.svg |
+| P7-CP-001 | Production `next start` smoke | Pass | /api/health returns the Dervyx shape; landing SSR renders real report + tx hashes and /workflow.jpg; /investigate renders the form; create returns SCOPED; verify and report return 404 before a report exists |
+| P7-CP-001 | Full live end-to-end through the running server | Pass | created -> INGESTING (~165s public RPC) -> EVIDENCE_READY; verdict ANOMALY 162/426 (38.03%), coverage 17.06% partial, branch deeper_funding fallback; certificate downloaded and replay-verified (ok true, matchesStored true) |
+| P7-CP-001 | Em-dash scan (app/components/lib) and `npm audit --omit=dev --audit-level=high` | Pass with note | No em dashes after fixing two metadata titles; 3 high advisories are transitive in sharp/libvips (ISSUE-012), not on the used path |
+| P7-CP-002 | `npm test`, `npm run typecheck:web`, `npm run build` | Pass | 55 engine tests pass; web typecheck clean; build compiled 9 routes including /opengraph-image, /twitter-image, and /status |
+| P7-CP-002 | Live security headers on `http://localhost:4760/` | Pass | Content-Security-Policy, Strict-Transport-Security, X-Frame-Options DENY, X-Content-Type-Options nosniff, Referrer-Policy, Permissions-Policy, and Cross-Origin-Opener-Policy all present |
+| P7-CP-002 | No-JS / crawler readability | Pass | Hero copy present in server HTML; the reveal now hides only under `@media (scripting: enabled)` and never under reduced motion |
+| P7-CP-002 | Social cards | Pass | `/opengraph-image` returns image/png at 54,276 bytes; OpenGraph/Twitter metadata and metadataBase wired |
+| P7-CP-002 | `/status` page | Pass | HTTP 200 styled status board; the footer no longer links to raw JSON |
+| P7-CP-002 | Instant Example (cached) end-to-end | Pass | scope 201 -> evidence 200 EVIDENCE_READY with no polling; verdict ANOMALY 62.50%, branch pair_history (deterministic fallback); report replay/verify ok=true, hash 639bcf7620... |
+| P7-CP-002 | Public HTTPS via Caddy reverse-proxy | Pass | Added an additive `dervyx.159.69.241.122.sslip.io` vhost (Caddyfile backed up, `caddy validate` = Valid, graceful `caddy reload`, other sites untouched); app rebound to 127.0.0.1:4760; the HTTPS URL returns 200 with all security headers, /status 200, OG image, no-JS hero, and an end-to-end cached example replay ok=true (flaky free localtunnel retired) |
+
+### P7-CP-003: Production recovery, dependency hardening, and public release packaging
+
+- Status: Complete
+- Date: 2026-08-28
+- Agent: Executor
+- Phase: Phase 7 exit and Phase 8 submission preparation
+- Objective: Restore the public Dervyx service, remove the stale production metadata, resolve the transitive dependency audit findings without a blind force upgrade, and package the current frontend for public review.
+- Work completed:
+  - Reproduced the reported public `502`: Caddy was healthy and correctly routed to `127.0.0.1:4760`, but no Dervyx process was listening.
+  - Installed and enabled `/etc/systemd/system/dervyx.service`, running the built Next.js server on loopback port `4760` with automatic restart.
+  - Replaced the localhost social-metadata fallback with the canonical public URL `https://dervyx.159.69.241.122.sslip.io`.
+  - Upgraded Next.js from `15.5.23` to `16.3.3`, retained the custom resolver through `next build --webpack`, removed the obsolete `eslint` config and old `ignoreBuildErrors` workaround, and let Next's own TypeScript validation run.
+  - Added the public `README.md`, safe `.env.example`, `docs/DEPLOYMENT.md`, and verified landing/investigation screenshots under `public/screenshots/`.
+  - Fixed the certificate header wrapping issue found at 320px and verified zero horizontal overflow on both routes at 320, 375, 390, 430, 768, 1024, and 1440px.
+  - Verified the official Orion Builder Hackathon page and confirmed that Dervyx is not currently listed in the Orion entries feed. No wallet signature or paid ignition submission was performed.
+- Files or assets changed: `README.md`, `.env.example`, `docs/DEPLOYMENT.md`, `public/screenshots/landing.png`, `public/screenshots/investigate.png`, `app/layout.tsx`, `next.config.mjs`, `package.json`, `package-lock.json`, `tsconfig.json`, `.gitignore`, and `PROJECT_STATE.md`; the systemd unit is an external deployment file.
+- Commands or checks run: `npm install next@16.3.3 --save-exact`; `npm run typecheck`; `npm run typecheck:web`; `npm test`; `npm run build`; `npm audit --audit-level=high`; `git diff --check`; Caddy and systemd status checks; `/api/health`, `/`, `/status`, and `/investigate` checks; browser instant-example flow and report replay; one real live Base investigation through the production API; Vercel project and alias checks.
+- Test results: 55/55 engine tests passed; engine and web typechecks passed; Next 16.3.3 production build passed with framework TypeScript validation; full npm audit reported 0 vulnerabilities; live investigation reached `EVIDENCE_READY` with 426 events, `ANOMALY`, and `replay_ok=true` for report hash `e8412f6613dbb482c55798e4a6fb6a36ed934e0d7e814eda08fd33901b40c9aa`.
+- Acceptance criteria verified: public root 200; `/api/health` 200 with Base chain 8453; `/status` and `/investigate` 200; canonical `og:url` and social-image URLs use the public host; systemd active and enabled; instant example reaches `EVIDENCE_READY`; browser replay confirms the canonical hash; real live production path reaches a replay-verifiable certificate; no Vercel Dervyx project exists and the active deployment path is VPS/Caddy.
+- Security checks: no secrets added; `.env` remains ignored; read-only product boundary preserved; canonical same-origin CSP and security headers remain present; the three Next 15 transitive advisories are resolved by the patched Next 16.3.3 dependency tree.
+- Decisions: Keep the current VPS/Caddy deployment rather than creating a Vercel project; keep `--webpack` because the application imports NodeNext `.js` specifiers from the deterministic engine; keep the public Base fallback explicitly labeled; do not claim an Orion-native runtime API.
+- Deviations: DEV-003 supersedes the earlier Next 15/TypeScript workaround. Next 16.3.3 is now the tested framework; `next build` performs TypeScript validation directly.
+- Risks introduced: The process-local investigation store still clears active records after a service restart; the public fallback remains bounded and explicitly labeled; the final timed UI recording and Orion external submission are not yet complete.
+- Known issues: Native-ETH funding remains best-effort through Blockscout; provider/quota selection remains open; CSP still uses `'unsafe-inline'` because nonce middleware is not implemented; Orion wallet/signature/ignition action is owner-controlled.
+- Blockers: The owner has not authorized the Orion wallet signature or approximately $10 ETH ignition fee; this checkpoint stops before that irreversible external action.
+- Next exact action: Capture a sub-180-second live UI demo, prepare the final Orion submission payload, and stop for owner confirmation immediately before wallet signing and the paid ignition transaction.
 
 ## Known Issues
 
@@ -804,12 +908,14 @@ This state file records execution history, current status, decisions, deviations
 | ISSUE-009 | Medium | Canonical evidence lifecycle uses the public fallback and production provider/quotas are not selected | Keep `public_fallback` visible and do not claim production readiness | Resolve provider methods, limits, terms, privacy, and fallback policy before public deployment |
 | ISSUE-010 | Medium | Canonical `eth_getLogs` now provides reliable, block-verified ERC-20 funding edges, but native-ETH funding still depends on unstable Blockscout internal transfers and full-universe coverage remains open | Keep graph output partial and source-labeled per source; never treat missing edges as zero; rely on canonical ERC-20 as the reliable layer | Select a trace/internal-transfer-capable provider for native-ETH funding or freeze the bounded canonical result as approved scope |
 | ISSUE-011 | Medium | The certificate engine is wired end to end, but under bounded top-30-origin coverage the live fixtures classify as UNKNOWN_ROOTS (BaseUnc 7.51% share / 17% coverage; control 6.02% / 12%); a live ANOMALY demonstration needs deeper origin/hop coverage or sourced taxonomy | Rely on golden report tests for the ANOMALY path; keep live results as honest non-verdicts and never force a label on partial coverage | Broaden origin/hop coverage or populate sourced root taxonomy (and/or resolve native-ETH funding via BLK-004) before expecting a live ANOMALY |
+| ISSUE-012 | Resolved | Next 15's transitive `postcss` and `sharp` advisories were present in the pre-release dependency tree | Keep the tested Next 16.3.3 lockfile and rerun the full audit after dependency changes | Reopen only if a future dependency update reintroduces a high-severity finding |
+| ISSUE-013 | Low | The Content-Security-Policy uses `'unsafe-inline'` for `script-src`/`style-src` because Next injects inline bootstrap scripts and critical CSS without a nonce (`'unsafe-eval'` is added only in development) | Everything else is locked to same-origin, framing/objects/base-uri are denied, and the app makes only same-origin fetches | Optionally add nonce-based CSP via middleware to drop `'unsafe-inline'` before production |
 
 ## Blockers
 
 | ID | Description | Impact | Required resolution |
 |---|---|---|---|
-| BLK-001 | Orion native runtime and official `.org`/`.ai` relationship remain unverified; an observed submission/listing candidate exists | Blocks native Orion code and sponsor-native claims, not the self-contained Base core | Obtain authoritative organizer/platform evidence before Orion-specific work or submission claims |
+| BLK-001 | Orion native runtime API remains unverified; the official Orion Builder Hackathon page and submission rules are now verified | Blocks native Orion code and sponsor-native runtime claims, not the self-contained Base core or external submission preparation | Make no native runtime claim unless the platform publishes and the entry actually uses a verified contract |
 | BLK-002 | Resolved in CP-001: BaseUnc anomaly candidate and USDT/USDC same-path control are frozen | Final labels remain blocked until the deterministic engine runs | Implement graph/metrics/replay and preserve candidate-only wording |
 | BLK-003 | Resolved for first adapter in CP-001: Uniswap v4 selected; taxonomy remains unknown-by-default and source-by-source | Broad root classification and redistribution remain limited | Add only source-backed roots and retain unknown addresses |
 | BLK-004 | Production provider and quota contract is not selected | Production-capability and deployment claims remain blocked; bounded read-only proof is allowed through the public fallback | Verify provider methods, limits, terms, privacy, and fallback before public deployment |
@@ -868,4 +974,4 @@ Do not store hidden reasoning, casual narration, every command, token usage, or 
 
 ## Next Exact Action
 
-Begin Phase 7 (the complete workflow is credible and judge-ready) with P7-CP-001: a usability/accessibility/responsive pass over the primary page so a clean browser completes both an anomaly and a clean control; make live/cached/recorded mode unmistakable; keep download + replay reachable from the same surface; add a health/status affordance; and prepare a timed (<=180s) demo path. Omit optional attestation unless verified and useful; durable public report storage stays gated by DEC-004. Preserve determinism, unknown-by-default taxonomy, candidate-only anomaly language, public-fallback labeling, the read-only boundary, and never claim proof of wash trading.
+On the user's go-ahead, commit the Next.js app plus the P7-CP-002 UX-hardening pass with the MystiqueMide identity and no AI co-author trailer (last commit f6ae149 covered phases 0-6 only), then run the manual multi-width responsive and keyboard pass at 320/375/390/430/768/1024/1440 across the landing (/), the tool (/investigate), and /status, and a timed sub-180-second demo (landing to an instant Example certificate and to a live investigation with a downloaded, replay-verified certificate) to formally close the Phase 7 exit gate. Keep the 55 engine tests and `next build` green and preserve determinism, honest mode labeling, the read-only boundary, and the no-proof-of-wash-trading language. Optionally set `DERVYX_MODEL_BASE_URL`/`_API_KEY`/`_NAME` to demo the genuine model branch (mode=model), and consider nonce-based CSP (ISSUE-013) before any production deployment.

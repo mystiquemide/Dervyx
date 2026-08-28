@@ -1,4 +1,4 @@
-# Dervyx — Win Plan
+# Dervyx: Win Plan
 
 ## 1. Executive Verdict
 

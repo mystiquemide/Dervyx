@@ -325,7 +325,7 @@ export async function readNativeFundingTransfers(options: {
       return { origin, error: { address: origin.address, code: "FUNDING_PROVIDER_UNAVAILABLE" as const, message: "Funding source could not be read from Blockscout." } };
     }));
     for (const item of results) {
-      if ("error" in item) {
+      if ("error" in item && item.error) {
         errors.push(item.error);
         continue;
       }

@@ -3,9 +3,9 @@
 ## Project
 
 - Plan file: PROJECT_PLAN.md
-- Status: P8-CP-002 complete; Dervyx is running as a durable Next.js 16.3.3 service on 127.0.0.1:4760 behind Caddy at https://dervyx.159.69.241.122.sslip.io. The public release now has a counterfactual funding ledger, a paired anomaly/control proof, portable evidence receipts, a machine-readable agent contract, bounded public lifecycle controls, RPC URL redaction, 61 passing engine tests, passing web and engine typechecks, a passing production build, zero npm audit findings, and a verified 66.50-second paired UI demo.
+- Status: P8-CP-003 complete; Dervyx is running as a durable Next.js 16.3.3 service on 127.0.0.1:4760 behind Caddy at https://dervyx.159.69.241.122.sslip.io. The published repository now has a counterfactual funding ledger, a paired anomaly/control proof, portable evidence receipts, a machine-readable agent contract, bounded public lifecycle controls, RPC URL redaction, 61 passing engine tests, passing web and engine typechecks, a passing production build, zero npm audit findings, and a verified 66.50-second paired UI demo.
 - Current phase: Phase 8 - Orion submission preparation
-- Current checkpoint: P8-CP-002 (complete); code/docs publishing is approved, while Orion wallet/signature/ignition submission remains intentionally untouched
+- Current checkpoint: P8-CP-003 (complete); code/docs are published, while Orion wallet/signature/ignition submission remains intentionally untouched
 - Last updated: 2026-08-28
 - Last agent: Executor
 - Planning confidence: 75/100 (Medium)
@@ -94,7 +94,7 @@ This state file records execution history, current status, decisions, deviations
 
 ### In Progress
 
-- The adversarial gap pass is complete through the non-financial boundary. Code and docs are ready to publish; the owner has not authorized or requested any Orion submission, wallet signature, or approximately $10 ETH ignition fee.
+- The adversarial gap pass and GitHub publication are complete through the non-financial boundary. The owner has not authorized or requested any Orion submission, wallet signature, or approximately $10 ETH ignition fee.
 - Native-ETH funding still comes only from Blockscout internal transfers as best-effort enrichment; on the P3-CP-004 live run it was largely unavailable (BaseUnc 23 source errors, control 21 source errors), while the canonical ERC-20 source returned zero errors for both fixtures.
 
 ### Blocked
@@ -945,6 +945,21 @@ This state file records execution history, current status, decisions, deviations
 - Known issues: The current Base adapter remains a bounded verified fixture scope; native-ETH funding remains best-effort; process-local records reset on service restart; the demo has no public video URL; Orion submission remains deliberately untouched.
 - Blockers: None for code/docs publishing. External Orion submission is not part of this checkpoint by explicit user instruction.
 - Next exact action: Run the independent release review on the changed tree, then commit and push code, tests, docs, and screenshots only. Do not commit or push demo video files.
+
+### P8-CP-003: Published release after gap repair
+
+- Status: Complete
+- Date: 2026-08-28
+- Agent: Executor
+- Phase: Phase 8 - Orion submission preparation
+- Objective: Publish the research-led paired-proof release without publishing demo video binaries or submitting to Orion.
+- Work completed: Committed and pushed the counterfactual funding ledger, paired proof route, receipt endpoint, agent manifest, lifecycle hardening, RPC URL redaction, tests, README, demo walkthrough, state record, and clean proof screenshots.
+- Release commit: `dda546edc53d3f5aaf31c0a102b7a1f18e1ad9f7` (`feat: add counterfactual funding proof`).
+- Remote verification: `origin/main` matches the release SHA; GitHub Actions CI completed successfully for the pushed commit.
+- Demo boundary: The paired MP4, narration, thumbnail, and ZIP remain local artifacts and are not tracked by Git.
+- Deployment boundary: No additional production reload was performed after the local-only confirmation. The earlier live build already exposed `/compare` and `/api/agent`; the final repository contains the RPC-redaction patch for the next explicitly authorized reload.
+- Security: No secrets, wallet values, private filesystem paths, or irreversible Orion actions were added or performed.
+- Next exact action: If desired later, reload the VPS from the published SHA and separately provide a public video URL. Do not submit to Orion unless the owner explicitly reverses that instruction.
 
 ## Known Issues
 

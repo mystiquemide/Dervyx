@@ -3,9 +3,9 @@
 ## Project
 
 - Plan file: PROJECT_PLAN.md
-- Status: P7-CP-003 complete; Dervyx is running as a durable Next.js 16.3.3 service on 127.0.0.1:4760 behind Caddy at https://dervyx.159.69.241.122.sslip.io. The public release has a README, safe environment template, deployment notes, verified screenshots, canonical social metadata, 55 passing engine tests, passing web and engine typechecks, a passing production build, and zero npm audit findings.
+- Status: P8-CP-001 complete; Dervyx is running as a durable Next.js 16.3.3 service on 127.0.0.1:4760 behind Caddy at https://dervyx.159.69.241.122.sslip.io. The public release has a README, safe environment template, deployment notes, verified screenshots, canonical social metadata, 55 passing engine tests, passing web and engine typechecks, a passing production build, zero npm audit findings, and a verified 75.96-second real UI demo.
 - Current phase: Phase 8 - Orion submission preparation
-- Current checkpoint: P7-CP-003 (complete); final timed UI demo and Orion wallet/signature/ignition submission remain pending
+- Current checkpoint: P8-CP-001 (complete); the owner-controlled Orion wallet/signature/ignition submission remains pending
 - Last updated: 2026-08-28
 - Last agent: Executor
 - Planning confidence: 75/100 (Medium)
@@ -94,7 +94,7 @@ This state file records execution history, current status, decisions, deviations
 
 ### In Progress
 
-- Final timed live UI demo and Orion submission preparation remain open. The owner has not authorized the Orion wallet signature or approximately $10 ETH ignition fee in this session.
+- Orion submission preparation is complete through the non-financial boundary. The owner has not authorized the wallet signature or approximately $10 ETH ignition fee in this session.
 - Native-ETH funding still comes only from Blockscout internal transfers as best-effort enrichment; on the P3-CP-004 live run it was largely unavailable (BaseUnc 23 source errors, control 21 source errors), while the canonical ERC-20 source returned zero errors for both fixtures.
 
 ### Blocked
@@ -107,7 +107,7 @@ This state file records execution history, current status, decisions, deviations
 
 ### Not Started
 
-- Final timed live UI demo and frame review.
+- Public hosting of the verified demo video, if a separate video URL is desired.
 - Orion entry submission and post-submission read-back.
 - Phase 2 provider capability and quota verification.
 - Broader-than-top-30 origin coverage and native-ETH funding beyond best-effort Blockscout.
@@ -893,6 +893,28 @@ This state file records execution history, current status, decisions, deviations
 - Known issues: Native-ETH funding remains best-effort through Blockscout; provider/quota selection remains open; CSP still uses `'unsafe-inline'` because nonce middleware is not implemented; Orion wallet/signature/ignition action is owner-controlled.
 - Blockers: The owner has not authorized the Orion wallet signature or approximately $10 ETH ignition fee; this checkpoint stops before that irreversible external action.
 - Next exact action: Capture a sub-180-second live UI demo, prepare the final Orion submission payload, and stop for owner confirmation immediately before wallet signing and the paid ignition transaction.
+
+### P8-CP-001: Public release, real UI demo, and Orion submission preparation
+
+- Status: Complete through the non-financial boundary
+- Date: 2026-08-28
+- Agent: Executor
+- Phase: Phase 8 - Orion submission preparation
+- Objective: Finish the Dervyx public release, produce a real product demo, verify the Orion entry requirements, and stop before the owner-controlled wallet signature and paid ignition transaction.
+- Work completed:
+  - Created and verified a 75.96-second 1920x1080 real screen recording of the deployed Dervyx landing page, investigation form, instant example, anomaly certificate, and browser replay verification.
+  - Added founder narration, a clean kiosk-mode capture, thumbnail, and production notes. The demo is clearly labeled where it uses the instant offline example; a separate production API smoke verified the live Base path.
+  - Prepared the Orion submission draft with the differentiated funding-root and replayable-certificate positioning. Dervyx is not present in the current public Orion entries feed.
+  - Confirmed Vercel is not the deployment path: no Dervyx Vercel project exists and `dervyx.vercel.app` returns `DEPLOYMENT_NOT_FOUND`.
+- Files or assets changed: local demo artifacts under `/root/.hermes/output/dervyx-demo/`; `PROJECT_STATE.md` records the release state. No demo binary was added to the public repository.
+- Commands or checks run: kiosk Chrome plus Xvfb/FFmpeg capture; FFprobe; representative frame visual review; Orion submission-form inspection; Vercel project and alias checks; current release SHA/CI/public-route verification.
+- Test results: Dervyx release commit `e18824407348e5fc91473ebb9c44f398c5de574f` is on GitHub; its CI run completed successfully; production remains active and healthy.
+- Acceptance criteria verified: real UI demo under three minutes; landing and investigation screenshots contain no browser chrome or popup; demo certificate and replay confirmation are readable; Orion draft fields are prepared; no wallet or payment action was performed.
+- Security checks: no credentials or wallet values were saved; no wallet was connected; no signature was requested; no ignition fee was paid; demo recording uses read-only product paths.
+- Decisions: Use Dervyx's VPS/Caddy deployment for Orion; use the funding-root graph and evidence certificate as the primary differentiation against BaseScout; do not claim an Orion-native runtime API.
+- Known issues: A public video-host URL is not created; the Orion form still needs an owner-approved Discord or Telegram URL, submitter email, registered wallet, wallet signature, and approximately $10 ETH ignition transaction.
+- Blockers: Owner-controlled Orion wallet/signature/ignition step remains intentionally pending.
+- Next exact action: Provide the missing community link and public demo URL if desired, then review the prepared form and explicitly authorize the wallet/signature/paid submission separately.
 
 ## Known Issues
 

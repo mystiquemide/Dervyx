@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
+import { ScrollLink } from "@/components/ScrollLink";
 import { CertificatePanel } from "@/components/CertificatePanel";
 import { VerdictTabs } from "@/components/landing/VerdictTabs";
 import { FundingGraph } from "@/components/landing/FundingGraph";
@@ -72,12 +73,12 @@ export default function LandingPage() {
               >
                 Run the paired proof
               </Link>
-              <a
-                href="#workflow"
+              <ScrollLink
+                targetId="workflow"
                 className="w-full rounded-md border border-edge px-5 py-3 text-center text-sm font-medium text-cream transition-colors duration-200 hover:border-muted sm:w-auto"
               >
                 How it works
-              </a>
+              </ScrollLink>
             </div>
           </Reveal>
 

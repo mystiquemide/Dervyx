@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Mark } from "./Mark";
+import { ScrollLink } from "./ScrollLink";
 
 const REPO = "https://github.com/mystiquemide/Dervyx";
 
@@ -24,8 +25,8 @@ export function Footer() {
             <ul className="mt-4 space-y-3 text-sm text-muted">
               <li><Link href="/investigate" className="transition-colors hover:text-cream">Run an investigation</Link></li>
               <li><Link href="/compare" className="transition-colors hover:text-cream">Run the paired proof</Link></li>
-              <li><a href="/#workflow" className="transition-colors hover:text-cream">How it works</a></li>
-              <li><a href="/#verify" className="transition-colors hover:text-cream">Verify a report</a></li>
+              <li><ScrollLink targetId="workflow" className="transition-colors hover:text-cream">How it works</ScrollLink></li>
+              <li><ScrollLink targetId="verify" className="transition-colors hover:text-cream">Verify a report</ScrollLink></li>
             </ul>
           </div>
 
@@ -33,7 +34,6 @@ export function Footer() {
             <h3 className="text-xs uppercase tracking-widest2 text-faint">Project</h3>
             <ul className="mt-4 space-y-3 text-sm text-muted">
               <li><a href={REPO} target="_blank" rel="noreferrer" className="transition-colors hover:text-cream">GitHub</a></li>
-              <li><a href={`${REPO}#readme`} target="_blank" rel="noreferrer" className="transition-colors hover:text-cream">README</a></li>
               <li><Link href="/status" className="transition-colors hover:text-cream">Status</Link></li>
             </ul>
           </div>

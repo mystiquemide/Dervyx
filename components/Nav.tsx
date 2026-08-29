@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Mark } from "./Mark";
+import { ScrollLink } from "./ScrollLink";
 
 const REPO = "https://github.com/mystiquemide/Dervyx";
 
-const LINKS: { href: string; label: string; external?: boolean }[] = [
-  { href: "/#certificate", label: "Product" },
-  { href: "/#workflow", label: "How it works" },
-  { href: "/#verify", label: "Verify" },
+const LINKS: { href: string; label: string; external?: boolean; targetId?: string }[] = [
+  { href: "/", label: "Product", targetId: "certificate" },
+  { href: "/", label: "How it works", targetId: "workflow" },
+  { href: "/", label: "Verify", targetId: "verify" },
   { href: "/compare", label: "Paired proof" },
   { href: REPO, label: "GitHub", external: true },
 ];
@@ -46,10 +47,14 @@ export function Nav() {
               <a key={link.label} href={link.href} target="_blank" rel="noreferrer" className="transition-colors hover:text-cream">
                 {link.label}
               </a>
-            ) : (
-              <a key={link.label} href={link.href} className="transition-colors hover:text-cream">
+            ) : link.targetId ? (
+              <ScrollLink key={link.label} targetId={link.targetId} className="transition-colors hover:text-cream">
                 {link.label}
-              </a>
+              </ScrollLink>
+            ) : (
+              <Link key={link.label} href={link.href} className="transition-colors hover:text-cream">
+                {link.label}
+              </Link>
             ),
           )}
         </nav>
@@ -104,14 +109,22 @@ export function Nav() {
                     >
                       {link.label}
                     </a>
+                  ) : link.targetId ? (
+                    <ScrollLink
+                      targetId={link.targetId}
+                      onClick={() => setOpen(false)}
+                      className="block py-3.5 text-[15px] text-cream transition-colors hover:text-teal"
+                    >
+                      {link.label}
+                    </ScrollLink>
                   ) : (
-                    <a
+                    <Link
                       href={link.href}
                       onClick={() => setOpen(false)}
                       className="block py-3.5 text-[15px] text-cream transition-colors hover:text-teal"
                     >
                       {link.label}
-                    </a>
+                    </Link>
                   )}
                 </li>
               ))}

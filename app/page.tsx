@@ -12,7 +12,7 @@ const REPO = "https://github.com/mystiquemide/Dervyx";
 const STRIP = [
   ["Deterministic", "Same token and window give the same hash, every time."],
   ["Read-only", "No wallet, no transactions, no signing."],
-  ["Source-linked", "Live evidence edges cite on-chain transactions; fixtures cite reproducible source metadata."],
+  ["Source-linked", "Live evidence edges cite on-chain transactions; saved references show their source."],
   ["Reproducible", "Download the report and replay its hash."],
   ["Honest", "Thin coverage returns a non-verdict, never a forced label."],
   ["Base-native", "Canonical Uniswap v4 swaps and funding transfers."],
@@ -28,7 +28,7 @@ const CONTENTS = [
 ];
 
 const SOURCES = [
-  ["Base RPC", "Public fallback, labeled as such. No private provider claimed."],
+  ["Network access", "Public chain access, with coverage clearly labeled."],
   ["Uniswap v4 PoolManager", "Canonical Swap events as the volume ground truth."],
   ["ERC-20 transfers", "Canonical eth_getLogs as the reliable funding layer."],
   ["Blockscout", "Best-effort native-ETH funding enrichment."],
@@ -87,10 +87,10 @@ export default function LandingPage() {
               <CertificatePanel
                 report={sampleAnomaly.report}
                 reportHash={sampleAnomaly.reportHash}
-                chip="Recorded engine fixture"
+                chip="Saved example"
               />
               <p className="mt-3 text-center text-xs text-faint">
-                A real certificate over an example dataset. The numbers and hash above replay-verify.
+                A saved certificate over a reference scope. The numbers and hash above replay-verify.
               </p>
             </div>
           </Reveal>
@@ -255,8 +255,8 @@ export default function LandingPage() {
             <Reveal>
               <ol className="space-y-6">
                 {[
-                  ["Scope", "One token and a fixed Base block window. You get a reproducible request identity before any chain read."],
-                  ["Evidence", "Canonical Uniswap v4 swaps and the funding transfers behind each trading wallet, over public Base RPC."],
+                  ["Scope", "One token and a fixed block window. You get a reproducible request identity before the review begins."],
+                  ["Evidence", "Observed activity and the funding trail behind each trading wallet, using public chain data."],
                   ["Certificate", "The deterministic engine computes the verdict, the share, coverage, and a stable hash."],
                   ["Verify", "Download the report and replay its hash, in the browser or from the command line."],
                 ].map(([step, body], i) => (

@@ -138,12 +138,12 @@ export function PairedProofClient() {
               mistaken for coordination.
             </p>
             <p className="mt-4 rounded border border-caution/30 bg-caution/5 px-3 py-2 text-xs leading-relaxed text-caution">
-              This proof uses labeled offline fixtures so it is instant and replayable. It is not live-chain evidence.
+              These saved reference cases are instant and repeatable. They illustrate the method; a live review uses the same process on a selected scope.
             </p>
           </div>
           <div className="rounded-md border border-edge px-4 py-3 text-right font-mono text-xs text-faint">
-            <p>chain_id 8453</p>
-            <p className="mt-1">same block window</p>
+            <p>fixed scope</p>
+            <p className="mt-1">same window</p>
             <p className="mt-1">same thresholds</p>
           </div>
         </div>
@@ -205,16 +205,16 @@ export function PairedProofClient() {
           <div className="rounded-lg border border-teal/30 bg-teal/5 p-6">
             <p className="text-xs uppercase tracking-widest2 text-teal">What changed</p>
             <p className="mt-3 max-w-3xl text-[15px] leading-relaxed text-cream">
-              Both cases use the same chain, range, thresholds, and deterministic report engine. Only the funding
-              topology changes. Dervyx keeps the known router visible, excludes it from the anomaly share, and
+              Both cases use the same scope, thresholds, and report logic. Only the funding topology changes. Dervyx
+              keeps the known router visible, excludes it from the anomaly share, and
               leaves the unknown root in the residual evidence for human review.
             </p>
           </div>
           <div className="rounded-lg border border-edge bg-surface p-6">
             <p className="text-xs uppercase tracking-widest2 text-faint">Agent branch trace</p>
             <p className="mt-3 text-sm leading-relaxed text-muted">
-              The branch is allowlisted and recorded before the report is certified. Cached examples use the safe
-              deterministic fallback; live runs may use a configured model, but the engine still owns every number.
+              The path is recorded before the report is certified. The engine owns every number, classification, and
+              final result.
             </p>
             <div className="mt-4 space-y-2 font-mono text-xs">
               {CASES.map((definition) => {

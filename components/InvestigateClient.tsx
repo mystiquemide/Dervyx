@@ -11,22 +11,27 @@ type Replay = { state: "idle" | "checking" | "ok" | "mismatch" | "error"; text: 
 type RunMode = "live" | "cached";
 
 const DEFAULTS = {
-  token: "0xB2000000000000000000000Ff4a547c891AB1b01",
-  startBlock: "50121395",
-  endBlock: "50123000",
+  token: "",
+  startBlock: "",
+  endBlock: "",
   mode: "live" as RunMode,
   configVersion: "phase1-scope-v1",
-  idempotencyKey: "baseunc-launch-window",
+  idempotencyKey: "",
 };
 
-// The operations a live read performs during ingestion. Shown as an honest checklist while
-// the public Base RPC read is in flight; the elapsed timer is the real progress signal.
+const EXAMPLE_SCOPE = {
+  token: "0xB2000000000000000000000Ff4a547c891AB1b01",
+  startBlock: 50121395,
+  endBlock: 50123000,
+};
+
+// The stages of a live review. The elapsed timer is the real progress signal.
 const LIVE_STEPS = [
-  "Reading canonical Uniswap v4 swaps",
-  "Tracing the funding transfers two hops back",
-  "Separating known routers and exchanges",
-  "Computing the cluster-linked share",
-  "Hashing the canonical certificate",
+  "Collecting activity in the selected window",
+  "Following the trail behind each wallet",
+  "Separating known infrastructure",
+  "Measuring linked activity",
+  "Sealing the certificate",
 ];
 
 function txUrl(hash: string): string {
@@ -73,7 +78,7 @@ export function InvestigateClient() {
       const next = (await response.json()) as ScopeRecord;
       setRecord(next);
       if (next.state !== "INGESTING") return next;
-      setStatus({ message: "Reading canonical Base evidence and certifying\u2026", kind: "working" });
+      setStatus({ message: "Reading evidence and certifying\u2026", kind: "working" });
       await new Promise((resolve) => setTimeout(resolve, 2000));
     }
     throw new Error("TIMEOUT");
@@ -82,7 +87,7 @@ export function InvestigateClient() {
   const runEvidenceFlow = useCallback(
     async (requestId: string) => {
       setReplay({ state: "idle", text: "" });
-      setStatus({ message: "Starting canonical Base evidence\u2026", kind: "working" });
+      setStatus({ message: "Starting the evidence review\u2026", kind: "working" });
       const started = await fetch(`/api/investigations/${encodeURIComponent(requestId)}/evidence`, { method: "POST" });
       const startedRecord = (await started.json()) as ScopeRecord & { error?: { message: string } };
       if (!started.ok) {
@@ -115,14 +120,22 @@ export function InvestigateClient() {
       setRecord(null);
       setReplay({ state: "idle", text: "" });
       setStatus({ message: mode === "cached" ? "Loading instant example\u2026" : "Validating scope\u2026", kind: "working" });
+      if (mode === "live" && (!form.token.trim() || !form.startBlock.trim() || !form.endBlock.trim())) {
+        setBusy(false);
+        setStatus({ message: "Enter a token address and block window to begin.", kind: "error" });
+        return;
+      }
       try {
+        const scope = mode === "cached"
+          ? EXAMPLE_SCOPE
+          : { token: form.token.trim(), startBlock: Number(form.startBlock), endBlock: Number(form.endBlock) };
         const response = await fetch("/api/investigations", {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({
-            token: form.token,
-            startBlock: Number(form.startBlock),
-            endBlock: Number(form.endBlock),
+            token: scope.token,
+            startBlock: scope.startBlock,
+            endBlock: scope.endBlock,
             chainId: 8453,
             mode,
             ...(mode === "cached" ? { exampleId: exampleIdOverride ?? "anomaly" } : {}),
@@ -209,43 +222,46 @@ export function InvestigateClient() {
       <form onSubmit={onSubmit} className="rounded-lg border border-edge bg-surface p-4 sm:p-6">
         <h2 className="text-xs uppercase tracking-widest2 text-faint">Scope</h2>
         <div className="mt-5 space-y-4">
-          <Field label="Base token address" hint="EIP-55 checksummed contract.">
-            <input value={form.token} onChange={update("token")} spellCheck={false} autoComplete="off"
+          <Field label="Token address" hint="The contract you want to review.">
+            <input value={form.token} onChange={update("token")} placeholder="Paste a token address" required spellCheck={false} autoComplete="off"
               className="w-full rounded-md border border-edge bg-ink px-3 py-2.5 font-mono text-sm text-cream outline-none focus:border-teal/50" />
           </Field>
           <div className="grid grid-cols-2 gap-4">
-            <Field label="Start block"><input value={form.startBlock} onChange={update("startBlock")} inputMode="numeric"
+            <Field label="Start block"><input value={form.startBlock} onChange={update("startBlock")} placeholder="From" required inputMode="numeric"
               className="w-full rounded-md border border-edge bg-ink px-3 py-2.5 font-mono text-sm text-cream outline-none focus:border-teal/50" /></Field>
-            <Field label="End block"><input value={form.endBlock} onChange={update("endBlock")} inputMode="numeric"
+            <Field label="End block"><input value={form.endBlock} onChange={update("endBlock")} placeholder="To" required inputMode="numeric"
               className="w-full rounded-md border border-edge bg-ink px-3 py-2.5 font-mono text-sm text-cream outline-none focus:border-teal/50" /></Field>
           </div>
-          <Field label="Evidence mode" hint="Example is instant and offline. Live reads public Base RPC.">
+          <Field label="Review mode" hint="Saved examples are immediate. Live reviews can take a few minutes.">
             <select value={form.mode} onChange={update("mode")}
               className="w-full rounded-md border border-edge bg-ink px-3 py-2.5 text-sm text-cream outline-none focus:border-teal/50">
-              <option value="live">Live RPC (public fallback)</option>
-              <option value="cached">Example (instant, offline)</option>
+              <option value="live">Live review</option>
+              <option value="cached">Saved example</option>
             </select>
           </Field>
-          <div className="grid grid-cols-2 gap-4">
-            <Field label="Chain"><input value="8453 Base" readOnly className="w-full rounded-md border border-edge bg-ink px-3 py-2.5 text-sm text-muted outline-none" /></Field>
-            <Field label="Config"><input value={form.configVersion} readOnly className="w-full rounded-md border border-edge bg-ink px-3 py-2.5 text-sm text-muted outline-none" /></Field>
+          <div className="rounded-md border border-edge/70 bg-ink/60 px-3 py-3">
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-xs uppercase tracking-widest2 text-faint">Saved examples</span>
+              <span className="text-xs text-teal">View only</span>
+            </div>
+            <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-muted">
+              <span className="rounded border border-edge/60 px-2 py-1.5">Shared-root anomaly</span>
+              <span className="rounded border border-edge/60 px-2 py-1.5">Known-router control</span>
+            </div>
+            <p className="mt-2 text-xs leading-relaxed text-faint">Saved scopes illustrate the flow without filling your review fields.</p>
           </div>
-          <Field label="Replay key" hint="Reuse it for the same request identity.">
-            <input value={form.idempotencyKey} onChange={update("idempotencyKey")} spellCheck={false} autoComplete="off"
-              className="w-full rounded-md border border-edge bg-ink px-3 py-2.5 font-mono text-sm text-cream outline-none focus:border-teal/50" />
-          </Field>
         </div>
         <button type="submit" disabled={busy}
           className="mt-6 w-full rounded-md bg-teal px-4 py-3 text-sm font-semibold text-ink transition-colors duration-200 hover:bg-teal-deep disabled:cursor-wait disabled:opacity-60">
-          {busy ? "Working\u2026" : "Investigate token"}
+          {busy ? "Reviewing\u2026" : "Start review"}
         </button>
         <button type="button" onClick={() => void submit("cached", "anomaly")} disabled={busy}
           className="mt-3 w-full rounded-md border border-edge px-4 py-2.5 text-sm text-cream transition-colors hover:border-muted disabled:opacity-60">
-          Run anomaly example
+          Open anomaly example
         </button>
         <button type="button" onClick={() => void submit("cached", "control")} disabled={busy}
           className="mt-3 w-full rounded-md border border-teal/30 bg-teal/5 px-4 py-2.5 text-sm text-teal transition-colors hover:bg-teal/10 disabled:opacity-60">
-          Run clean control
+          Open clean control
         </button>
         <p className={`mt-4 min-h-[40px] text-sm leading-relaxed ${statusColor}`} role="status" aria-live="polite">{status.message}</p>
       </form>
@@ -256,7 +272,7 @@ export function InvestigateClient() {
           <div className="rounded-lg border border-edge bg-surface p-6">
             <div className="flex items-center justify-between">
               <h2 className="text-xs uppercase tracking-widest2 text-faint">
-                {runMode === "cached" ? "Loading example" : "Working over public Base RPC"}
+                {runMode === "cached" ? "Loading example" : "Working through the evidence"}
               </h2>
               <span className="font-mono text-sm text-caution" aria-hidden="true">{mmss(elapsedMs)}</span>
             </div>
@@ -275,7 +291,7 @@ export function InvestigateClient() {
                   ))}
                 </ul>
                 <p className="mt-4 text-xs leading-relaxed text-faint">
-                  Live reads over the public Base RPC can take up to about three minutes. You can keep this tab open.
+                  A live review can take a few minutes. You can keep this tab open.
                 </p>
               </>
             ) : null}
@@ -285,7 +301,7 @@ export function InvestigateClient() {
         {!record ? (
           !busy ? (
             <div className="rounded-lg border border-dashed border-edge/70 p-10 text-sm text-faint">
-              Scope a token to begin, or load an instant example. Live reads use the public Base fallback and take a moment.
+              Enter a scope to begin, or open a saved example.
             </div>
           ) : null
         ) : (
@@ -294,11 +310,10 @@ export function InvestigateClient() {
               <h2 className="text-xs uppercase tracking-widest2 text-faint">Request scope</h2>
               <dl className="mt-4 text-sm">
                 <ScopeRow label="State" value={record.state} mono />
-                <ScopeRow label="Mode" value={record.mode === "cached" ? "example (instant, offline)" : "live RPC"} />
+                <ScopeRow label="Mode" value={record.mode === "cached" ? "saved example" : "live review"} />
                 {record.exampleId ? <ScopeRow label="Example" value={record.exampleId === "control" ? "known-router control" : "shared-root anomaly"} /> : null}
                 <ScopeRow label="Request ID" value={record.requestId} mono />
                 <ScopeRow label="Scope hash" value={record.scopeHash} mono />
-                <ScopeRow label="Provider" value={evidence?.providerMode ?? record.providerMode} />
                 <ScopeRow label="Events" value={evidence ? String(evidence.eventCount) : "not ready"} mono />
                 <ScopeRow
                   label="Funding"
@@ -326,7 +341,7 @@ export function InvestigateClient() {
                 report={record.report.report}
                 reportHash={record.report.reportHash}
                 branch={record.branch}
-                chip={record.mode === "cached" ? "Cached example" : undefined}
+                chip={record.mode === "cached" ? "Saved example" : undefined}
                 actions={
                   <>
                     <a
@@ -366,7 +381,7 @@ export function InvestigateClient() {
               <div className="rounded-lg border border-caution/30 bg-caution/5 p-5">
                 <p className="text-sm leading-relaxed text-caution">
                   {showRetry
-                    ? "The evidence read hit a transient provider issue. Retry, or narrow the Base block range and resubmit."
+                    ? "The review was interrupted. Retry, or narrow the selected block window and resubmit."
                     : "Attribution coverage is bounded to the top sampled origins, so this result is inconclusive rather than clean. Try a narrower block range to raise coverage."}
                 </p>
                 {showRetry ? (
@@ -400,7 +415,7 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
 
 function ScopeRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
-    <div className="grid grid-cols-[130px_1fr] gap-4 border-t border-edge/60 py-2.5 first:border-t-0 first:pt-0">
+    <div className="grid gap-x-4 gap-y-1 border-t border-edge/60 py-2.5 first:border-t-0 first:pt-0 sm:grid-cols-[130px_1fr]">
       <dt className="text-faint">{label}</dt>
       <dd className={`text-cream [overflow-wrap:anywhere] ${mono ? "font-mono" : ""}`}>{value}</dd>
     </div>

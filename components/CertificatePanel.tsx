@@ -38,14 +38,14 @@ export function CertificatePanel({
   const exclusion = report.knownRootExclusions[0];
   const modeLabel =
     report.identity.mode === "live"
-      ? "Live RPC"
+      ? "Live review"
       : report.identity.mode === "cached"
-        ? "Cached example"
-        : "Recorded fixture";
+        ? "Saved example"
+        : "Saved example";
   const modeClass = report.identity.mode === "live" ? "border-teal/30 text-teal" : "border-caution/30 text-caution";
   const sourceLabel = report.identity.mode === "live"
-    ? report.sources.swapProviderMode === "configured" ? "configured provider" : "public fallback"
-    : "offline evidence";
+    ? "source-linked evidence"
+    : "example evidence";
 
   return (
     <div className="rounded-lg border border-edge bg-surface p-4 sm:p-6">

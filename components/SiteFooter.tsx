@@ -6,7 +6,7 @@ import { Footer } from "./Footer";
 export function SiteFooter() {
   const pathname = usePathname();
 
-  if (pathname === "/status") return null;
+  if (pathname === "/status" || pathname === "/investigate") return null;
 
   return <Footer />;
 }

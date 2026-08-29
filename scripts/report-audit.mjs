@@ -1,4 +1,4 @@
-// Read-only live report audit: runs the evidence lifecycle over both frozen Phase 0
+// Live report audit: runs the evidence lifecycle over both frozen Phase 0
 // fixtures, certifies each result with the deterministic engine, prints the certificate
 // summary, and writes each certificate JSON to /tmp for replay with verify-report.mjs.
 // Public fallback only; no wallet, no writes. Run: npm run build && node scripts/report-audit.mjs

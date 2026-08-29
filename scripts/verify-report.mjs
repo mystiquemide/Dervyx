@@ -1,5 +1,5 @@
 // Replay/verify a Dervyx report certificate: recompute the canonical sorted-key JSON hash
-// and compare it to the certificate's stored reportHash. Read-only; no network, no writes.
+// and compare it to the certificate's stored reportHash. Offline verifier; no network, no writes.
 // Usage: npm run build && node scripts/verify-report.mjs <path-to-certificate.json>
 // Exit code 0 on match, 1 on mismatch, 2 on usage/parse error.
 import { readFileSync } from "node:fs";

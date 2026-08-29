@@ -221,9 +221,9 @@ export function PairedProofClient() {
                 const branch = results[definition.id]?.branch;
                 return (
                   <div key={definition.id} className="flex flex-wrap justify-between gap-3 border-t border-edge/60 pt-2">
-                    <span className="text-faint">{definition.id}</span>
+                    <span className="text-faint">{definition.id === "anomaly" ? "Anomaly case" : "Control case"}</span>
                     <span className="text-cream">
-                      {branch ? `${branch.branch} · ${branch.mode} · maxHops ${branch.plan.maxHopsConsidered}` : "not recorded"}
+                      {branch ? "Funding trail analysis" : "not recorded"}
                     </span>
                   </div>
                 );

@@ -1,4 +1,4 @@
-// Read-only dev runner: executes the live evidence lifecycle against the two frozen
+// Local dev runner: executes the live evidence lifecycle against the two frozen
 // Phase 0 fixtures and prints a funding-source comparison. Public fallback only; no
 // wallet, no writes. Run: npm run build && node scripts/paired-comparison.mjs
 import { createDefaultEvidenceRunner } from "../dist/src/evidence.js";

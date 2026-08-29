@@ -43,17 +43,17 @@ npm run verify:fixtures
 
 A changed report fails hash verification. `EVIDENCE_READY` is reserved for records that carry a certified report.
 The page exposes the full hash and a copy control, while the certificate mode
-badge distinguishes `Cached example`, `Recorded fixture`, and `Live RPC`.
+badge distinguishes saved examples and live reviews.
 
 ## Live investigation
 
-Open `/investigate`, keep **Live RPC (public fallback)** selected, and use a verified scope. Live reads can take up to about three minutes because Dervyx reads canonical Base swap logs, traces funding, checks block identity, and performs best-effort native-ETH enrichment.
+Open `/investigate`, keep **Live review** selected, and use a verified scope. Live reviews can take up to about three minutes because Dervyx reads canonical swap logs, traces funding, checks block identity, and performs best-effort enrichment.
 
-The live path is read-only. It does not connect a wallet, sign, send a transaction, or execute a trade. Provider mode is shown in the resulting evidence.
+The live path does not connect a wallet, sign, send a transaction, or execute a trade. The resulting evidence records its source and coverage.
 
 ## Machine access
 
-`GET /api/agent` exposes the read-only HTTP/JSON contract, including supported modes, states, verdicts, tools, guarantees, and limitations. Other agents can discover the report, receipt, and verifier paths without relying on page text.
+`GET /api/agent` exposes the HTTP/JSON contract, including supported modes, states, verdicts, tools, guarantees, and limitations. Other agents can discover the report, receipt, and verifier paths without relying on page text.
 
 ## Demo capture
 

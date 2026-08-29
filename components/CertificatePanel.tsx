@@ -71,12 +71,8 @@ export function CertificatePanel({
 
       <dl className="mt-5">
         {branch ? (
-          <Row label="Branch">
-            <span className="text-cream">{branch.branch}</span>{" "}
-            <span className="text-faint">
-              ({branch.mode}
-              {branch.fallbackReason ? `, ${branch.fallbackReason}` : ""}, maxHops {branch.plan.maxHopsConsidered})
-            </span>
+          <Row label="Investigation path">
+            <span className="text-cream">Funding trail analysis</span>
           </Row>
         ) : null}
         <Row label="Observed share">

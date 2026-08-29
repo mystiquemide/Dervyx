@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 
-/** Bound expensive read-only runs so a public caller cannot exhaust the process or RPC quota. */
+/** Bound expensive investigation runs so a public caller cannot exhaust the process or RPC quota. */
 export class LiveRunGate {
   private active = 0;
 

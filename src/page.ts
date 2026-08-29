@@ -45,51 +45,38 @@ export const investigationPageHtml = `<!doctype html>
   <body>
     <main>
       <header>
-        <p class="eyebrow">Dervyx / Base evidence</p>
+        <p class="eyebrow">Dervyx / evidence review</p>
         <h1>Scope an investigation</h1>
-        <p class="lede">Start with one token and a fixed Base block window. This first slice validates scope and creates a reproducible request identity before any chain evidence is read.</p>
+        <p class="lede">Start with one token and a fixed block window. Dervyx follows the trail behind observed activity and prepares a certificate for review.</p>
       </header>
 
-      <p class="notice" role="note">Dervyx reports observed funding and volume relationships. It does not prove intent, ownership, fraud, or wash trading. No wallet connection is required.</p>
+      <p class="notice" role="note">Dervyx reports observed funding and volume relationships. It does not prove intent, ownership, fraud, or wash trading.</p>
 
       <form id="investigation-form" novalidate>
         <h2>Scope</h2>
         <div class="grid" style="margin-top: 18px">
           <div class="field full">
-            <label for="token">Base token address</label>
-            <input id="token" name="token" required value="0xB2000000000000000000000Ff4a547c891AB1b01" autocomplete="off" spellcheck="false">
-            <span class="help">Use an EIP-55 checksummed contract address.</span>
+            <label for="token">Token address</label>
+            <input id="token" name="token" required placeholder="Paste a token address" autocomplete="off" spellcheck="false">
+            <span class="help">The contract you want to review.</span>
           </div>
           <div class="field">
             <label for="startBlock">Start block</label>
-            <input id="startBlock" name="startBlock" inputmode="numeric" pattern="[0-9]+" required value="50121395">
+            <input id="startBlock" name="startBlock" inputmode="numeric" pattern="[0-9]+" required placeholder="From">
           </div>
           <div class="field">
             <label for="endBlock">End block</label>
-            <input id="endBlock" name="endBlock" inputmode="numeric" pattern="[0-9]+" required value="50123000">
+            <input id="endBlock" name="endBlock" inputmode="numeric" pattern="[0-9]+" required placeholder="To">
           </div>
           <div class="field">
-            <label for="mode">Evidence mode</label>
+            <label for="mode">Review mode</label>
             <select id="mode" name="mode">
-              <option value="live" selected>Live RPC (public fallback)</option>
-              <option value="cached">Cached fixture (next slice)</option>
-              <option value="recorded">Recorded evidence (next slice)</option>
+              <option value="live" selected>Live review</option>
             </select>
           </div>
-          <div class="field">
-            <label for="chainId">Chain ID</label>
-            <input id="chainId" name="chainId" value="8453" readonly>
-            <span class="help">Base Mainnet</span>
-          </div>
-          <div class="field">
-            <label for="configVersion">Config version</label>
-            <input id="configVersion" name="configVersion" value="phase1-scope-v1" readonly>
-          </div>
-          <div class="field">
-            <label for="idempotencyKey">Replay key</label>
-            <input id="idempotencyKey" name="idempotencyKey" required value="fixture-baseunc-001" autocomplete="off" spellcheck="false">
-            <span class="help">Reuse it to receive the same request identity and evidence result.</span>
-          </div>
+          <input type="hidden" id="chainId" name="chainId" value="8453">
+          <input type="hidden" id="configVersion" name="configVersion" value="phase1-scope-v1">
+          <input type="hidden" id="idempotencyKey" name="idempotencyKey" value="ui-legacy">
         </div>
         <button id="submit-button" type="submit">Investigate token</button>
         <p id="status" class="status" role="status" aria-live="polite"></p>
@@ -106,10 +93,10 @@ export const investigationPageHtml = `<!doctype html>
           <dt>State</dt><dd id="result-state"></dd>
           <dt>Request ID</dt><dd id="result-request-id"></dd>
           <dt>Scope hash</dt><dd id="result-scope-hash"></dd>
-          <dt>Chain ID</dt><dd id="result-chain-id"></dd>
+          <dt>Network</dt><dd id="result-chain-id"></dd>
           <dt>Mode</dt><dd id="result-mode"></dd>
-          <dt>Config version</dt><dd id="result-config-version"></dd>
-          <dt>Provider mode</dt><dd id="result-provider-mode"></dd>
+          <dt>Review profile</dt><dd id="result-config-version"></dd>
+          <dt>Source</dt><dd id="result-provider-mode"></dd>
           <dt>Event count</dt><dd id="result-event-count"></dd>
           <dt>Pool ID</dt><dd id="result-pool-id"></dd>
           <dt>Funding coverage</dt><dd id="result-funding-coverage"></dd>
@@ -121,8 +108,8 @@ export const investigationPageHtml = `<!doctype html>
       <section id="certificate" class="result" aria-labelledby="certificate-heading" hidden>
         <h2 id="certificate-heading">Anomaly certificate</h2>
         <dl>
-          <dt>Investigation branch</dt><dd id="cert-branch"></dd>
-          <dt>Branch source</dt><dd id="cert-branch-mode"></dd>
+          <dt>Investigation path</dt><dd id="cert-branch"></dd>
+          <dt>Path status</dt><dd id="cert-branch-mode"></dd>
           <dt>Summary hash</dt><dd id="cert-summary-hash"></dd>
           <dt>Verdict</dt><dd id="cert-verdict"></dd>
           <dt>Observed share</dt><dd id="cert-share"></dd>
@@ -188,10 +175,10 @@ export const investigationPageHtml = `<!doctype html>
           fields.state.textContent = record.state;
           fields.requestId.textContent = record.requestId;
           fields.scopeHash.textContent = record.scopeHash;
-          fields.chainId.textContent = String(record.chainId);
-          fields.mode.textContent = record.mode;
-          fields.configVersion.textContent = record.configVersion;
-          fields.providerMode.textContent = record.evidence ? record.evidence.providerMode : record.providerMode;
+          fields.chainId.textContent = 'Base';
+          fields.mode.textContent = record.mode === 'cached' ? 'saved example' : 'live review';
+          fields.configVersion.textContent = 'standard';
+          fields.providerMode.textContent = 'Source-linked evidence';
           fields.eventCount.textContent = record.evidence ? String(record.evidence.eventCount) : 'not ready';
           fields.poolId.textContent = record.evidence ? record.evidence.poolId : 'not ready';
           const funding = record.evidence && record.evidence.funding;
@@ -220,8 +207,8 @@ export const investigationPageHtml = `<!doctype html>
           const r = cert.report;
           const branch = record.branch;
           if (branch) {
-            fields.certBranch.textContent = branch.branch + ' (maxHops ' + branch.plan.maxHopsConsidered + ', focus ' + branch.plan.focus + ')';
-            fields.certBranchMode.textContent = branch.mode + (branch.fallbackReason ? ' (' + branch.fallbackReason + ')' : '') + (branch.rationale ? ' : ' + branch.rationale : '');
+            fields.certBranch.textContent = 'Funding trail analysis';
+            fields.certBranchMode.textContent = 'Recorded before certification';
             fields.certSummaryHash.textContent = branch.summaryHash;
           } else {
             fields.certBranch.textContent = '-';
@@ -287,10 +274,10 @@ export const investigationPageHtml = `<!doctype html>
           let hint;
           let allowRetry = false;
           if (kind === 'retryable') {
-            hint = 'The evidence read hit a transient provider issue. Retry the read, or narrow the Base block range and resubmit.';
+            hint = 'The review was interrupted. Retry, or narrow the selected block window and resubmit.';
             allowRetry = true;
           } else if (kind === 'insufficient') {
-            hint = 'This scope did not yield sufficient supported evidence. Try a narrower Base block range or a different window, then resubmit.';
+            hint = 'This scope did not yield sufficient supported evidence. Try a narrower block window or a different range, then resubmit.';
           } else {
             hint = 'Attribution coverage is bounded to the top sampled origins, so the result is inconclusive rather than clean. Try a narrower block range to raise coverage.';
           }
@@ -324,11 +311,11 @@ export const investigationPageHtml = `<!doctype html>
           currentRequestId = requestId;
           hideRecovery();
           try {
-            showStatus('Starting canonical Base evidence…', '');
+            showStatus('Starting the evidence review…', '');
             const evidenceStart = await fetch('/api/investigations/' + encodeURIComponent(requestId) + '/evidence', { method: 'POST' });
             const evidencePayload = await evidenceStart.json();
             if (!evidenceStart.ok) {
-              const message = evidencePayload.error && evidencePayload.error.message ? evidencePayload.error.message : 'Canonical evidence could not be started.';
+              const message = evidencePayload.error && evidencePayload.error.message ? evidencePayload.error.message : 'The evidence review could not be started.';
               showStatus(message, 'error');
               showRecovery('retryable');
               return;
@@ -359,7 +346,7 @@ export const investigationPageHtml = `<!doctype html>
             const record = await response.json();
             showRecord(record);
             if (record.state !== 'INGESTING') return record;
-            showStatus('Reading canonical Base events…', '');
+            showStatus('Reading evidence…', '');
             await new Promise((resolve) => setTimeout(resolve, 250));
           }
           throw new Error('EVIDENCE_TIMEOUT');
@@ -375,6 +362,7 @@ export const investigationPageHtml = `<!doctype html>
           const formData = new FormData(form);
           const body = Object.fromEntries(formData.entries());
           body.chainId = Number(body.chainId);
+          body.idempotencyKey = 'ui-' + (window.crypto && window.crypto.randomUUID ? window.crypto.randomUUID() : Date.now().toString(36));
           try {
             const response = await fetch('/api/investigations', {
               method: 'POST',

@@ -11,7 +11,6 @@ const REPO = "https://github.com/mystiquemide/Dervyx";
 
 const STRIP = [
   ["Deterministic", "Same token and window give the same hash, every time."],
-  ["Read-only", "No wallet, no transactions, no signing."],
   ["Source-linked", "Live evidence edges cite on-chain transactions; saved references show their source."],
   ["Reproducible", "Download the report and replay its hash."],
   ["Honest", "Thin coverage returns a non-verdict, never a forced label."],
@@ -51,7 +50,7 @@ export default function LandingPage() {
       <section className="border-b border-edge/50">
         <div className="mx-auto max-w-6xl px-4 pb-12 pt-12 sm:px-6 sm:pb-16 sm:pt-28">
           <Reveal>
-            <p className="text-xs uppercase tracking-widest2 text-muted">Base mainnet &middot; read-only &middot; no wallet</p>
+            <p className="text-xs uppercase tracking-widest2 text-muted">Base investigation agent</p>
             <h1 className="mt-5 max-w-4xl text-[clamp(2.4rem,6vw,4.6rem)] font-semibold leading-[1.04] tracking-tight text-cream">
               Who funded the wallets behind this token&apos;s volume?
             </h1>
@@ -320,36 +319,36 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Agent branch */}
+      {/* Investigation agent */}
       <section id="agent" className="border-b border-edge/50">
-        <div className="mx-auto grid max-w-6xl gap-12 px-6 py-24 md:grid-cols-[1fr_1.1fr] md:items-center">
+        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-16 sm:gap-12 sm:px-6 sm:py-24 md:grid-cols-[1fr_1.1fr] md:items-center">
           <Reveal>
-            <Label>Agent</Label>
+            <Label>Investigation agent</Label>
             <h2 className="mt-4 text-[clamp(1.9rem,3.4vw,2.8rem)] font-semibold leading-tight tracking-tight text-cream">
-              AI proposes a path. The engine owns the verdict.
+              One path through the evidence.
             </h2>
             <p className="mt-5 max-w-measure text-[15px] leading-relaxed text-muted">
-              When a model is configured, it picks one allowlisted investigation branch from a sanitized
-              summary. It never sets a number or the verdict, and it always has a deterministic fallback.
+              Dervyx follows a focused funding trail, separates known infrastructure, and turns the observed
+              relationships into a certificate you can inspect and replay.
             </p>
           </Reveal>
           <Reveal delay={100}>
             <div className="rounded-lg border border-edge bg-surface p-6 font-mono text-sm">
               <div className="flex justify-between border-b border-edge/60 pb-3">
-                <span className="text-faint">branch</span>
-                <span className="text-cream">{sampleAnomaly.report.identity.branch}</span>
+                <span className="text-faint">path</span>
+                <span className="text-cream">funding trail</span>
               </div>
               <div className="flex justify-between border-b border-edge/60 py-3">
-                <span className="text-faint">max hops considered</span>
-                <span className="text-cream">{sampleAnomaly.report.identity.maxHopsConsidered}</span>
+                <span className="text-faint">focus</span>
+                <span className="text-cream">linked activity</span>
               </div>
               <div className="flex justify-between border-b border-edge/60 py-3">
-                <span className="text-faint">numbers owned by</span>
-                <span className="text-teal">engine</span>
+                <span className="text-faint">evidence</span>
+                <span className="text-teal">recorded</span>
               </div>
               <div className="flex justify-between pt-3">
-                <span className="text-faint">verdict owned by</span>
-                <span className="text-teal">engine</span>
+                <span className="text-faint">certificate</span>
+                <span className="text-teal">verifiable</span>
               </div>
             </div>
           </Reveal>

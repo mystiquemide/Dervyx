@@ -2,7 +2,7 @@
 
 ## Scope
 
-Dervyx is a read-only Base investigation tool. It reads public chain data and
+Dervyx is a Base investigation tool. It reads public chain data and
 returns bounded evidence about observable funding relationships and swap
 activity.
 

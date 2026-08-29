@@ -33,7 +33,7 @@ export function renderOgImage() {
             <div style={{ width: "26px", height: "26px", borderRadius: "999px", backgroundColor: "#91d8d0", display: "flex" }} />
             <div style={{ fontSize: "30px", fontWeight: 700, letterSpacing: "8px", display: "flex" }}>DERVYX</div>
           </div>
-          <div style={{ fontSize: "20px", color: "#83908f", letterSpacing: "2px", display: "flex" }}>BASE MAINNET · READ-ONLY</div>
+          <div style={{ fontSize: "20px", color: "#83908f", letterSpacing: "2px", display: "flex" }}>BASE MAINNET · INVESTIGATION AGENT</div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>

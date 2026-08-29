@@ -207,7 +207,7 @@ test("serves the primary accessible form without wallet integration", async (t) 
 
   assert.match(html, /<form id="investigation-form"/);
   assert.match(html, /aria-live="polite"/);
-  assert.match(html, /Base token address/);
+  assert.match(html, /Token address/);
   assert.match(html, /name="startBlock"/);
   assert.match(html, /name="endBlock"/);
   assert.match(html, /name="mode"/);
@@ -215,6 +215,7 @@ test("serves the primary accessible form without wallet integration", async (t) 
   assert.match(html, /\/api\/investigations/);
   assert.match(html, /result-funding-coverage/);
   assert.match(html, /result-root-paths/);
-  assert.match(html, /0xB2000000000000000000000Ff4a547c891AB1b01/);
+  assert.match(html, /placeholder="Paste a token address"/);
+  assert.doesNotMatch(html, /value="0xB2000000000000000000000Ff4a547c891AB1b01"/);
   assert.doesNotMatch(html, /window\.ethereum|eth_requestAccounts|Connect Wallet/);
 });

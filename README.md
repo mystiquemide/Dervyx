@@ -1,8 +1,8 @@
 # Dervyx
 
-Dervyx is a read-only Base investigation agent for launchpad and exchange listing analysts. Give it one token and one fixed block window. It traces funding relationships behind observed swap activity, separates known infrastructure roots, and produces a certificate that another reviewer can verify by hash.
+Dervyx is a Base investigation agent for launchpad and exchange listing analysts. Give it one token and one fixed block window. It traces funding relationships behind observed swap activity, separates known infrastructure roots, and produces a certificate that another reviewer can verify by hash.
 
-[Open Dervyx](https://dervyx.159.69.241.122.sslip.io/) · [Run an investigation](https://dervyx.159.69.241.122.sslip.io/investigate) · [Run the paired proof](https://dervyx.159.69.241.122.sslip.io/compare) · [Agent contract](https://dervyx.159.69.241.122.sslip.io/api/agent) · [Check status](https://dervyx.159.69.241.122.sslip.io/status)
+[Open Dervyx](https://dervyx.vercel.app/) · [Run an investigation](https://dervyx.vercel.app/investigate) · [Run the paired proof](https://dervyx.vercel.app/compare) · [Agent contract](https://dervyx.vercel.app/api/agent) · [Check status](https://dervyx.vercel.app/status)
 
 ## Quick proof path
 
@@ -45,7 +45,7 @@ The live tool supports:
 - Downloadable JSON certificates
 - Downloadable counterfactual evidence receipts
 - Browser replay and hash verification
-- A machine-readable read-only agent contract at `/api/agent`
+- A machine-readable agent contract at `/api/agent`
 - Committed anomaly/control certificates and receipts that replay from a fresh checkout
 - Retry and narrower-range guidance for incomplete evidence
 - Explicitly bounded verified fixture scopes that fail closed when unsupported
@@ -100,11 +100,11 @@ The standalone `src/server.ts` HTTP boundary remains for engine-level tests and 
 
 ## Environment
 
-Copy `.env.example` to `.env`. The public Base RPC fallback and deterministic branch work without a model key. Keep `.env` local and untracked.
+Copy `.env.example` to `.env`. The default chain connection and deterministic branch work without a model key. Keep `.env` local and untracked.
 
 | Variable | Required | Purpose |
 |---|---:|---|
-| `BASE_RPC_URL` | No | Optional Base RPC endpoint. Defaults to the public Base mainnet RPC. |
+| `BASE_RPC_URL` | No | Optional endpoint for public chain reads. |
 | `NEXT_PUBLIC_SITE_URL` | No | Canonical URL used for social metadata. |
 | `DERVYX_API_ORIGIN` | No | Optional API origin for a split Vercel frontend and stateful VPS backend. |
 | `DERVYX_MODEL_BASE_URL` | No | OpenAI-compatible chat-completions base URL for optional branch selection. |
@@ -130,8 +130,8 @@ The current release has been verified with:
 ## Honest limitations
 
 - Base mainnet is the first supported chain.
-- The default provider is a public RPC fallback and is labeled as such.
-- The primary workflow is read-only. Dervyx does not connect a wallet, sign, send transactions, or move funds.
+- The default chain connection is public and its coverage is labeled as such.
+- The primary workflow is analysis. Dervyx does not connect a wallet, sign, send transactions, or move funds.
 - The paired example mode is synthetic but clearly labeled and runs through the same engine. It is not live-chain evidence.
 - The current adapter supports a bounded set of verified Base token/pool fixtures. Unsupported token scopes fail closed rather than guessing a pool.
 - Configured RPC URLs are redacted from evidence, reports, receipts, and normalized source metadata.
@@ -164,7 +164,7 @@ public/screenshots/  Verified product screenshots
 ## Agent contract
 
 `GET /api/agent` returns the current machine-readable contract: Base chain identity, supported
-states and verdicts, read-only guarantees, input/output tools, committed fixture paths, public
+states and verdicts, safety guarantees, input/output tools, committed fixture paths, public
 limits, and known limitations. It is a small HTTP/JSON interoperability surface for other agents
 and does not claim a private Orion SDK integration.
 

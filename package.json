@@ -2,7 +2,7 @@
   "name": "dervyx",
   "version": "0.1.0",
   "private": true,
-  "description": "Evidence-first Base investigation agent",
+  "description": "Base funding-and-volume anomaly certificates for launchpad and exchange vetting",
   "type": "module",
   "engines": {
     "node": ">=22.23.0 <23"

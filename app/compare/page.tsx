@@ -3,7 +3,7 @@ import { PairedProofClient } from "@/components/PairedProofClient";
 
 export const metadata: Metadata = {
   title: "Paired proof | Dervyx",
-  description: "Run the same Dervyx evidence engine against an unknown-root anomaly and a known-router control.",
+  description: "Compare the same Dervyx evidence engine against an unknown-root anomaly and a known-router control for launchpad and exchange vetting.",
 };
 
 export default function ComparePage() {

@@ -1,6 +1,6 @@
 # Dervyx
 
-Dervyx is a Base investigation agent built for launchpad teams. Before a token goes live or while early trading unfolds, give it one token and one fixed block window. It traces funding relationships behind observed swap activity, separates known infrastructure roots, and produces a certificate another reviewer can verify by hash.
+Dervyx is a Base investigation agent for launchpad and exchange vetting. Before a token goes live or while early trading unfolds, give it one token and one fixed block window. It traces funding relationships behind observed swap activity, separates known infrastructure roots, and produces a certificate another reviewer can verify by hash.
 
 [Open Dervyx](https://dervyx.vercel.app/) · [Run an investigation](https://dervyx.vercel.app/investigate) · [Run the paired proof](https://dervyx.vercel.app/compare) · [Agent contract](https://dervyx.vercel.app/api/agent) · [Check status](https://dervyx.vercel.app/status)
 

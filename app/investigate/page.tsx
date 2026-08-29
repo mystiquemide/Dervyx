@@ -4,7 +4,7 @@ import { InvestigateClient } from "@/components/InvestigateClient";
 export const metadata: Metadata = {
   title: "Run an investigation · Dervyx",
   description:
-    "Scope one token and a fixed block window. Dervyx follows observed activity and issues a certificate you can download and replay.",
+    "Investigation workspace for launchpad and exchange vetting. Scope one token and a fixed block window, then review the observed activity and its certificate.",
 };
 
 export default function InvestigatePage() {

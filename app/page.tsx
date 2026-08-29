@@ -50,14 +50,14 @@ export default function LandingPage() {
       <section className="border-b border-edge/50">
         <div className="mx-auto max-w-6xl px-4 pb-12 pt-12 sm:px-6 sm:pb-16 sm:pt-28">
           <Reveal>
-            <p className="text-xs uppercase tracking-widest2 text-muted">Base investigation agent for launchpads</p>
+            <p className="text-xs uppercase tracking-widest2 text-muted">Base investigation agent for launchpad and exchange vetting</p>
             <h1 className="mt-5 max-w-4xl text-[clamp(2.4rem,6vw,4.6rem)] font-semibold leading-[1.04] tracking-tight text-cream">
               Who funded the wallets behind this token&apos;s volume?
             </h1>
             <p className="mt-6 max-w-measure text-lg leading-relaxed text-muted">
-              Dervyx reads public Base data for one token and one block window, maps how the trading
-              wallets were funded, and issues a certificate you can re-verify by hash. It reports observed
-              relationships, not accusations.
+              Dervyx helps launchpad and exchange vetting teams review one token and one block window, map how
+              the trading wallets were funded, and issue a certificate you can re-verify by hash. It reports
+              observed relationships, not accusations.
             </p>
             <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
               <Link

@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const OG_SIZE = { width: 1200, height: 630 };
 export const OG_CONTENT_TYPE = "image/png";
-export const OG_ALT = "Dervyx: reproducible, hash-verifiable Base funding-anomaly certificates";
+export const OG_ALT = "Dervyx: reproducible Base funding-and-volume anomaly certificates for launchpad and exchange vetting";
 
 const VERDICTS: [string, string][] = [
   ["ANOMALY", "#e8a24a"],
@@ -50,7 +50,7 @@ export function renderOgImage() {
             Who funded the wallets behind this token's volume?
           </div>
           <div style={{ fontSize: "26px", color: "#91a2a3", maxWidth: "860px", display: "flex" }}>
-            Reproducible, hash-verifiable funding-anomaly certificates. Evidence, not accusations.
+            Reproducible Base funding-and-volume anomaly certificates for launchpad and exchange vetting.
           </div>
         </div>
 

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://dervyx.159.69.241.122.sslip.io"),
   title: "Dervyx \u00b7 Base funding-anomaly certificates",
   description:
-    "Base investigation agent for launchpad teams. It turns one token and a block window into a reproducible, hash-verifiable funding and volume anomaly certificate.",
+    "Reproducible Base funding-and-volume anomaly certificates for launchpad and exchange vetting.",
   applicationName: "Dervyx",
   robots: { index: true, follow: true },
   openGraph: {
@@ -16,13 +16,13 @@ export const metadata: Metadata = {
     url: "/",
     title: "Dervyx \u00b7 Base funding-anomaly certificates",
     description:
-      "Base investigation agent for launchpad teams. One token, one block window, one verifiable funding-anomaly certificate.",
+      "Reproducible Base funding-and-volume anomaly certificates for launchpad and exchange vetting.",
   },
   twitter: {
     card: "summary_large_image",
     title: "Dervyx \u00b7 Base funding-anomaly certificates",
     description:
-      "Base investigation agent for launchpad teams. One token, one block window, one verifiable funding-anomaly certificate.",
+      "Reproducible Base funding-and-volume anomaly certificates for launchpad and exchange vetting.",
   },
 };
 

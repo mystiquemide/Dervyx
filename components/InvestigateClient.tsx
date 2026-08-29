@@ -19,6 +19,11 @@ const DEFAULTS = {
   idempotencyKey: "",
 };
 
+function createIdempotencyKey(): string {
+  const randomId = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  return `ui-${randomId}`;
+}
+
 const EXAMPLE_SCOPE = {
   token: "0xB2000000000000000000000Ff4a547c891AB1b01",
   startBlock: 50121395,
@@ -46,7 +51,7 @@ function mmss(ms: number): string {
 }
 
 export function InvestigateClient() {
-  const [form, setForm] = useState(DEFAULTS);
+  const [form, setForm] = useState(() => ({ ...DEFAULTS, idempotencyKey: createIdempotencyKey() }));
   const [record, setRecord] = useState<ScopeRecord | null>(null);
   const [status, setStatus] = useState<Status>({ message: "", kind: "idle" });
   const [busy, setBusy] = useState(false);
@@ -57,16 +62,9 @@ export function InvestigateClient() {
   useEffect(() => {
     if (!busy) return;
     const started = Date.now();
-    setElapsedMs(0);
     const id = window.setInterval(() => setElapsedMs(Date.now() - started), 500);
     return () => window.clearInterval(id);
   }, [busy]);
-
-  useEffect(() => {
-    if (form.idempotencyKey !== DEFAULTS.idempotencyKey) return;
-    const randomId = window.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-    setForm((prev) => ({ ...prev, idempotencyKey: `ui-${randomId}` }));
-  }, [form.idempotencyKey]);
 
   const update = (key: keyof typeof DEFAULTS) => (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm((prev) => ({ ...prev, [key]: event.target.value }));
@@ -116,6 +114,7 @@ export function InvestigateClient() {
     async (modeOverride?: RunMode, exampleIdOverride?: ExampleId) => {
       const mode = modeOverride ?? form.mode;
       setBusy(true);
+      setElapsedMs(0);
       setRunMode(mode);
       setRecord(null);
       setReplay({ state: "idle", text: "" });
@@ -170,6 +169,7 @@ export function InvestigateClient() {
   const onRetry = useCallback(async () => {
     if (!record) return;
     setBusy(true);
+    setElapsedMs(0);
     setRunMode(record.mode === "cached" ? "cached" : "live");
     try {
       await runEvidenceFlow(record.requestId);
@@ -242,7 +242,7 @@ export function InvestigateClient() {
           <div className="rounded-md border border-edge/70 bg-ink/60 px-3 py-3">
             <div className="flex items-center justify-between gap-3">
               <span className="text-xs uppercase tracking-widest2 text-faint">Saved examples</span>
-              <span className="text-xs text-teal">View only</span>
+
             </div>
             <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-muted">
               <span className="rounded border border-edge/60 px-2 py-1.5">Shared-root anomaly</span>

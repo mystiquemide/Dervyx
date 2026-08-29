@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { PairedProofClient } from "@/components/PairedProofClient";
 
 export const metadata: Metadata = {
-  title: "Paired proof | Dervyx",
+  title: "Paired proof for launchpad and exchange vetting | Dervyx",
   description: "Compare the same Dervyx evidence engine against an unknown-root anomaly and a known-router control for launchpad and exchange vetting.",
 };
 

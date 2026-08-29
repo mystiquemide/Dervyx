@@ -47,7 +47,7 @@ export function renderOgImage() {
               display: "flex",
             }}
           >
-            Who funded the wallets behind this token's volume?
+            Who funded the wallets behind this token&apos;s volume?
           </div>
           <div style={{ fontSize: "26px", color: "#91a2a3", maxWidth: "860px", display: "flex" }}>
             Reproducible Base funding-and-volume anomaly certificates for launchpad and exchange vetting.

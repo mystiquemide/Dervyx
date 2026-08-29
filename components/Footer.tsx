@@ -23,18 +23,18 @@ export function Footer() {
           <div>
             <h3 className="text-xs uppercase tracking-widest2 text-faint">Product</h3>
             <ul className="mt-4 space-y-3 text-sm text-muted">
-              <li><Link href="/investigate" className="transition-colors hover:text-cream">Run an investigation</Link></li>
-              <li><Link href="/compare" className="transition-colors hover:text-cream">Run the paired proof</Link></li>
-              <li><ScrollLink targetId="workflow" className="transition-colors hover:text-cream">How it works</ScrollLink></li>
-              <li><ScrollLink targetId="verify" className="transition-colors hover:text-cream">Verify a report</ScrollLink></li>
+              <li><Link href="/investigate" className="inline-flex min-h-11 items-center transition-colors hover:text-cream">Run an investigation</Link></li>
+              <li><Link href="/compare" className="inline-flex min-h-11 items-center transition-colors hover:text-cream">Run the paired proof</Link></li>
+              <li><ScrollLink targetId="workflow" className="inline-flex min-h-11 items-center transition-colors hover:text-cream">How it works</ScrollLink></li>
+              <li><ScrollLink targetId="verify" className="inline-flex min-h-11 items-center transition-colors hover:text-cream">Verify a report</ScrollLink></li>
             </ul>
           </div>
 
           <div>
             <h3 className="text-xs uppercase tracking-widest2 text-faint">Project</h3>
             <ul className="mt-4 space-y-3 text-sm text-muted">
-              <li><a href={REPO} target="_blank" rel="noreferrer" className="transition-colors hover:text-cream">GitHub</a></li>
-              <li><Link href="/status" className="transition-colors hover:text-cream">Status</Link></li>
+              <li><a href={REPO} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center transition-colors hover:text-cream">GitHub</a></li>
+              <li><Link href="/status" className="inline-flex min-h-11 items-center transition-colors hover:text-cream">Status</Link></li>
             </ul>
           </div>
 

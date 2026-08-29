@@ -159,6 +159,8 @@ function wait(milliseconds: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
+const CANONICAL_RETRY_DELAYS_MS = [0, 500, 1_500, 3_000, 7_000] as const;
+
 function validateScope(startBlock: number, endBlock: number, maxBlockSpan: number): void {
   if (!Number.isSafeInteger(startBlock) || !Number.isSafeInteger(endBlock)) {
     throw new CanonicalReadError("INVALID_SCOPE", "Block scope must use safe integers.");
@@ -182,7 +184,7 @@ async function readHeader(
   client: CanonicalRpcClient,
   blockNumber: number,
 ): Promise<CanonicalBlockHeader> {
-  const retryDelays = [0, 250, 750];
+  const retryDelays = CANONICAL_RETRY_DELAYS_MS;
   for (let attempt = 0; attempt < retryDelays.length; attempt += 1) {
     const delay = retryDelays[attempt] ?? 0;
     if (delay > 0) await wait(delay);
@@ -298,7 +300,7 @@ async function readTransactionOrigin(
   client: CanonicalRpcClient,
   transactionHash: Hex,
 ): Promise<Address> {
-  const retryDelays = [0, 250, 750];
+  const retryDelays = CANONICAL_RETRY_DELAYS_MS;
   for (let attempt = 0; attempt < retryDelays.length; attempt += 1) {
     const delay = retryDelays[attempt] ?? 0;
     if (delay > 0) await wait(delay);
@@ -431,7 +433,10 @@ export async function readUniswapV4Swaps(
 }
 
 export function createBaseRpcClient(rpcUrl = process.env.BASE_RPC_URL ?? DEFAULT_BASE_RPC_URL): CanonicalRpcClient {
-  const client = createPublicClient({ chain: base, transport: http(rpcUrl) });
+  const client = createPublicClient({
+    chain: base,
+    transport: http(rpcUrl, { retryCount: 5, retryDelay: 1_000, timeout: 30_000 }),
+  });
   return {
     getChainId: () => client.getChainId(),
     async getBlock({ blockNumber }) {

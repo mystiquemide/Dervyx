@@ -19,7 +19,8 @@ const LINKS: { href: string; label: string; external?: boolean; targetId?: strin
 export function Nav() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const isInvestigationRoute = pathname === "/investigate";
+  const isFocusedRoute = pathname === "/investigate" || pathname === "/status";
+  const menuVisible = open && !isFocusedRoute;
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -30,15 +31,11 @@ export function Nav() {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
+    document.body.style.overflow = menuVisible ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
-  }, [open]);
-
-  useEffect(() => {
-    if (isInvestigationRoute) setOpen(false);
-  }, [isInvestigationRoute]);
+  }, [menuVisible]);
 
   return (
     <header className="sticky top-0 z-40 border-b border-edge/70 bg-ink/95 backdrop-blur-sm">
@@ -48,7 +45,7 @@ export function Nav() {
           <span className="text-[15px] font-semibold tracking-tight text-cream">Dervyx</span>
         </Link>
 
-        {!isInvestigationRoute ? (
+        {!isFocusedRoute ? (
           <>
             <nav className="hidden items-center gap-8 text-sm text-muted md:flex" aria-label="Primary">
               {LINKS.map((link) =>
@@ -79,13 +76,13 @@ export function Nav() {
               <button
                 type="button"
                 onClick={() => setOpen((prev) => !prev)}
-                aria-expanded={open}
+                aria-expanded={menuVisible}
                 aria-controls="mobile-nav"
-                aria-label={open ? "Close menu" : "Open menu"}
+                aria-label={menuVisible ? "Close menu" : "Open menu"}
                 className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-edge text-cream transition-colors hover:border-muted md:hidden"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-                  {open ? (
+                  {menuVisible ? (
                     <>
                       <path d="M6 6 L18 18" />
                       <path d="M18 6 L6 18" />
@@ -104,7 +101,7 @@ export function Nav() {
         ) : null}
       </div>
 
-      {!isInvestigationRoute && open ? (
+      {menuVisible ? (
         <nav id="mobile-nav" aria-label="Mobile" className="border-t border-edge/70 bg-ink md:hidden">
           <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6">
             <ul className="flex flex-col">

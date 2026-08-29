@@ -21,5 +21,5 @@ export function ScrollLink({ targetId, onClick, ...props }: ScrollLinkProps) {
     window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
   }
 
-  return <Link href="/" {...props} onClick={handleClick} />;
+  return <Link href={`/#${targetId}`} {...props} onClick={handleClick} />;
 }

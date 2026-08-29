@@ -4,8 +4,8 @@ import { Nav } from "@/components/Nav";
 import { SiteFooter } from "@/components/SiteFooter";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://dervyx.159.69.241.122.sslip.io"),
-  title: "Dervyx \u00b7 Base funding-anomaly certificates",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://dervyx.vercel.app"),
+  title: "Dervyx · Base investigation for launchpad and exchange vetting",
   description:
     "Reproducible Base funding-and-volume anomaly certificates for launchpad and exchange vetting.",
   applicationName: "Dervyx",
@@ -14,13 +14,13 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Dervyx",
     url: "/",
-    title: "Dervyx \u00b7 Base funding-anomaly certificates",
+    title: "Dervyx · Base investigation for launchpad and exchange vetting",
     description:
       "Reproducible Base funding-and-volume anomaly certificates for launchpad and exchange vetting.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dervyx \u00b7 Base funding-anomaly certificates",
+    title: "Dervyx · Base investigation for launchpad and exchange vetting",
     description:
       "Reproducible Base funding-and-volume anomaly certificates for launchpad and exchange vetting.",
   },

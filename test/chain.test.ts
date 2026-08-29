@@ -50,6 +50,8 @@ class FakeRpcClient implements CanonicalRpcClient {
   public chainId: number = BASE_CHAIN_ID;
   public mismatchBlock: number | undefined;
   public failLogs = false;
+  public transactionFailuresRemaining = 0;
+  public transactionCalls = 0;
 
   constructor(private readonly logs: readonly RawCanonicalLog[]) {}
 
@@ -58,6 +60,11 @@ class FakeRpcClient implements CanonicalRpcClient {
   }
 
   async getTransaction(): Promise<{ from: Address }> {
+    this.transactionCalls += 1;
+    if (this.transactionFailuresRemaining > 0) {
+      this.transactionFailuresRemaining -= 1;
+      throw new Error("simulated transient transaction lookup failure");
+    }
     return { from: sender };
   }
 
@@ -121,6 +128,15 @@ test("splits ranges, deduplicates event identity, and preserves source fields", 
   assert.equal(result.events[0]?.source.method, "eth_getLogs");
   assert.equal(result.events[0]?.source.rpcUrl, "https://mainnet.base.org");
   assert.equal(result.events[0]?.amount0, "-10");
+});
+
+test("retries transient transaction-origin reads before failing", async () => {
+  const client = new FakeRpcClient([makeLog(100, 1)]);
+  client.transactionFailuresRemaining = 1;
+  const result = await readUniswapV4Swaps(client, readOptions());
+
+  assert.equal(result.events[0]?.origin, sender);
+  assert.equal(client.transactionCalls, 2);
 });
 
 test("fails closed on a non-Base chain", async () => {

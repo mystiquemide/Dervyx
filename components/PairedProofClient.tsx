@@ -130,12 +130,12 @@ export function PairedProofClient() {
           <div className="max-w-2xl">
             <p className="text-xs uppercase tracking-widest2 text-teal">Counterfactual funding ledger</p>
             <h1 className="mt-4 text-[clamp(2rem,4vw,3.4rem)] font-semibold leading-tight tracking-tight text-cream">
-              Same scope. Different root policy.
+              Same window. Different funding classification.
             </h1>
             <p className="mt-5 text-[15px] leading-relaxed text-muted">
-              Run the same deterministic engine twice. The anomaly case keeps an unknown shared root in the
-              counted share. The control case shows that a known router can connect wallets without being
-              mistaken for coordination.
+              Run the same deterministic engine twice. One case keeps an unexplained shared funding source in the
+              anomaly share. The control shows how a known router can connect wallets without being mistaken for
+              coordination. The evidence changes; the rules do not.
             </p>
             <p className="mt-4 rounded border border-caution/30 bg-caution/5 px-3 py-2 text-xs leading-relaxed text-caution">
               These saved reference cases are instant and repeatable. They illustrate the method; a live review uses the same process on a selected scope.

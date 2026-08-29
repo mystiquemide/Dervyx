@@ -31,6 +31,7 @@ type HealthState = "checking" | "operational" | "attention";
 export function StatusPageClient() {
   const [health, setHealth] = useState<HealthState>("checking");
   const [openId, setOpenId] = useState<string | null>(null);
+  const [lastChecked, setLastChecked] = useState<number | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -41,6 +42,9 @@ export function StatusPageClient() {
       })
       .catch(() => {
         if (active) setHealth("attention");
+      })
+      .finally(() => {
+        if (active) setLastChecked(Date.now());
       });
 
     return () => {
@@ -60,12 +64,14 @@ export function StatusPageClient() {
     : attention
       ? "We are reviewing the service state. Please try again shortly."
       : "We are checking the service state now.";
+  const checkedLabel = lastChecked
+    ? new Intl.DateTimeFormat("en", { hour: "2-digit", minute: "2-digit", timeZoneName: "short" }).format(lastChecked)
+    : "checking now";
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-16">
       <header className="flex flex-col gap-6 border-b border-edge/70 pb-8 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs uppercase tracking-widest2 text-teal">Dervyx</p>
           <h1 className="mt-3 text-[clamp(2rem,6vw,3.2rem)] font-semibold tracking-tight text-cream">System status</h1>
         </div>
         <Link
@@ -85,11 +91,12 @@ export function StatusPageClient() {
           <h2 className="text-xl font-semibold tracking-tight text-cream sm:text-2xl">{summary}</h2>
         </div>
         <p className="px-5 py-6 text-[15px] leading-relaxed text-muted sm:px-8 sm:py-7">{description}</p>
+        <p className="border-t border-edge/50 px-5 py-3 text-xs text-faint sm:px-8">Last checked: {checkedLabel}</p>
       </section>
 
       <section className="mt-8 overflow-hidden rounded-xl border border-edge bg-surface">
         <div className="border-b border-edge/70 px-5 py-5 sm:px-8 sm:py-6">
-          <h2 className="text-xl font-semibold tracking-tight text-cream sm:text-2xl">System status</h2>
+          <h2 className="text-xl font-semibold tracking-tight text-cream sm:text-2xl">Service availability</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted">Current availability across the Dervyx service.</p>
         </div>
         <div>

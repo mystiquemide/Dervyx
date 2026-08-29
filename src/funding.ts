@@ -111,7 +111,7 @@ async function fetchPage(url: string): Promise<BlockscoutPage> {
     const response = await fetch(url, {
       headers: {
         accept: "application/json",
-        "user-agent": "Dervyx-P3-readonly/1.0",
+        "user-agent": "Dervyx-P3-evidence/1.0",
       },
       signal: controller.signal,
     });
@@ -131,7 +131,7 @@ async function fetchTokenTransferPage(url: string): Promise<BlockscoutTokenTrans
     const response = await fetch(url, {
       headers: {
         accept: "application/json",
-        "user-agent": "Dervyx-P3-readonly/1.0",
+        "user-agent": "Dervyx-P3-evidence/1.0",
       },
       signal: controller.signal,
     });

@@ -161,8 +161,7 @@ test("HTTP boundary exposes health, SCOPED creation, duplicate replay, and looku
   assert.deepEqual(await health.json(), {
     status: "ready",
     chainId: BASE_CHAIN_ID,
-    mode: "read_only_scope",
-    providerMode: "not_connected",
+    mode: "scoped_analysis",
   });
 
   const create = await fetch(`${baseUrl}/api/investigations`, {

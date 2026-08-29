@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Reveal } from "@/components/Reveal";
 import { ScrollLink } from "@/components/ScrollLink";
 import { CertificatePanel } from "@/components/CertificatePanel";
@@ -271,7 +272,7 @@ export default function LandingPage() {
             </Reveal>
             <Reveal delay={100}>
               <figure className="overflow-hidden rounded-lg border border-edge">
-                <img
+                <Image
                   src="/workflow.jpg"
                   alt="City lights at night forming a connected network across a continent"
                   width={1400}

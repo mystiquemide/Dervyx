@@ -35,11 +35,11 @@ The optional model component may choose an allowlisted investigation branch from
 
 ## Product flow
 
-![Dervyx paired proof page](./public/screenshots/investigate.png)
+![Dervyx investigation page](./public/screenshots/investigate.png)
 
 The live tool supports:
 
-- Live Base RPC reads with provider mode shown explicitly
+- Live evidence reads for verified Base token and pool scopes
 - A paired anomaly/control proof using the same deterministic engine and thresholds
 - Source-linked evidence and BaseScan transaction links
 - Downloadable JSON certificates
@@ -61,7 +61,7 @@ what happened before and after the root policy:
 - **Attributed, not clustered** activity has a funding path but does not meet the coordination rule.
 - **Unattributed origins** remain outside the numerator when no accepted path was found.
 
-The [paired proof](https://dervyx.159.69.241.122.sslip.io/compare) runs an anomaly fixture and a
+The [paired proof](https://dervyx.vercel.app/compare) runs an anomaly fixture and a
 known-router control with the same thresholds. The only meaningful change is the funding topology.
 That makes the verdict inspectable as a policy decision, not a mysterious risk score. See the [proof walkthrough](./docs/DEMO.md) for the exact run and verification sequence.
 
@@ -85,6 +85,7 @@ Requirements: Node.js 22.23.x and npm.
 ```bash
 npm ci
 cp .env.example .env
+npm run lint
 npm run typecheck
 npm run typecheck:web
 npm test
@@ -95,7 +96,7 @@ npm start -- --hostname 127.0.0.1 --port 4760
 
 Then open `http://127.0.0.1:4760/investigate`.
 
-The production app runs as a Node.js Next.js server behind a Caddy reverse proxy. See [deployment notes](./docs/DEPLOYMENT.md).
+The public frontend runs on Vercel and proxies same-origin API requests to a stateful Node.js service behind Caddy. See [deployment notes](./docs/DEPLOYMENT.md).
 The standalone `src/server.ts` HTTP boundary remains for engine-level tests and local replay; it is not the production deployment path.
 
 ## Environment
@@ -118,7 +119,8 @@ The current release has been verified with:
 
 - `npm run typecheck`
 - `npm run typecheck:web`
-- `npm test`, 64 tests passing
+- `npm run lint`
+- `npm test`, 65 tests passing
 - `npm run verify:fixtures`, replaying both committed proof certificates and receipts
 - `npm run build`
 - `npm audit --audit-level=high`

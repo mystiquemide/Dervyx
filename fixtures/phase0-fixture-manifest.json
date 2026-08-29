@@ -1,7 +1,7 @@
 {
   "schema_version": "dervyx-phase0-fixtures/v1",
   "captured_at": "2026-08-18T09:44:10Z",
-  "evidence_mode": "live_read_only",
+  "evidence_mode": "live_chain_evidence",
   "chain": {
     "name": "Base Mainnet",
     "chain_id": 8453,

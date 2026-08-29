@@ -1,20 +1,13 @@
 # Deployment
 
-Dervyx is a Node.js Next.js application. The current public deployment runs on a VPS behind Caddy at:
+Dervyx uses a split deployment:
 
-https://dervyx.159.69.241.122.sslip.io
+- **Frontend:** https://dervyx.vercel.app
+- **Stateful API:** https://dervyx.159.69.241.122.sslip.io
 
-Vercel is not part of the current deployment path.
+Vercel serves the Next.js interface and proxies same-origin investigation requests to the stateful API through `DERVYX_API_ORIGIN`. The Node.js API remains behind Caddy and systemd so short-lived investigation state stays with the service process.
 
-The Next.js app and its `app/api` routes are authoritative for production. The
-standalone `src/server.ts` process is a compatibility boundary for engine tests
-and local replay, not a second production service.
-
-For a split public deployment, Vercel hosts the Next.js frontend and proxies
-same-origin `/api/*` requests to the stateful VPS origin configured through
-`DERVYX_API_ORIGIN`. The VPS remains responsible for the API process, RPC
-reads, short-lived request state, and systemd supervision. Cloudflare can sit in
-front as DNS/WAF/proxy, but is not required to move the Node API to Workers.
+The standalone `src/server.ts` boundary is used for engine tests and local replay. It is not a second public deployment.
 
 ## Local production run
 
@@ -25,23 +18,22 @@ npm run build
 npm start -- --hostname 127.0.0.1 --port 4760
 ```
 
-Verify:
+Open `http://127.0.0.1:4760/investigate`.
 
-```bash
-curl https://dervyx.159.69.241.122.sslip.io/api/health
-curl -I https://dervyx.159.69.241.122.sslip.io/
-curl -I https://dervyx.159.69.241.122.sslip.io/status
-curl https://dervyx.159.69.241.122.sslip.io/api/agent
+## Vercel frontend
+
+Set these project environment variables for the production deployment:
+
+```text
+NEXT_PUBLIC_SITE_URL=https://dervyx.vercel.app
+DERVYX_API_ORIGIN=https://dervyx.159.69.241.122.sslip.io
 ```
 
-Deploy the exact Git commit being reviewed. Record the commit locally before
-reloading the service, then verify the public response and the repository ref
-match. The latest build must expose the paired proof, receipt route, full hash
-verification, and configured-provider URL redaction.
+Deploy the exact Git commit being reviewed. After deployment, assign the canonical `dervyx.vercel.app` domain to the deployment and verify the public HTML and API proxy response.
 
-## systemd
+## Stateful API service
 
-The production service should run the built Next.js server on loopback port `4760` and restart automatically.
+The API service should run the built Next.js server on loopback port `4760` under a restricted service account:
 
 ```ini
 [Unit]
@@ -64,7 +56,7 @@ RestartSec=3
 WantedBy=multi-user.target
 ```
 
-Use a restricted service user and keep `.env` readable only by that user. Do not place credentials in the unit file.
+Keep environment files readable only by the service account. Do not place credentials in the unit file or repository.
 
 ## Caddy
 
@@ -74,16 +66,26 @@ dervyx.example.com {
 }
 ```
 
-Replace the example hostname with the deployment's canonical HTTPS hostname. Keep TLS termination and security headers enabled at the edge and application layers.
+Replace the example hostname with the API deployment hostname and keep HTTPS enabled.
 
-## Post-deploy checks
+## Verification
 
-1. Confirm the service is active and enabled.
-2. Confirm port `4760` has exactly one listener.
-3. Confirm `/api/health` returns `200` and `chainId: 8453`.
-4. Open `/`, `/investigate`, and `/status` in a browser.
-5. Load the instant example and use **Replay & verify**.
-6. Open `/compare`, run both labeled cached cases, download both receipts, and run `npm run verify:fixtures` from the checkout.
-7. Confirm a live evidence request is bounded by the two-run concurrency gate and public rate limit.
-8. Inspect the rendered HTML for the canonical public URL in `og:url` and social-image metadata.
-9. Check response headers include CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, and Permissions-Policy.
+Run these checks against the canonical frontend and API:
+
+```bash
+curl https://dervyx.vercel.app/api/health
+curl -I https://dervyx.vercel.app/
+curl -I https://dervyx.vercel.app/status
+curl https://dervyx.vercel.app/api/agent
+curl https://dervyx.159.69.241.122.sslip.io/api/health
+```
+
+Then verify:
+
+1. `/`, `/investigate`, `/compare`, and `/status` render successfully.
+2. The investigation page has no landing navigation or shared footer.
+3. Saved anomaly and clean-control examples complete immediately.
+4. Both certificates can be downloaded and replay-verified.
+5. A bounded live review either completes or fails with an explicit retryable state.
+6. The canonical HTML uses `dervyx.vercel.app` for social metadata.
+7. Response headers include CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, and Permissions-Policy.

@@ -7,7 +7,7 @@ export function Footer() {
   return (
     <footer className="border-t border-edge/70 bg-ink">
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-16">
-        <div className="grid gap-8 sm:gap-12 md:grid-cols-[1.4fr_1fr_1fr_1.4fr]">
+        <div className="grid gap-8 sm:gap-12 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
             <div className="flex items-center gap-2.5">
               <Mark size={24} />
@@ -38,13 +38,6 @@ export function Footer() {
             </ul>
           </div>
 
-          <div>
-            <h3 className="text-xs uppercase tracking-widest2 text-faint">Limits</h3>
-            <p className="mt-4 text-sm leading-relaxed text-faint">
-              Dervyx reports observed relationships, not proof of wash trading, ownership, or intent.
-              Read-only. No wallet. Public RPC fallback is labeled as such.
-            </p>
-          </div>
         </div>
 
         <div className="mt-14 flex flex-col gap-3 border-t border-edge/60 pt-6 text-xs text-faint md:flex-row md:items-center md:justify-between">

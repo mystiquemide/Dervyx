@@ -23,7 +23,12 @@ function hash(tag: string): Hex {
 }
 
 const routerTaxonomy: RootTaxonomy = new StaticRootTaxonomy("phase0-source-by-source-v1", [
-  { address: router, class: "router", label: "Uniswap v4 PoolManager", source: "https://example.invalid/router" },
+  {
+    address: router,
+    class: "router",
+    label: "Uniswap v4 PoolManager",
+    source: "https://developers.uniswap.org/docs/protocols/v4/deployments",
+  },
 ]);
 
 function edge(from: Address, to: Address, index: number, blockNumber: number, tag: string): FundingEdge {
@@ -39,7 +44,7 @@ function edge(from: Address, to: Address, index: number, blockNumber: number, ta
     transactionHash: tx,
     logIndex: index,
     sourceType: "erc20_transfer",
-    sourceUrl: `https://basescan.org/tx/${tx}`,
+    sourceUrl: "https://github.com/mystiquemide/Dervyx/blob/main/examples/README.md",
   };
 }
 

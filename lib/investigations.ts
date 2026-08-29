@@ -1,5 +1,5 @@
 import { normalizeScopeRequest, ScopeStore, type EvidenceSnapshot } from "../src/scope.js";
-import { LiveRunGate } from "../src/limits.js";
+import { FixedWindowRateLimiter, LiveRunGate, publicClientKey } from "../src/limits.js";
 import { createDefaultEvidenceRunner, type EvidenceRunner } from "../src/evidence.js";
 import { certifyEvidence, verifyReport, type DervyxReport } from "../src/report.js";
 import { branchAdapterFromEnv, chooseBranch, type BranchModelAdapter, type BranchSummary } from "../src/branch.js";
@@ -11,12 +11,23 @@ type EngineGlobals = {
   __dvxStore?: ScopeStore;
   __dvxRunner?: EvidenceRunner;
   __dvxLiveRunGate?: LiveRunGate;
+  __dvxScopeRateLimiter?: FixedWindowRateLimiter;
+  __dvxLiveEvidenceRateLimiter?: FixedWindowRateLimiter;
 };
 const globals = globalThis as unknown as EngineGlobals;
 export const store: ScopeStore = globals.__dvxStore ?? (globals.__dvxStore = new ScopeStore());
 const runner: EvidenceRunner = globals.__dvxRunner ?? (globals.__dvxRunner = createDefaultEvidenceRunner());
 
 export const liveRunGate: LiveRunGate = globals.__dvxLiveRunGate ?? (globals.__dvxLiveRunGate = new LiveRunGate());
+export const scopeRateLimiter: FixedWindowRateLimiter =
+  globals.__dvxScopeRateLimiter ?? (globals.__dvxScopeRateLimiter = new FixedWindowRateLimiter(30, 5 * 60 * 1000));
+export const liveEvidenceRateLimiter: FixedWindowRateLimiter =
+  globals.__dvxLiveEvidenceRateLimiter ??
+  (globals.__dvxLiveEvidenceRateLimiter = new FixedWindowRateLimiter(8, 5 * 60 * 1000));
+
+export function requestRateLimitKey(request: Request): string {
+  return publicClientKey(request.headers);
+}
 
 export { normalizeScopeRequest, verifyReport };
 export type { DervyxReport };

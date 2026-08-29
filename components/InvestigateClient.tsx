@@ -326,7 +326,7 @@ export function InvestigateClient() {
                 report={record.report.report}
                 reportHash={record.report.reportHash}
                 branch={record.branch}
-                chip={record.mode === "cached" ? "Example" : undefined}
+                chip={record.mode === "cached" ? "Cached example" : undefined}
                 actions={
                   <>
                     <a

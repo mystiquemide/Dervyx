@@ -86,7 +86,7 @@ export default function LandingPage() {
               <CertificatePanel
                 report={sampleAnomaly.report}
                 reportHash={sampleAnomaly.reportHash}
-                chip="Example"
+                chip="Recorded engine fixture"
               />
               <p className="mt-3 text-center text-xs text-faint">
                 A real certificate over an example dataset. The numbers and hash above replay-verify.
@@ -195,6 +195,7 @@ export default function LandingPage() {
                 root={anomalyCluster.rootAddress}
                 traders={anomalyCluster.traders}
                 sourceUrls={anomalyCluster.sampleSourceUrls}
+                sourceLinksAreLive={false}
               />
             ) : null}
           </Reveal>

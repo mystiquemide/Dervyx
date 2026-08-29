@@ -6,6 +6,10 @@ https://dervyx.159.69.241.122.sslip.io
 
 Vercel is not part of the current deployment path.
 
+The Next.js app and its `app/api` routes are authoritative for production. The
+standalone `src/server.ts` process is a compatibility boundary for engine tests
+and local replay, not a second production service.
+
 ## Local production run
 
 ```bash
@@ -21,7 +25,13 @@ Verify:
 curl https://dervyx.159.69.241.122.sslip.io/api/health
 curl -I https://dervyx.159.69.241.122.sslip.io/
 curl -I https://dervyx.159.69.241.122.sslip.io/status
+curl https://dervyx.159.69.241.122.sslip.io/api/agent
 ```
+
+Deploy the exact Git commit being reviewed. Record the commit locally before
+reloading the service, then verify the public response and the repository ref
+match. The latest build must expose the paired proof, receipt route, full hash
+verification, and configured-provider URL redaction.
 
 ## systemd
 
@@ -67,5 +77,7 @@ Replace the example hostname with the deployment's canonical HTTPS hostname. Kee
 3. Confirm `/api/health` returns `200` and `chainId: 8453`.
 4. Open `/`, `/investigate`, and `/status` in a browser.
 5. Load the instant example and use **Replay & verify**.
-6. Inspect the rendered HTML for the canonical public URL in `og:url` and social-image metadata.
-7. Check response headers include CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, and Permissions-Policy.
+6. Open `/compare`, run both labeled cached cases, download both receipts, and run `npm run verify:fixtures` from the checkout.
+7. Confirm a live evidence request is bounded by the two-run concurrency gate and public rate limit.
+8. Inspect the rendered HTML for the canonical public URL in `og:url` and social-image metadata.
+9. Check response headers include CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, and Permissions-Policy.

@@ -1,0 +1,202 @@
+{
+  "report": {
+    "schema": "dervyx-report-v1",
+    "identity": {
+      "chainId": 8453,
+      "endBlock": 50123000,
+      "fixtureId": "baseunc-anomaly-example",
+      "graphVersion": "funding-graph-v1",
+      "mode": "recorded",
+      "providerMode": "public_fallback",
+      "reportConfigVersion": "phase4-report-v1",
+      "scopeConfigVersion": "phase1-scope-v1",
+      "startBlock": 50121395,
+      "taxonomyVersion": "phase0-source-by-source-v1",
+      "token": "0xB2000000000000000000000Ff4a547c891AB1b01",
+      "branch": "deeper_funding",
+      "maxHopsConsidered": 2
+    },
+    "verdict": {
+      "label": "ANOMALY",
+      "rationaleCode": "CLUSTER_LINKED_SHARE_ABOVE_THRESHOLD",
+      "statement": "Observed anomaly: a material share of swap activity originates from wallets that share an unknown funding source within two hops. This is an evidence signal for further review, not proof of wash trading or coordination intent."
+    },
+    "metric": {
+      "name": "observed_cluster_linked_swap_share",
+      "units": "swap_events",
+      "numerator": 10,
+      "denominator": 16,
+      "attributedSwapEvents": 16,
+      "attributedRatioBps": 10000,
+      "attributedRatioPercent": "100.00%",
+      "ratioBps": 6250,
+      "ratioPercent": "62.50%",
+      "window": {
+        "startBlock": 50121395,
+        "endBlock": 50123000
+      },
+      "thresholds": {
+        "anomalyRatioBps": 3000,
+        "clusterMinTraders": 2,
+        "minCoverageForCleanBps": 5000,
+        "minCoverageForVerdictBps": 500
+      }
+    },
+    "attributionLedger": [
+      {
+        "bucket": "unknown_coordination",
+        "label": "Shared unknown roots",
+        "description": "Counted in the anomaly share because the sampled traders converge on an unknown root.",
+        "swapEvents": 10,
+        "ratioBps": 6250,
+        "ratioPercent": "62.50%",
+        "traderCount": 3,
+        "countsTowardAnomalyShare": true
+      },
+      {
+        "bucket": "known_infrastructure",
+        "label": "Known infrastructure",
+        "description": "Visible in the evidence, but excluded from the anomaly share by the sourced taxonomy.",
+        "swapEvents": 6,
+        "ratioBps": 3750,
+        "ratioPercent": "37.50%",
+        "traderCount": 1,
+        "countsTowardAnomalyShare": false
+      },
+      {
+        "bucket": "attributed_unclustered",
+        "label": "Attributed, not clustered",
+        "description": "Has an accepted funding path but does not meet the coordination threshold.",
+        "swapEvents": 0,
+        "ratioBps": 0,
+        "ratioPercent": "0.00%",
+        "traderCount": 0,
+        "countsTowardAnomalyShare": false
+      },
+      {
+        "bucket": "unattributed",
+        "label": "Unattributed origins",
+        "description": "No accepted funding path was available in the sampled evidence.",
+        "swapEvents": 0,
+        "ratioBps": 0,
+        "ratioPercent": "0.00%",
+        "traderCount": 0,
+        "countsTowardAnomalyShare": false
+      }
+    ],
+    "coverage": {
+      "attributionCoverageBps": 10000,
+      "fundingStatus": "complete",
+      "originsSampled": 4,
+      "originsTotal": 4,
+      "sourceErrors": {
+        "erc20": 0,
+        "native": 0
+      },
+      "tradersAnalyzed": 4,
+      "tradersAttributed": 4
+    },
+    "coordinationClusters": [
+      {
+        "id": "coord_73234a5547437c9b",
+        "linkedSwapEvents": 10,
+        "rootAddress": "0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB",
+        "rootClass": "unknown",
+        "sampleSourceUrls": [
+          "https://github.com/mystiquemide/Dervyx/blob/main/examples/README.md"
+        ],
+        "traderCount": 3,
+        "traders": [
+          "0x1111111111111111111111111111111111111111",
+          "0x2222222222222222222222222222222222222222",
+          "0x3333333333333333333333333333333333333333"
+        ]
+      }
+    ],
+    "knownRootExclusions": [
+      {
+        "address": "0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC",
+        "class": "router",
+        "linkedSwapEvents": 6,
+        "linkedTraderCount": 1,
+        "label": "Uniswap v4 PoolManager",
+        "source": "https://developers.uniswap.org/docs/protocols/v4/deployments"
+      }
+    ],
+    "evidenceSample": {
+      "totalFundingEdges": 5,
+      "totalSwapEvents": 16,
+      "edges": [
+        {
+          "amount": "1000000",
+          "blockNumber": 100,
+          "from": "0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB",
+          "logIndex": 0,
+          "sourceType": "erc20_transfer",
+          "sourceUrl": "https://github.com/mystiquemide/Dervyx/blob/main/examples/README.md",
+          "to": "0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa",
+          "token": "0xB2000000000000000000000Ff4a547c891AB1b01",
+          "transactionHash": "0xa0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0"
+        },
+        {
+          "amount": "1000000",
+          "blockNumber": 101,
+          "from": "0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa",
+          "logIndex": 1,
+          "sourceType": "erc20_transfer",
+          "sourceUrl": "https://github.com/mystiquemide/Dervyx/blob/main/examples/README.md",
+          "to": "0x1111111111111111111111111111111111111111",
+          "token": "0xB2000000000000000000000Ff4a547c891AB1b01",
+          "transactionHash": "0xa1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1"
+        },
+        {
+          "amount": "1000000",
+          "blockNumber": 102,
+          "from": "0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa",
+          "logIndex": 2,
+          "sourceType": "erc20_transfer",
+          "sourceUrl": "https://github.com/mystiquemide/Dervyx/blob/main/examples/README.md",
+          "to": "0x2222222222222222222222222222222222222222",
+          "token": "0xB2000000000000000000000Ff4a547c891AB1b01",
+          "transactionHash": "0xa2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2"
+        },
+        {
+          "amount": "1000000",
+          "blockNumber": 103,
+          "from": "0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa",
+          "logIndex": 3,
+          "sourceType": "erc20_transfer",
+          "sourceUrl": "https://github.com/mystiquemide/Dervyx/blob/main/examples/README.md",
+          "to": "0x3333333333333333333333333333333333333333",
+          "token": "0xB2000000000000000000000Ff4a547c891AB1b01",
+          "transactionHash": "0xa3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3"
+        },
+        {
+          "amount": "1000000",
+          "blockNumber": 104,
+          "from": "0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC",
+          "logIndex": 4,
+          "sourceType": "erc20_transfer",
+          "sourceUrl": "https://github.com/mystiquemide/Dervyx/blob/main/examples/README.md",
+          "to": "0x4444444444444444444444444444444444444444",
+          "token": "0xB2000000000000000000000Ff4a547c891AB1b01",
+          "transactionHash": "0xa4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4"
+        }
+      ]
+    },
+    "limitations": [
+      "Shared funding is evidence of a relationship, not proof of intent, ownership, coordination, or wrongdoing. This report is not proof of wash trading.",
+      "Funding attribution is bounded to two hops and a sampled subset of trading origins; unsampled or unattributed origins are excluded from the numerator.",
+      "Native-ETH funding coverage is best-effort and provider-limited; canonical ERC-20 transfers are the reliable funding layer for this scope.",
+      "Root classification uses a versioned, source-by-source taxonomy; addresses without sourced evidence remain unknown by default."
+    ],
+    "sources": {
+      "apiBase": "https://base.blockscout.com/api/v2",
+      "fundingSourceMode": "canonical_erc20",
+      "rpcUrl": "https://mainnet.base.org",
+      "swapProviderMode": "public_fallback"
+    }
+  },
+  "canonicalJson": "{\"attributionLedger\":[{\"bucket\":\"unknown_coordination\",\"countsTowardAnomalyShare\":true,\"description\":\"Counted in the anomaly share because the sampled traders converge on an unknown root.\",\"label\":\"Shared unknown roots\",\"ratioBps\":6250,\"ratioPercent\":\"62.50%\",\"swapEvents\":10,\"traderCount\":3},{\"bucket\":\"known_infrastructure\",\"countsTowardAnomalyShare\":false,\"description\":\"Visible in the evidence, but excluded from the anomaly share by the sourced taxonomy.\",\"label\":\"Known infrastructure\",\"ratioBps\":3750,\"ratioPercent\":\"37.50%\",\"swapEvents\":6,\"traderCount\":1},{\"bucket\":\"attributed_unclustered\",\"countsTowardAnomalyShare\":false,\"description\":\"Has an accepted funding path but does not meet the coordination threshold.\",\"label\":\"Attributed, not clustered\",\"ratioBps\":0,\"ratioPercent\":\"0.00%\",\"swapEvents\":0,\"traderCount\":0},{\"bucket\":\"unattributed\",\"countsTowardAnomalyShare\":false,\"description\":\"No accepted funding path was available in the sampled evidence.\",\"label\":\"Unattributed origins\",\"ratioBps\":0,\"ratioPercent\":\"0.00%\",\"swapEvents\":0,\"traderCount\":0}],\"coordinationClusters\":[{\"id\":\"coord_73234a5547437c9b\",\"linkedSwapEvents\":10,\"rootAddress\":\"0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB\",\"rootClass\":\"unknown\",\"sampleSourceUrls\":[\"https://github.com/mystiquemide/Dervyx/blob/main/examples/README.md\"],\"traderCount\":3,\"traders\":[\"0x1111111111111111111111111111111111111111\",\"0x2222222222222222222222222222222222222222\",\"0x3333333333333333333333333333333333333333\"]}],\"coverage\":{\"attributionCoverageBps\":10000,\"fundingStatus\":\"complete\",\"originsSampled\":4,\"originsTotal\":4,\"sourceErrors\":{\"erc20\":0,\"native\":0},\"tradersAnalyzed\":4,\"tradersAttributed\":4},\"evidenceSample\":{\"edges\":[{\"amount\":\"1000000\",\"blockNumber\":100,\"from\":\"0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB\",\"logIndex\":0,\"sourceType\":\"erc20_transfer\",\"sourceUrl\":\"https://github.com/mystiquemide/Dervyx/blob/main/examples/README.md\",\"to\":\"0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa\",\"token\":\"0xB2000000000000000000000Ff4a547c891AB1b01\",\"transactionHash\":\"0xa0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0\"},{\"amount\":\"1000000\",\"blockNumber\":101,\"from\":\"0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa\",\"logIndex\":1,\"sourceType\":\"erc20_transfer\",\"sourceUrl\":\"https://github.com/mystiquemide/Dervyx/blob/main/examples/README.md\",\"to\":\"0x1111111111111111111111111111111111111111\",\"token\":\"0xB2000000000000000000000Ff4a547c891AB1b01\",\"transactionHash\":\"0xa1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1\"},{\"amount\":\"1000000\",\"blockNumber\":102,\"from\":\"0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa\",\"logIndex\":2,\"sourceType\":\"erc20_transfer\",\"sourceUrl\":\"https://github.com/mystiquemide/Dervyx/blob/main/examples/README.md\",\"to\":\"0x2222222222222222222222222222222222222222\",\"token\":\"0xB2000000000000000000000Ff4a547c891AB1b01\",\"transactionHash\":\"0xa2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2\"},{\"amount\":\"1000000\",\"blockNumber\":103,\"from\":\"0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa\",\"logIndex\":3,\"sourceType\":\"erc20_transfer\",\"sourceUrl\":\"https://github.com/mystiquemide/Dervyx/blob/main/examples/README.md\",\"to\":\"0x3333333333333333333333333333333333333333\",\"token\":\"0xB2000000000000000000000Ff4a547c891AB1b01\",\"transactionHash\":\"0xa3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3\"},{\"amount\":\"1000000\",\"blockNumber\":104,\"from\":\"0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC\",\"logIndex\":4,\"sourceType\":\"erc20_transfer\",\"sourceUrl\":\"https://github.com/mystiquemide/Dervyx/blob/main/examples/README.md\",\"to\":\"0x4444444444444444444444444444444444444444\",\"token\":\"0xB2000000000000000000000Ff4a547c891AB1b01\",\"transactionHash\":\"0xa4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4\"}],\"totalFundingEdges\":5,\"totalSwapEvents\":16},\"identity\":{\"branch\":\"deeper_funding\",\"chainId\":8453,\"endBlock\":50123000,\"fixtureId\":\"baseunc-anomaly-example\",\"graphVersion\":\"funding-graph-v1\",\"maxHopsConsidered\":2,\"mode\":\"recorded\",\"providerMode\":\"public_fallback\",\"reportConfigVersion\":\"phase4-report-v1\",\"scopeConfigVersion\":\"phase1-scope-v1\",\"startBlock\":50121395,\"taxonomyVersion\":\"phase0-source-by-source-v1\",\"token\":\"0xB2000000000000000000000Ff4a547c891AB1b01\"},\"knownRootExclusions\":[{\"address\":\"0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC\",\"class\":\"router\",\"label\":\"Uniswap v4 PoolManager\",\"linkedSwapEvents\":6,\"linkedTraderCount\":1,\"source\":\"https://developers.uniswap.org/docs/protocols/v4/deployments\"}],\"limitations\":[\"Shared funding is evidence of a relationship, not proof of intent, ownership, coordination, or wrongdoing. This report is not proof of wash trading.\",\"Funding attribution is bounded to two hops and a sampled subset of trading origins; unsampled or unattributed origins are excluded from the numerator.\",\"Native-ETH funding coverage is best-effort and provider-limited; canonical ERC-20 transfers are the reliable funding layer for this scope.\",\"Root classification uses a versioned, source-by-source taxonomy; addresses without sourced evidence remain unknown by default.\"],\"metric\":{\"attributedRatioBps\":10000,\"attributedRatioPercent\":\"100.00%\",\"attributedSwapEvents\":16,\"denominator\":16,\"name\":\"observed_cluster_linked_swap_share\",\"numerator\":10,\"ratioBps\":6250,\"ratioPercent\":\"62.50%\",\"thresholds\":{\"anomalyRatioBps\":3000,\"clusterMinTraders\":2,\"minCoverageForCleanBps\":5000,\"minCoverageForVerdictBps\":500},\"units\":\"swap_events\",\"window\":{\"endBlock\":50123000,\"startBlock\":50121395}},\"schema\":\"dervyx-report-v1\",\"sources\":{\"apiBase\":\"https://base.blockscout.com/api/v2\",\"fundingSourceMode\":\"canonical_erc20\",\"rpcUrl\":\"https://mainnet.base.org\",\"swapProviderMode\":\"public_fallback\"},\"verdict\":{\"label\":\"ANOMALY\",\"rationaleCode\":\"CLUSTER_LINKED_SHARE_ABOVE_THRESHOLD\",\"statement\":\"Observed anomaly: a material share of swap activity originates from wallets that share an unknown funding source within two hops. This is an evidence signal for further review, not proof of wash trading or coordination intent.\"}}",
+  "reportHash": "dd9d85ea22d607e877a084ae25041ded4df7c39732b235e3bbfcb669fb26adf1"
+}

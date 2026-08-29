@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { normalizeScopeRequest, store } from "@/lib/investigations";
-import { jsonError } from "@/lib/http";
+import { normalizeScopeRequest, requestRateLimitKey, scopeRateLimiter, store } from "@/lib/investigations";
+import { jsonError, rateLimitError } from "@/lib/http";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -21,6 +21,11 @@ export async function POST(request: Request) {
   const validation = normalizeScopeRequest(rawBody);
   if (!validation.ok) {
     return jsonError(400, "INVALID_REQUEST", "Investigation scope was rejected.", validation.issues);
+  }
+
+  const rate = scopeRateLimiter.tryConsume(requestRateLimitKey(request));
+  if (!rate.allowed) {
+    return rateLimitError("Too many investigation scopes from this client. Retry shortly.", rate.retryAfterSeconds);
   }
 
   const result = store.create(validation.value, validation.scopeHash);

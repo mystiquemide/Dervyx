@@ -4,6 +4,17 @@ Dervyx is a read-only Base investigation agent for launchpad and exchange listin
 
 [Open Dervyx](https://dervyx.159.69.241.122.sslip.io/) · [Run an investigation](https://dervyx.159.69.241.122.sslip.io/investigate) · [Run the paired proof](https://dervyx.159.69.241.122.sslip.io/compare) · [Agent contract](https://dervyx.159.69.241.122.sslip.io/api/agent) · [Check status](https://dervyx.159.69.241.122.sslip.io/status)
 
+## Quick proof path
+
+If you only have a few minutes, verify these four things:
+
+1. Open the [paired proof](https://dervyx.159.69.241.122.sslip.io/compare).
+2. Run the same scope twice: unknown shared root versus known router root.
+3. Compare the attribution ledger and observed share.
+4. Download the [anomaly certificate](./examples/anomaly-certificate.json), [anomaly receipt](./examples/anomaly-receipt.json), [control certificate](./examples/control-certificate.json), or [control receipt](./examples/control-receipt.json), then run `npm run verify:fixtures`.
+
+The proof is the difference between a suspicious relationship and a sourced infrastructure relationship. Dervyx shows both.
+
 ![Dervyx landing page](./public/screenshots/landing.png)
 
 ## The problem
@@ -35,6 +46,7 @@ The live tool supports:
 - Downloadable counterfactual evidence receipts
 - Browser replay and hash verification
 - A machine-readable read-only agent contract at `/api/agent`
+- Committed anomaly/control certificates and receipts that replay from a fresh checkout
 - Retry and narrower-range guidance for incomplete evidence
 - Explicitly bounded verified fixture scopes that fail closed when unsupported
 - Explicit `ANOMALY`, `CLEAN`, `UNKNOWN_ROOTS`, and `INSUFFICIENT_DATA` states
@@ -52,6 +64,8 @@ what happened before and after the root policy:
 The [paired proof](https://dervyx.159.69.241.122.sslip.io/compare) runs an anomaly fixture and a
 known-router control with the same thresholds. The only meaningful change is the funding topology.
 That makes the verdict inspectable as a policy decision, not a mysterious risk score. See the [proof walkthrough](./docs/DEMO.md) for the exact run and verification sequence.
+
+The public [anomaly certificate](./examples/anomaly-certificate.json), [control certificate](./examples/control-certificate.json), [anomaly receipt](./examples/anomaly-receipt.json), and [control receipt](./examples/control-receipt.json) are labeled engine fixtures, not live-chain evidence.
 
 ## Evidence contract
 
@@ -74,6 +88,7 @@ cp .env.example .env
 npm run typecheck
 npm run typecheck:web
 npm test
+npm run verify:fixtures
 npm run build
 npm start -- --hostname 127.0.0.1 --port 4760
 ```
@@ -81,6 +96,7 @@ npm start -- --hostname 127.0.0.1 --port 4760
 Then open `http://127.0.0.1:4760/investigate`.
 
 The production app runs as a Node.js Next.js server behind a Caddy reverse proxy. See [deployment notes](./docs/DEPLOYMENT.md).
+The standalone `src/server.ts` HTTP boundary remains for engine-level tests and local replay; it is not the production deployment path.
 
 ## Environment
 
@@ -101,7 +117,8 @@ The current release has been verified with:
 
 - `npm run typecheck`
 - `npm run typecheck:web`
-- `npm test`, 61 tests passing
+- `npm test`, 64 tests passing
+- `npm run verify:fixtures`, replaying both committed proof certificates and receipts
 - `npm run build`
 - `npm audit --audit-level=high`
 - Live `/api/health`, `/status`, and `/investigate` checks
@@ -120,10 +137,13 @@ The current release has been verified with:
 - Funding coverage can be partial. Partial evidence never becomes a clean result.
 - A running process keeps request state in memory. Restarting the server clears active investigation records.
 - The product reports observable relationships. Human reviewers decide what those relationships mean.
+- Public scope creation and live evidence reads are rate-limited; live work is also concurrency-bounded.
 
 ## Orion Builder Hackathon
 
 Dervyx is prepared for the [Orion Builder Hackathon](https://orionagents.org/hackathon). The application is self-contained and makes no unsupported claim about a private Orion runtime API or native platform integration.
+
+This release has no wallet flow and no attestation contract. Orion registration, wallet signature, ignition payment, and submission are separate owner-controlled actions and are not performed by this repository.
 
 ## Repository layout
 
@@ -134,7 +154,8 @@ components/          Product UI and certificate components
 lib/                 Next.js orchestration and labeled examples
 src/                 Deterministic scope, evidence, graph, report, receipt, and engine code
 test/                Engine and HTTP tests
-fixtures/            Phase 0 input manifest
+examples/             Replayable anomaly/control certificates and receipts
+fixtures/             Phase 0 input manifest
 scripts/              Replay and report-audit utilities
 public/screenshots/  Verified product screenshots
 ```
@@ -142,10 +163,10 @@ public/screenshots/  Verified product screenshots
 ## Agent contract
 
 `GET /api/agent` returns the current machine-readable contract: Base chain identity, supported
-states and verdicts, read-only guarantees, input/output tools, and known limitations. It is a
-small HTTP/JSON interoperability surface for other agents and does not claim a private Orion SDK
-integration.
+states and verdicts, read-only guarantees, input/output tools, committed fixture paths, public
+limits, and known limitations. It is a small HTTP/JSON interoperability surface for other agents
+and does not claim a private Orion SDK integration.
 
 ## License
 
-MIT
+[MIT License](./LICENSE)

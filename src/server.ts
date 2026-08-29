@@ -3,9 +3,24 @@ import { branchAdapterFromEnv, chooseBranch, type BranchSummary } from "./branch
 import { createDefaultEvidenceRunner, type EvidenceRunner } from "./evidence.js";
 import { investigationPageHtml } from "./page.js";
 import { certifyEvidence, verifyReport, type DervyxReport } from "./report.js";
+import { FixedWindowRateLimiter, LiveRunGate, publicClientKey } from "./limits.js";
 import { normalizeScopeRequest, ScopeStore } from "./scope.js";
 
 const MAX_BODY_BYTES = 64 * 1024;
+
+function sendRateLimitError(response: ServerResponse, message: string, retryAfterSeconds: number): void {
+  response.setHeader("retry-after", String(retryAfterSeconds));
+  sendError(response, 429, "RATE_LIMITED", message);
+}
+
+function requestRateLimitKey(request: IncomingMessage): string {
+  return publicClientKey({
+    get(name) {
+      const value = request.headers[name];
+      return Array.isArray(value) ? value[0] ?? null : value ?? null;
+    },
+  });
+}
 
 function sendJson(response: ServerResponse, statusCode: number, body: unknown): void {
   const payload = JSON.stringify(body);
@@ -156,6 +171,10 @@ export function createScopeServer(
   store = new ScopeStore(),
   evidenceRunner = createDefaultEvidenceRunner(),
 ): Server {
+  const liveRunGate = new LiveRunGate();
+  const scopeRateLimiter = new FixedWindowRateLimiter(30, 5 * 60 * 1000);
+  const liveEvidenceRateLimiter = new FixedWindowRateLimiter(8, 5 * 60 * 1000);
+
   return createHttpServer(async (request, response) => {
     const method = request.method ?? "GET";
     const url = request.url ?? "/";
@@ -199,6 +218,12 @@ export function createScopeServer(
         const validation = normalizeScopeRequest(rawBody);
         if (!validation.ok) {
           sendError(response, 400, "INVALID_REQUEST", "Investigation scope was rejected.", validation.issues);
+          return;
+        }
+
+        const rate = scopeRateLimiter.tryConsume(requestRateLimitKey(request));
+        if (!rate.allowed) {
+          sendRateLimitError(response, "Too many investigation scopes from this client. Retry shortly.", rate.retryAfterSeconds);
           return;
         }
 
@@ -286,6 +311,21 @@ export function createScopeServer(
         const encodedRequestId = routeEvidenceRequestId(url);
         if (encodedRequestId) {
           const requestId = decodeURIComponent(encodedRequestId);
+          const existing = store.get(requestId);
+          if (!existing) {
+            sendError(response, 404, "NOT_FOUND", "Investigation request was not found.");
+            return;
+          }
+          if (
+            existing.mode === "live" &&
+            (existing.state === "SCOPED" || existing.state === "RETRYABLE")
+          ) {
+            const rate = liveEvidenceRateLimiter.tryConsume(requestRateLimitKey(request));
+            if (!rate.allowed) {
+              sendRateLimitError(response, "Too many live evidence reads from this client. Retry shortly.", rate.retryAfterSeconds);
+              return;
+            }
+          }
           const start = store.startEvidence(requestId);
           if (start.kind === "not_found") {
             sendError(response, 404, "NOT_FOUND", "Investigation request was not found.");
@@ -300,7 +340,19 @@ export function createScopeServer(
             return;
           }
           if (start.kind === "started") {
-            void runEvidence(store, evidenceRunner, requestId);
+            if (start.record.mode === "live" && !liveRunGate.tryAcquire()) {
+              store.failEvidence(requestId, {
+                code: "LIVE_CAPACITY_REACHED",
+                message: "Two live Base reads are already running. Retry this request in a moment.",
+                retryable: true,
+              });
+              response.setHeader("retry-after", "10");
+              sendError(response, 429, "LIVE_CAPACITY_REACHED", "Two live Base reads are already running. Retry this request in a moment.");
+              return;
+            }
+            const release = start.record.mode === "live" ? () => liveRunGate.release() : undefined;
+            const run = runEvidence(store, evidenceRunner, requestId);
+            void (release ? run.finally(release) : run);
           }
           sendJson(response, 202, start.record);
           return;

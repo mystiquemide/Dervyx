@@ -1,12 +1,32 @@
 import { NextResponse } from "next/server";
-import { liveRunGate, runEvidence, store } from "@/lib/investigations";
-import { jsonError } from "@/lib/http";
+import {
+  liveEvidenceRateLimiter,
+  liveRunGate,
+  requestRateLimitKey,
+  runEvidence,
+  store,
+} from "@/lib/investigations";
+import { jsonError, rateLimitError } from "@/lib/http";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(_request: Request, context: { params: Promise<{ id: string }> }) {
   const { id } = await context.params;
+  const existing = store.get(id);
+  if (!existing) {
+    return jsonError(404, "NOT_FOUND", "Investigation request was not found.");
+  }
+  if (
+    existing.mode === "live" &&
+    (existing.state === "SCOPED" || existing.state === "RETRYABLE")
+  ) {
+    const rate = liveEvidenceRateLimiter.tryConsume(requestRateLimitKey(_request));
+    if (!rate.allowed) {
+      return rateLimitError("Too many live evidence reads from this client. Retry shortly.", rate.retryAfterSeconds);
+    }
+  }
+
   const start = store.startEvidence(id);
   if (start.kind === "not_found") {
     return jsonError(404, "NOT_FOUND", "Investigation request was not found.");

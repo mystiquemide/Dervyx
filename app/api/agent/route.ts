@@ -13,6 +13,22 @@ const MANIFEST = {
   readOnly: true,
   modelBoundary: "A model may choose an allowlisted branch; deterministic code owns evidence, numbers, root policy, and verdict.",
   supportedModes: ["live", "cached"],
+  staticFixtures: [
+    {
+      name: "anomaly",
+      verdict: "ANOMALY",
+      mode: "recorded_fixture",
+      repositoryCertificate: "examples/anomaly-certificate.json",
+      repositoryReceipt: "examples/anomaly-receipt.json",
+    },
+    {
+      name: "control",
+      verdict: "CLEAN",
+      mode: "recorded_fixture",
+      repositoryCertificate: "examples/control-certificate.json",
+      repositoryReceipt: "examples/control-receipt.json",
+    },
+  ],
   states: ["SCOPED", "INGESTING", "EVIDENCE_READY", "RETRYABLE", "INSUFFICIENT_DATA"],
   verdicts: ["ANOMALY", "CLEAN", "UNKNOWN_ROOTS", "INSUFFICIENT_DATA"],
   tools: [
@@ -52,11 +68,18 @@ const MANIFEST = {
     "Incomplete attribution never becomes CLEAN.",
     "EVIDENCE_READY always carries a certified report.",
     "No wallet connection, signing, transaction, or trading action is required.",
+    "Public scope creation and live evidence reads are rate-limited and live work is concurrency-bounded.",
   ],
+  limits: {
+    scopeCreation: { maxRequests: 30, windowSeconds: 300 },
+    liveEvidenceReads: { maxRequests: 8, windowSeconds: 300 },
+    concurrentLiveReads: 2,
+  },
   limitations: [
     "The current adapter is Base-only and supports verified fixture scopes.",
     "Funding coverage is bounded to sampled origins and two hops.",
     "The public deployment keeps short-lived request state in process memory.",
+    "Public rate limits are process-local and depend on the edge-provided client identity.",
   ],
 };
 

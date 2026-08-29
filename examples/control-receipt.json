@@ -1,0 +1,93 @@
+{
+  "schema": "dervyx-evidence-receipt-v1",
+  "receiptId": "11b9baca0aa39bc3fc8260faac038b3c02aca25b8e24f055d679ea0bed6953a7",
+  "subject": {
+    "token": "0xB2000000000000000000000Ff4a547c891AB1b01",
+    "chainId": 8453,
+    "startBlock": 50121395,
+    "endBlock": 50123000,
+    "fixtureId": "baseunc-clean-control-example",
+    "mode": "recorded"
+  },
+  "decision": {
+    "label": "CLEAN",
+    "rationaleCode": "NO_COORDINATION_WITH_SUFFICIENT_COVERAGE",
+    "statement": "No configured funding-linkage anomaly was observed with sufficient attribution coverage for this fixed scope. This is not a guarantee of legitimacy."
+  },
+  "counterfactual": {
+    "attributedSwapEvents": 4,
+    "attributedRatioPercent": "100.00%",
+    "anomalyShareAfterRootPolicy": "0.00%",
+    "policy": "Count shared unknown roots; show known infrastructure but exclude it from anomaly share."
+  },
+  "attributionLedger": [
+    {
+      "bucket": "unknown_coordination",
+      "label": "Shared unknown roots",
+      "description": "Counted in the anomaly share because the sampled traders converge on an unknown root.",
+      "swapEvents": 0,
+      "ratioBps": 0,
+      "ratioPercent": "0.00%",
+      "traderCount": 0,
+      "countsTowardAnomalyShare": true
+    },
+    {
+      "bucket": "known_infrastructure",
+      "label": "Known infrastructure",
+      "description": "Visible in the evidence, but excluded from the anomaly share by the sourced taxonomy.",
+      "swapEvents": 4,
+      "ratioBps": 10000,
+      "ratioPercent": "100.00%",
+      "traderCount": 2,
+      "countsTowardAnomalyShare": false
+    },
+    {
+      "bucket": "attributed_unclustered",
+      "label": "Attributed, not clustered",
+      "description": "Has an accepted funding path but does not meet the coordination threshold.",
+      "swapEvents": 0,
+      "ratioBps": 0,
+      "ratioPercent": "0.00%",
+      "traderCount": 0,
+      "countsTowardAnomalyShare": false
+    },
+    {
+      "bucket": "unattributed",
+      "label": "Unattributed origins",
+      "description": "No accepted funding path was available in the sampled evidence.",
+      "swapEvents": 0,
+      "ratioBps": 0,
+      "ratioPercent": "0.00%",
+      "traderCount": 0,
+      "countsTowardAnomalyShare": false
+    }
+  ],
+  "evidence": {
+    "swapEvents": 4,
+    "fundingEdges": 2,
+    "coveragePercent": "100.00%",
+    "fundingStatus": "complete",
+    "sourceErrors": {
+      "erc20": 0,
+      "native": 0
+    }
+  },
+  "verification": {
+    "reportHash": "11b9baca0aa39bc3fc8260faac038b3c02aca25b8e24f055d679ea0bed6953a7",
+    "canonicalReport": "sorted-key JSON",
+    "command": "node scripts/verify-report.mjs report.json",
+    "browserPath": "POST /api/investigations/{id}/report/verify"
+  },
+  "sources": {
+    "apiBase": "https://base.blockscout.com/api/v2",
+    "fundingSourceMode": "canonical_erc20",
+    "rpcUrl": "https://mainnet.base.org",
+    "swapProviderMode": "public_fallback"
+  },
+  "limitations": [
+    "Shared funding is evidence of a relationship, not proof of intent, ownership, coordination, or wrongdoing. This report is not proof of wash trading.",
+    "Funding attribution is bounded to two hops and a sampled subset of trading origins; unsampled or unattributed origins are excluded from the numerator.",
+    "Native-ETH funding coverage is best-effort and provider-limited; canonical ERC-20 transfers are the reliable funding layer for this scope.",
+    "Root classification uses a versioned, source-by-source taxonomy; addresses without sourced evidence remain unknown by default."
+  ]
+}

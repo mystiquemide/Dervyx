@@ -137,6 +137,9 @@ export function PairedProofClient() {
               counted share. The control case shows that a known router can connect wallets without being
               mistaken for coordination.
             </p>
+            <p className="mt-4 rounded border border-caution/30 bg-caution/5 px-3 py-2 text-xs leading-relaxed text-caution">
+              This proof uses labeled offline fixtures so it is instant and replayable. It is not live-chain evidence.
+            </p>
           </div>
           <div className="rounded-md border border-edge px-4 py-3 text-right font-mono text-xs text-faint">
             <p>chain_id 8453</p>
@@ -198,13 +201,35 @@ export function PairedProofClient() {
       </div>
 
       {complete ? (
-        <div className="mt-8 rounded-lg border border-teal/30 bg-teal/5 p-6">
-          <p className="text-xs uppercase tracking-widest2 text-teal">What changed</p>
-          <p className="mt-3 max-w-3xl text-[15px] leading-relaxed text-cream">
-            Both cases use the same chain, range, thresholds, and deterministic report engine. Only the funding
-            topology changes. Dervyx keeps the known router visible, excludes it from the anomaly share, and
-            leaves the unknown root in the residual evidence for human review.
-          </p>
+        <div className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="rounded-lg border border-teal/30 bg-teal/5 p-6">
+            <p className="text-xs uppercase tracking-widest2 text-teal">What changed</p>
+            <p className="mt-3 max-w-3xl text-[15px] leading-relaxed text-cream">
+              Both cases use the same chain, range, thresholds, and deterministic report engine. Only the funding
+              topology changes. Dervyx keeps the known router visible, excludes it from the anomaly share, and
+              leaves the unknown root in the residual evidence for human review.
+            </p>
+          </div>
+          <div className="rounded-lg border border-edge bg-surface p-6">
+            <p className="text-xs uppercase tracking-widest2 text-faint">Agent branch trace</p>
+            <p className="mt-3 text-sm leading-relaxed text-muted">
+              The branch is allowlisted and recorded before the report is certified. Cached examples use the safe
+              deterministic fallback; live runs may use a configured model, but the engine still owns every number.
+            </p>
+            <div className="mt-4 space-y-2 font-mono text-xs">
+              {CASES.map((definition) => {
+                const branch = results[definition.id]?.branch;
+                return (
+                  <div key={definition.id} className="flex flex-wrap justify-between gap-3 border-t border-edge/60 pt-2">
+                    <span className="text-faint">{definition.id}</span>
+                    <span className="text-cream">
+                      {branch ? `${branch.branch} · ${branch.mode} · maxHops ${branch.plan.maxHopsConsidered}` : "not recorded"}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       ) : null}
     </div>

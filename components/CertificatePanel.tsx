@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { BranchDecision, DervyxReport } from "@/lib/types";
+import { CopyHashButton } from "./CopyHashButton";
 import { pct, shortHash } from "@/lib/format";
 
 const VERDICT: Record<string, { label: string; dot: string; text: string }> = {
@@ -35,17 +36,31 @@ export function CertificatePanel({
   const m = report.metric;
   const c = report.coverage;
   const exclusion = report.knownRootExclusions[0];
+  const modeLabel =
+    report.identity.mode === "live"
+      ? "Live RPC"
+      : report.identity.mode === "cached"
+        ? "Cached example"
+        : "Recorded fixture";
+  const modeClass = report.identity.mode === "live" ? "border-teal/30 text-teal" : "border-caution/30 text-caution";
+  const sourceLabel = report.identity.mode === "live"
+    ? report.sources.swapProviderMode === "configured" ? "configured provider" : "public fallback"
+    : "offline evidence";
 
   return (
     <div className="rounded-lg border border-edge bg-surface p-5 sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-xs uppercase tracking-widest2 text-faint">Anomaly certificate</p>
-          <div className="mt-2 flex items-center gap-2.5">
+          <div className="mt-2 flex flex-wrap items-center gap-2.5">
             <span className={`h-2.5 w-2.5 rounded-full ${verdict.dot}`} aria-hidden="true" />
             <span className={`text-lg font-semibold ${verdict.text}`}>{verdict.label}</span>
+            <span className={`rounded border px-2 py-1 text-[10px] uppercase tracking-widest2 ${modeClass}`}>
+              {modeLabel}
+            </span>
           </div>
           <p className="mt-1 font-mono text-[11px] text-faint">{report.verdict.rationaleCode}</p>
+          <p className="mt-1 text-xs text-faint">Source: {sourceLabel}</p>
         </div>
         {chip ? (
           <span className="shrink-0 rounded border border-edge px-2 py-1 text-[11px] uppercase tracking-widest2 text-faint">
@@ -101,7 +116,16 @@ export function CertificatePanel({
           {exclusion ? <span className="text-faint"> ({exclusion.class} separated)</span> : null}
         </Row>
         <Row label="Report hash">
-          <span className="font-mono text-teal">{shortHash(reportHash, 40)}</span>
+          <div className="min-w-0">
+            <p className="break-all font-mono text-teal" title={reportHash}>{shortHash(reportHash, 40)}</p>
+            <details className="mt-2">
+              <summary className="cursor-pointer text-xs text-muted hover:text-cream">Show full hash</summary>
+              <code className="mt-2 block break-all font-mono text-[11px] leading-relaxed text-faint">{reportHash}</code>
+            </details>
+            <div className="mt-2">
+              <CopyHashButton value={reportHash} />
+            </div>
+          </div>
         </Row>
       </dl>
 

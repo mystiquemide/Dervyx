@@ -27,14 +27,23 @@ Each certificate has two portable outputs:
 - **Report JSON**: the complete canonical report and its SHA-256 hash.
 - **Evidence receipt**: the compact counterfactual ledger and the verifier path.
 
+The repository also includes committed [anomaly](../examples/anomaly-certificate.json)
+and [control](../examples/control-certificate.json) certificates with matching
+[anomaly](../examples/anomaly-receipt.json) and [control](../examples/control-receipt.json)
+receipts. They are synthetic offline fixtures, clearly labeled as such, and are
+the static fallback when the running process has expired its in-memory record.
+
 Use the page's **Replay certificate** action, or verify a downloaded report from a fresh checkout:
 
 ```bash
 npm ci
 npm run verify:report -- report.json
+npm run verify:fixtures
 ```
 
 A changed report fails hash verification. `EVIDENCE_READY` is reserved for records that carry a certified report.
+The page exposes the full hash and a copy control, while the certificate mode
+badge distinguishes `Cached example`, `Recorded fixture`, and `Live RPC`.
 
 ## Live investigation
 

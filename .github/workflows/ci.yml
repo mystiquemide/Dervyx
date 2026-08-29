@@ -36,6 +36,9 @@ jobs:
       - name: Run tests
         run: npm test
 
+      - name: Verify committed proof fixtures
+        run: npm run verify:fixtures
+
       - name: Build production app
         run: npm run build
 

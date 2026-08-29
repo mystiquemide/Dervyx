@@ -7,10 +7,12 @@ export function FundingGraph({
   root,
   traders,
   sourceUrls,
+  sourceLinksAreLive = false,
 }: {
   root: string;
   traders: string[];
   sourceUrls: string[];
+  sourceLinksAreLive?: boolean;
 }) {
   const [hover, setHover] = useState<number | null>(null);
   const width = 340;
@@ -60,9 +62,13 @@ export function FundingGraph({
             Wallet <span className="font-mono text-cream">{shortAddr(traders[hover] ?? "")}</span> traces to the shared
             root.{" "}
             {sourceUrls[hover] ? (
-              <a href={sourceUrls[hover]} target="_blank" rel="noreferrer" className="text-teal underline-offset-2 hover:underline">
-                View funding tx &#8599;
-              </a>
+              sourceLinksAreLive ? (
+                <a href={sourceUrls[hover]} target="_blank" rel="noreferrer" className="text-teal underline-offset-2 hover:underline">
+                  View funding tx &#8599;
+                </a>
+              ) : (
+                <span className="text-caution">Fixture edge, see the committed report</span>
+              )
             ) : null}
           </>
         )}

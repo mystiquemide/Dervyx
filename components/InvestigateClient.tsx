@@ -138,7 +138,7 @@ export function InvestigateClient() {
         setRecord(payload);
         await runEvidenceFlow(payload.requestId);
       } catch {
-        setStatus({ message: "The request could not reach the local API. Retry without changing the scope.", kind: "error" });
+        setStatus({ message: "The request could not reach the Dervyx API. Retry without changing the scope.", kind: "error" });
       } finally {
         setBusy(false);
       }
@@ -187,7 +187,7 @@ export function InvestigateClient() {
         setReplay({ state: "mismatch", text: `Replay mismatch: ${outcome.mismatchReason ?? "hash differs"}.` });
       }
     } catch {
-      setReplay({ state: "error", text: "Replay could not reach the local API." });
+      setReplay({ state: "error", text: "Replay could not reach the Dervyx API." });
     }
   }, [record]);
 
@@ -204,9 +204,9 @@ export function InvestigateClient() {
     status.kind === "success" ? "text-teal" : status.kind === "error" ? "text-danger" : "text-caution";
 
   return (
-    <div className="grid gap-10 lg:grid-cols-[380px_1fr]">
+    <div className="grid gap-6 sm:gap-10 lg:grid-cols-[380px_1fr]">
       {/* Scope form */}
-      <form onSubmit={onSubmit} className="rounded-lg border border-edge bg-surface p-6">
+      <form onSubmit={onSubmit} className="rounded-lg border border-edge bg-surface p-4 sm:p-6">
         <h2 className="text-xs uppercase tracking-widest2 text-faint">Scope</h2>
         <div className="mt-5 space-y-4">
           <Field label="Base token address" hint="EIP-55 checksummed contract.">

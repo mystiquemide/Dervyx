@@ -125,7 +125,7 @@ export function PairedProofClient() {
 
   return (
     <div>
-      <div className="rounded-lg border border-edge bg-surface p-6 sm:p-8">
+      <div className="rounded-lg border border-edge bg-surface p-4 sm:p-8">
         <div className="flex flex-wrap items-start justify-between gap-6">
           <div className="max-w-2xl">
             <p className="text-xs uppercase tracking-widest2 text-teal">Counterfactual funding ledger</p>
@@ -151,7 +151,7 @@ export function PairedProofClient() {
           type="button"
           onClick={() => void runPair()}
           disabled={running}
-          className="mt-8 rounded-md bg-teal px-5 py-3 text-sm font-semibold text-ink transition-colors duration-200 hover:bg-teal-deep disabled:cursor-wait disabled:opacity-60"
+          className="mt-8 w-full rounded-md bg-teal px-5 py-3 text-sm font-semibold text-ink transition-colors duration-200 hover:bg-teal-deep disabled:cursor-wait disabled:opacity-60 sm:w-auto"
         >
           {running ? `Running ${active === "anomaly" ? "anomaly" : "control"} case...` : "Run the paired proof"}
         </button>
@@ -162,7 +162,7 @@ export function PairedProofClient() {
         {CASES.map((definition) => {
           const result = results[definition.id];
           return (
-            <article key={definition.id} className="rounded-lg border border-edge/70 bg-ink p-5 sm:p-6">
+            <article key={definition.id} className="rounded-lg border border-edge/70 bg-ink p-4 sm:p-6">
               <div className="flex items-start gap-4">
                 <span className="font-mono text-sm text-teal">{definition.step}</span>
                 <div>

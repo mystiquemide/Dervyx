@@ -9,9 +9,9 @@ export const metadata: Metadata = {
 
 export default function InvestigatePage() {
   return (
-    <div className="mx-auto max-w-6xl px-6 py-16">
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-16">
       <p className="text-xs uppercase tracking-widest2 text-teal">Investigation</p>
-      <h1 className="mt-4 max-w-3xl text-[clamp(2rem,4vw,3rem)] font-semibold leading-tight tracking-tight text-cream">
+      <h1 className="mt-4 max-w-3xl text-[clamp(1.875rem,8vw,3rem)] font-semibold leading-tight tracking-tight text-cream">
         Scope a token, read the evidence, get a certificate.
       </h1>
       <p className="mt-5 max-w-measure text-[15px] leading-relaxed text-muted">

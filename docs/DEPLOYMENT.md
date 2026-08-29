@@ -10,6 +10,12 @@ The Next.js app and its `app/api` routes are authoritative for production. The
 standalone `src/server.ts` process is a compatibility boundary for engine tests
 and local replay, not a second production service.
 
+For a split public deployment, Vercel hosts the Next.js frontend and proxies
+same-origin `/api/*` requests to the stateful VPS origin configured through
+`DERVYX_API_ORIGIN`. The VPS remains responsible for the API process, RPC
+reads, short-lived request state, and systemd supervision. Cloudflare can sit in
+front as DNS/WAF/proxy, but is not required to move the Node API to Workers.
+
 ## Local production run
 
 ```bash

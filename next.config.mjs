@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 
 const isDev = process.env.NODE_ENV !== "production";
+const apiOrigin = (process.env.DERVYX_API_ORIGIN ?? "").replace(/\/+$/, "");
 
 // Content-Security-Policy. Next injects inline bootstrap scripts and inline critical CSS,
 // so 'unsafe-inline' is required for script-src and style-src without a nonce middleware.
@@ -36,6 +37,18 @@ const securityHeaders = [
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async rewrites() {
+    // The public Vercel frontend can proxy same-origin API calls to the
+    // stateful VPS backend without exposing CORS or changing client code.
+    return {
+      beforeFiles: apiOrigin
+        ? [
+            { source: "/api/investigations", destination: `${apiOrigin}/api/investigations` },
+            { source: "/api/investigations/:path*", destination: `${apiOrigin}/api/investigations/:path*` },
+          ]
+        : [],
+    };
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

@@ -106,6 +106,7 @@ Copy `.env.example` to `.env`. The public Base RPC fallback and deterministic br
 |---|---:|---|
 | `BASE_RPC_URL` | No | Optional Base RPC endpoint. Defaults to the public Base mainnet RPC. |
 | `NEXT_PUBLIC_SITE_URL` | No | Canonical URL used for social metadata. |
+| `DERVYX_API_ORIGIN` | No | Optional API origin for a split Vercel frontend and stateful VPS backend. |
 | `DERVYX_MODEL_BASE_URL` | No | OpenAI-compatible chat-completions base URL for optional branch selection. |
 | `DERVYX_MODEL_API_KEY` | No | Local-only key for the optional model adapter. |
 | `DERVYX_MODEL_NAME` | No | Model name for the optional branch selector. |

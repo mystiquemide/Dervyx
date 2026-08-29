@@ -16,7 +16,7 @@ const CHECKS: { label: string; value: string; ok: boolean }[] = [
 
 export default function StatusPage() {
   return (
-    <div className="mx-auto max-w-3xl px-6 py-20">
+    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-20">
       <p className="text-xs uppercase tracking-widest2 text-teal">Status</p>
       <div className="mt-4 flex items-center gap-3">
         <span className="relative flex h-3 w-3">
@@ -24,13 +24,11 @@ export default function StatusPage() {
           <span className="relative inline-flex h-3 w-3 rounded-full bg-teal" />
         </span>
         <h1 className="text-[clamp(1.9rem,4vw,2.6rem)] font-semibold tracking-tight text-cream">
-          All systems operational
+          Application ready
         </h1>
       </div>
       <p className="mt-5 max-w-measure text-[15px] leading-relaxed text-muted">
-        Dervyx is a read-only tool. It reads public Base data for one token and one block window and
-        issues a certificate you can re-verify by hash. It never connects a wallet, sends a transaction,
-        or asks you to sign anything.
+        Application status is healthy. Provider connectivity is checked per investigation, so this page does not claim that a live RPC read is currently running.
       </p>
 
       <dl className="mt-10 overflow-hidden rounded-lg border border-edge bg-surface">

@@ -6,8 +6,8 @@ const REPO = "https://github.com/mystiquemide/Dervyx";
 export function Footer() {
   return (
     <footer className="border-t border-edge/70 bg-ink">
-      <div className="mx-auto max-w-6xl px-6 py-16">
-        <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1.4fr]">
+      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-16">
+        <div className="grid gap-8 sm:gap-12 md:grid-cols-[1.4fr_1fr_1fr_1.4fr]">
           <div>
             <div className="flex items-center gap-2.5">
               <Mark size={24} />

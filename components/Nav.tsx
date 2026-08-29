@@ -34,7 +34,7 @@ export function Nav() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-edge/70 bg-ink/95 backdrop-blur-sm">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2.5" aria-label="Dervyx home" onClick={() => setOpen(false)}>
           <Mark size={26} />
           <span className="text-[15px] font-semibold tracking-tight text-cream">Dervyx</span>
@@ -90,7 +90,7 @@ export function Nav() {
 
       {open ? (
         <nav id="mobile-nav" aria-label="Mobile" className="border-t border-edge/70 bg-ink md:hidden">
-          <div className="mx-auto max-w-6xl px-6 py-4">
+          <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6">
             <ul className="flex flex-col">
               {LINKS.map((link) => (
                 <li key={link.label} className="border-b border-edge/50">

@@ -11,7 +11,7 @@ const REPO = "https://github.com/mystiquemide/Dervyx";
 const STRIP = [
   ["Deterministic", "Same token and window give the same hash, every time."],
   ["Read-only", "No wallet, no transactions, no signing."],
-  ["Source-linked", "Every funding edge cites an on-chain transaction."],
+  ["Source-linked", "Live evidence edges cite on-chain transactions; fixtures cite reproducible source metadata."],
   ["Reproducible", "Download the report and replay its hash."],
   ["Honest", "Thin coverage returns a non-verdict, never a forced label."],
   ["Base-native", "Canonical Uniswap v4 swaps and funding transfers."],
@@ -31,7 +31,7 @@ const SOURCES = [
   ["Uniswap v4 PoolManager", "Canonical Swap events as the volume ground truth."],
   ["ERC-20 transfers", "Canonical eth_getLogs as the reliable funding layer."],
   ["Blockscout", "Best-effort native-ETH funding enrichment."],
-  ["BaseScan", "Every evidence edge links to its transaction."],
+  ["BaseScan", "Live evidence edges link to their transaction."],
 ];
 
 function Label({ children }: { children: React.ReactNode }) {
@@ -48,7 +48,7 @@ export default function LandingPage() {
     <>
       {/* Hero */}
       <section className="border-b border-edge/50">
-        <div className="mx-auto max-w-6xl px-6 pb-16 pt-20 sm:pt-28">
+        <div className="mx-auto max-w-6xl px-4 pb-12 pt-12 sm:px-6 sm:pb-16 sm:pt-28">
           <Reveal>
             <p className="text-xs uppercase tracking-widest2 text-muted">Base mainnet &middot; read-only &middot; no wallet</p>
             <h1 className="mt-5 max-w-4xl text-[clamp(2.4rem,6vw,4.6rem)] font-semibold leading-[1.04] tracking-tight text-cream">
@@ -59,22 +59,22 @@ export default function LandingPage() {
               wallets were funded, and issues a certificate you can re-verify by hash. It reports observed
               relationships, not accusations.
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
               <Link
                 href="/investigate"
-                className="rounded-md bg-teal px-5 py-3 text-sm font-semibold text-ink transition-colors duration-200 hover:bg-teal-deep"
+                className="w-full rounded-md bg-teal px-5 py-3 text-center text-sm font-semibold text-ink transition-colors duration-200 hover:bg-teal-deep sm:w-auto"
               >
                 Run an investigation
               </Link>
               <Link
                 href="/compare"
-                className="rounded-md border border-teal/30 bg-teal/5 px-5 py-3 text-sm font-medium text-teal transition-colors duration-200 hover:bg-teal/10"
+                className="w-full rounded-md border border-teal/30 bg-teal/5 px-5 py-3 text-center text-sm font-medium text-teal transition-colors duration-200 hover:bg-teal/10 sm:w-auto"
               >
                 Run the paired proof
               </Link>
               <a
                 href="#workflow"
-                className="rounded-md border border-edge px-5 py-3 text-sm font-medium text-cream transition-colors duration-200 hover:border-muted"
+                className="w-full rounded-md border border-edge px-5 py-3 text-center text-sm font-medium text-cream transition-colors duration-200 hover:border-muted sm:w-auto"
               >
                 How it works
               </a>
@@ -112,7 +112,7 @@ export default function LandingPage() {
 
       {/* Paired proof */}
       <section id="paired-proof" className="border-b border-edge/50 bg-surface">
-        <div className="mx-auto grid max-w-6xl gap-12 px-6 py-24 md:grid-cols-[1.1fr_1fr] md:items-center">
+        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-16 sm:gap-12 sm:px-6 sm:py-24 md:grid-cols-[1.1fr_1fr] md:items-center">
           <Reveal>
             <Label>Paired proof</Label>
             <h2 className="mt-4 text-[clamp(1.9rem,3.4vw,2.8rem)] font-semibold leading-tight tracking-tight text-cream">
@@ -150,7 +150,7 @@ export default function LandingPage() {
 
       {/* Certificate */}
       <section id="certificate" className="border-b border-edge/50">
-        <div className="mx-auto grid max-w-6xl gap-12 px-6 py-24 md:grid-cols-2 md:items-center">
+        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-16 sm:gap-12 sm:px-6 sm:py-24 md:grid-cols-2 md:items-center">
           <Reveal>
             <Label>Certificate</Label>
             <h2 className="mt-4 text-[clamp(1.9rem,3.4vw,2.8rem)] font-semibold leading-tight tracking-tight text-cream">
@@ -177,7 +177,7 @@ export default function LandingPage() {
 
       {/* Funding graph */}
       <section id="graph" className="border-b border-edge/50">
-        <div className="mx-auto grid max-w-6xl gap-12 px-6 py-24 md:grid-cols-2 md:items-center">
+        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-16 sm:gap-12 sm:px-6 sm:py-24 md:grid-cols-2 md:items-center">
           <Reveal className="md:order-2">
             <Label>Funding graph</Label>
             <h2 className="mt-4 text-[clamp(1.9rem,3.4vw,2.8rem)] font-semibold leading-tight tracking-tight text-cream">
@@ -204,7 +204,7 @@ export default function LandingPage() {
 
       {/* Editorial statement */}
       <section className="border-b border-edge/50">
-        <div className="mx-auto max-w-4xl px-6 py-28 text-center">
+        <div className="mx-auto max-w-4xl px-4 py-16 text-center sm:px-6 sm:py-28">
           <Reveal>
             <p className="font-serif text-[clamp(2rem,4.4vw,3.4rem)] leading-tight text-cream">
               Evidence, not accusations.
@@ -219,7 +219,7 @@ export default function LandingPage() {
 
       {/* Verdicts */}
       <section id="verdicts" className="border-b border-edge/50">
-        <div className="mx-auto max-w-6xl px-6 py-24">
+        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
           <Reveal className="text-center">
             <Label>Verdicts</Label>
             <h2 className="mx-auto mt-4 max-w-2xl text-[clamp(1.9rem,3.4vw,2.8rem)] font-semibold leading-tight tracking-tight text-cream">
@@ -243,7 +243,7 @@ export default function LandingPage() {
 
       {/* Workflow */}
       <section id="workflow" className="border-b border-edge/50">
-        <div className="mx-auto max-w-6xl px-6 py-24">
+        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
           <Reveal>
             <Label>Workflow</Label>
             <h2 className="mt-4 max-w-2xl text-[clamp(1.9rem,3.4vw,2.8rem)] font-semibold leading-tight tracking-tight text-cream">
@@ -287,7 +287,7 @@ export default function LandingPage() {
 
       {/* Verify (reserved darker proof section) */}
       <section id="verify" className="border-y border-edge bg-[#0c0f10]">
-        <div className="mx-auto max-w-6xl px-6 py-28">
+        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-28">
           <Reveal>
             <Label>Technical proof</Label>
             <h2 className="mt-4 max-w-3xl text-[clamp(1.9rem,3.4vw,2.8rem)] font-semibold leading-tight tracking-tight text-cream">
@@ -357,7 +357,7 @@ export default function LandingPage() {
 
       {/* Sources */}
       <section id="sources" className="border-b border-edge/50">
-        <div className="mx-auto max-w-6xl px-6 py-24">
+        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
           <Reveal>
             <Label>Sources</Label>
             <h2 className="mt-4 max-w-2xl text-[clamp(1.9rem,3.4vw,2.8rem)] font-semibold leading-tight tracking-tight text-cream">
@@ -379,7 +379,7 @@ export default function LandingPage() {
 
       {/* Final CTA */}
       <section className="bg-surface">
-        <div className="mx-auto max-w-4xl px-6 py-28 text-center">
+        <div className="mx-auto max-w-4xl px-4 py-16 text-center sm:px-6 sm:py-28">
           <Reveal>
             <h2 className="text-[clamp(2rem,4vw,3.2rem)] font-semibold leading-tight tracking-tight text-cream">
               Run an investigation.

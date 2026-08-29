@@ -271,7 +271,7 @@ export const investigationPageHtml = `<!doctype html>
               fields.certReplayResult.className = 'status error';
             }
           } catch {
-            fields.certReplayResult.textContent = 'Replay could not reach the local API.';
+            fields.certReplayResult.textContent = 'Replay could not reach the Dervyx API.';
             fields.certReplayResult.className = 'status error';
           }
         }
@@ -337,7 +337,7 @@ export const investigationPageHtml = `<!doctype html>
             const finalRecord = evidencePayload.state === 'INGESTING' ? await waitForEvidence(requestId) : evidencePayload;
             handleFinalRecord(finalRecord);
           } catch {
-            showStatus('The evidence read could not reach the local API. Retry without changing the scope.', 'error');
+            showStatus('The evidence read could not reach the Dervyx API. Retry without changing the scope.', 'error');
             showRecovery('retryable');
           }
         }
@@ -395,7 +395,7 @@ export const investigationPageHtml = `<!doctype html>
             }
             await runEvidenceFlow(payload.requestId);
           } catch {
-            showStatus('The request could not reach the local scope API. Retry without changing the scope.', 'error');
+            showStatus('The request could not reach the Dervyx API. Retry without changing the scope.', 'error');
           } finally {
             button.disabled = false;
           }

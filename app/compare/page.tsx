@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function ComparePage() {
   return (
-    <main className="mx-auto max-w-6xl px-6 py-16 sm:py-24">
+    <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-24">
       <PairedProofClient />
     </main>
   );

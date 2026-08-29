@@ -12,7 +12,7 @@ const VERDICT: Record<string, { label: string; dot: string; text: string }> = {
 
 function Row({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="grid grid-cols-[130px_1fr] gap-x-4 gap-y-1 border-t border-edge/60 py-2.5 text-sm sm:grid-cols-[150px_1fr]">
+    <div className="grid gap-x-4 gap-y-1 border-t border-edge/60 py-2.5 text-sm sm:grid-cols-[150px_1fr]">
       <dt className="text-faint">{label}</dt>
       <dd className="text-cream [overflow-wrap:anywhere]">{children}</dd>
     </div>
@@ -48,7 +48,7 @@ export function CertificatePanel({
     : "offline evidence";
 
   return (
-    <div className="rounded-lg border border-edge bg-surface p-5 sm:p-6">
+    <div className="rounded-lg border border-edge bg-surface p-4 sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-xs uppercase tracking-widest2 text-faint">Anomaly certificate</p>
@@ -133,7 +133,7 @@ export function CertificatePanel({
         {report.limitations[0]}
       </p>
 
-      {actions ? <div className="mt-5 flex flex-wrap items-center gap-3">{actions}</div> : null}
+      {actions ? <div className="mt-5 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">{actions}</div> : null}
     </div>
   );
 }

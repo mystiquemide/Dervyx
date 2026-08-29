@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { Mark } from "./Mark";
 import { ScrollLink } from "./ScrollLink";
 
@@ -17,6 +18,8 @@ const LINKS: { href: string; label: string; external?: boolean; targetId?: strin
 
 export function Nav() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const isInvestigationRoute = pathname === "/investigate";
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -33,6 +36,10 @@ export function Nav() {
     };
   }, [open]);
 
+  useEffect(() => {
+    if (isInvestigationRoute) setOpen(false);
+  }, [isInvestigationRoute]);
+
   return (
     <header className="sticky top-0 z-40 border-b border-edge/70 bg-ink/95 backdrop-blur-sm">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
@@ -41,59 +48,63 @@ export function Nav() {
           <span className="text-[15px] font-semibold tracking-tight text-cream">Dervyx</span>
         </Link>
 
-        <nav className="hidden items-center gap-8 text-sm text-muted md:flex" aria-label="Primary">
-          {LINKS.map((link) =>
-            link.external ? (
-              <a key={link.label} href={link.href} target="_blank" rel="noreferrer" className="transition-colors hover:text-cream">
-                {link.label}
-              </a>
-            ) : link.targetId ? (
-              <ScrollLink key={link.label} targetId={link.targetId} className="transition-colors hover:text-cream">
-                {link.label}
-              </ScrollLink>
-            ) : (
-              <Link key={link.label} href={link.href} className="transition-colors hover:text-cream">
-                {link.label}
-              </Link>
-            ),
-          )}
-        </nav>
-
-        <div className="flex items-center gap-3">
-          <Link
-            href="/investigate"
-            className="hidden rounded-md border border-teal/30 bg-teal/10 px-4 py-2 text-sm font-medium text-teal transition-colors duration-200 hover:bg-teal/20 sm:inline-flex"
-          >
-            Run an investigation
-          </Link>
-
-          <button
-            type="button"
-            onClick={() => setOpen((prev) => !prev)}
-            aria-expanded={open}
-            aria-controls="mobile-nav"
-            aria-label={open ? "Close menu" : "Open menu"}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-edge text-cream transition-colors hover:border-muted md:hidden"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-              {open ? (
-                <>
-                  <path d="M6 6 L18 18" />
-                  <path d="M18 6 L6 18" />
-                </>
-              ) : (
-                <>
-                  <path d="M4 7 H20" />
-                  <path d="M4 12 H20" />
-                  <path d="M4 17 H20" />
-                </>
+        {!isInvestigationRoute ? (
+          <>
+            <nav className="hidden items-center gap-8 text-sm text-muted md:flex" aria-label="Primary">
+              {LINKS.map((link) =>
+                link.external ? (
+                  <a key={link.label} href={link.href} target="_blank" rel="noreferrer" className="transition-colors hover:text-cream">
+                    {link.label}
+                  </a>
+                ) : link.targetId ? (
+                  <ScrollLink key={link.label} targetId={link.targetId} className="transition-colors hover:text-cream">
+                    {link.label}
+                  </ScrollLink>
+                ) : (
+                  <Link key={link.label} href={link.href} className="transition-colors hover:text-cream">
+                    {link.label}
+                  </Link>
+                ),
               )}
-            </svg>
-          </button>
-        </div>
+            </nav>
+
+            <div className="flex items-center gap-3">
+              <Link
+                href="/investigate"
+                className="hidden rounded-md border border-teal/30 bg-teal/10 px-4 py-2 text-sm font-medium text-teal transition-colors duration-200 hover:bg-teal/20 sm:inline-flex"
+              >
+                Run an investigation
+              </Link>
+
+              <button
+                type="button"
+                onClick={() => setOpen((prev) => !prev)}
+                aria-expanded={open}
+                aria-controls="mobile-nav"
+                aria-label={open ? "Close menu" : "Open menu"}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-edge text-cream transition-colors hover:border-muted md:hidden"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+                  {open ? (
+                    <>
+                      <path d="M6 6 L18 18" />
+                      <path d="M18 6 L6 18" />
+                    </>
+                  ) : (
+                    <>
+                      <path d="M4 7 H20" />
+                      <path d="M4 12 H20" />
+                      <path d="M4 17 H20" />
+                    </>
+                  )}
+                </svg>
+              </button>
+            </div>
+          </>
+        ) : null}
       </div>
 
-      {open ? (
+      {!isInvestigationRoute && open ? (
         <nav id="mobile-nav" aria-label="Mobile" className="border-t border-edge/70 bg-ink md:hidden">
           <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6">
             <ul className="flex flex-col">

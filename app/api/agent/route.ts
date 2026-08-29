@@ -8,7 +8,7 @@ const MANIFEST = {
   name: "Dervyx",
   tagline: "Counterfactual funding evidence for Base token review.",
   description:
-    "A Base investigation agent that traces funding relationships behind observed swap activity and returns deterministic, replayable evidence.",
+    "Base investigation agent for launchpad teams that traces funding relationships behind observed swap activity and returns deterministic, replayable evidence.",
   chain: { name: "Base Mainnet", chainId: 8453 },
   readOnly: true,
   modelBoundary: "A model may choose an allowlisted branch; deterministic code owns evidence, numbers, root policy, and verdict.",

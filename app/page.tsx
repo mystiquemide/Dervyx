@@ -50,7 +50,7 @@ export default function LandingPage() {
       <section className="border-b border-edge/50">
         <div className="mx-auto max-w-6xl px-4 pb-12 pt-12 sm:px-6 sm:pb-16 sm:pt-28">
           <Reveal>
-            <p className="text-xs uppercase tracking-widest2 text-muted">Base investigation agent</p>
+            <p className="text-xs uppercase tracking-widest2 text-muted">Base investigation agent for launchpads</p>
             <h1 className="mt-5 max-w-4xl text-[clamp(2.4rem,6vw,4.6rem)] font-semibold leading-[1.04] tracking-tight text-cream">
               Who funded the wallets behind this token&apos;s volume?
             </h1>

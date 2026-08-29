@@ -15,7 +15,7 @@ export function Footer() {
               <span className="text-[15px] font-semibold tracking-tight text-cream">Dervyx</span>
             </div>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-faint">
-              Base investigation agent for funding and volume evidence. One token, one block window,
+              Base investigation agent for launchpad teams. One token, one block window,
               one certificate you can re-verify by hash.
             </p>
           </div>

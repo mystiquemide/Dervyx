@@ -1,6 +1,6 @@
 # Dervyx
 
-Dervyx is a Base investigation agent for anyone reviewing token activity, including launchpad and exchange listing teams. Give it one token and one fixed block window. It traces funding relationships behind observed swap activity, separates known infrastructure roots, and produces a certificate that another reviewer can verify by hash.
+Dervyx is a Base investigation agent built for launchpad teams. Before a token goes live or while early trading unfolds, give it one token and one fixed block window. It traces funding relationships behind observed swap activity, separates known infrastructure roots, and produces a certificate another reviewer can verify by hash.
 
 [Open Dervyx](https://dervyx.vercel.app/) · [Run an investigation](https://dervyx.vercel.app/investigate) · [Run the paired proof](https://dervyx.vercel.app/compare) · [Agent contract](https://dervyx.vercel.app/api/agent) · [Check status](https://dervyx.vercel.app/status)
 
@@ -8,7 +8,7 @@ Dervyx is a Base investigation agent for anyone reviewing token activity, includ
 
 If you only have a few minutes, verify these four things:
 
-1. Open the [paired proof](https://dervyx.159.69.241.122.sslip.io/compare).
+1. Open the [paired proof](https://dervyx.vercel.app/compare).
 2. Run the same scope twice: unknown shared root versus known router root.
 3. Compare the attribution ledger and observed share.
 4. Download the [anomaly certificate](./examples/anomaly-certificate.json), [anomaly receipt](./examples/anomaly-receipt.json), [control certificate](./examples/control-certificate.json), or [control receipt](./examples/control-receipt.json), then run `npm run verify:fixtures`.
